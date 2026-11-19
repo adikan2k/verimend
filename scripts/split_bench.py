@@ -19,6 +19,7 @@ learns which tasks were held out (SPEC section 6, CLAUDE.md rule 2).
 
 import argparse
 import json
+import os
 import random
 import shutil
 import subprocess
@@ -164,7 +165,15 @@ def apply_split(
     return record
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: list[str] | None = None, env: dict[str, str] | None = None) -> int:
+    env = dict(os.environ) if env is None else env
+    if env.get("CLAUDECODE"):
+        print(
+            "split_bench: Aditya runs the split from his own terminal, never from inside "
+            "Claude Code (CLAUDECODE is set).",
+            file=sys.stderr,
+        )
+        return 2
     parser = argparse.ArgumentParser(description="Split checked tasks into dev and held-out.")
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--validation", type=Path, required=True)

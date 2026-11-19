@@ -128,6 +128,16 @@ def test_apply_split_refuses_a_checkout_at_another_commit(
         )  # fmt: skip
 
 
+def test_main_refuses_to_run_inside_claude_code(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    argv = ["--seed", "1119", "--validation", str(tmp_path / "v.json"),
+            "--bench", str(tmp_path / "bench")]  # fmt: skip
+    assert main(argv, env={"CLAUDECODE": "1"}) == 2
+    assert "never from inside Claude Code" in capsys.readouterr().err
+    assert not (tmp_path / "bench").exists()
+
+
 def test_main_prints_dev_ids_but_not_heldout_ids(
     tmp_path: Path, vendor: tuple[Path, str], capsys: pytest.CaptureFixture[str]
 ) -> None:
@@ -137,7 +147,7 @@ def test_main_prints_dev_ids_but_not_heldout_ids(
     argv = ["--seed", "1119", "--validation", str(tmp_path / "validation.json"),
             "--pinned", str(tmp_path / "pinned.json"), "--bench", str(tmp_path / "bench"),
             "--vendor", str(vendor_dir)]  # fmt: skip
-    assert main(argv) == 0
+    assert main(argv, env={}) == 0
     out = capsys.readouterr().out
     held = [p.name for p in (tmp_path / "bench" / "heldout" / "ade-bench").iterdir() if p.is_dir()]
     assert held and not any(task in out for task in held)
