@@ -127,9 +127,113 @@ def test_harbor_import_check_sees_third_party_imports() -> None:
 
 
 def test_run_refuses_an_agent_not_wired_for_the_source(
-    capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
+    from dataclasses import replace
+
+    from bench.tasksets import get_source
+
+    narrow = replace(get_source("data-eng-bench"), agents=("none",))
+    monkeypatch.setattr(run, "get_source", lambda name: narrow)
     argv = ["--agent", "baseline", "--set", "dev", "--source", "data-eng-bench",
             "--limit", "1", "--max-usd", "0.1", "--dry-run"]  # fmt: skip
     assert run.main(argv, env={}) == 2
     assert "not wired up for data-eng-bench" in capsys.readouterr().err
+
+
+# --- our agents on Harbor ----------------------------------------------------------------
+
+
+def test_harbor_config_loads_our_agents_by_import_path() -> None:
+    batch = {"batch": "b", "trials": 1, "agent": "verimend", "agent_timeout_sec": 1200}
+    (entry,) = harbor_config(batch, "/stage/batch.json")["agents"]
+    assert entry["import_path"] == "bench.harbor.agents:VerimendHarborAgent"
+    assert entry["kwargs"] == {"batch_file": "/stage/batch.json"}
+    assert entry["override_timeout_sec"] == 1200.0
+    (base,) = harbor_config({**batch, "agent": "baseline"}, "x")["agents"]
+    assert base["import_path"] == "bench.harbor.agents:BaselineHarborAgent"
+
+
+def test_harbor_side_agents_need_only_the_harbor_venv() -> None:
+    imports = harbor_side_imports("bench.harbor.inner", "bench.harbor.agents")
+    assert set(imports) <= HARBOR_VENV, imports
+
+
+def test_ledger_carries_spend_between_trials_and_stops_the_batch(tmp_path: Path) -> None:
+    from bench.harbor.ledger import Ledger
+
+    ledger = Ledger(tmp_path / "ledger.json", max_usd=0.30)
+    assert ledger.next_run_cap(0.25) == 0.25
+    ledger.record(0.20)
+    again = Ledger(tmp_path / "ledger.json", max_usd=0.30)  # the next trial, a new object
+    assert again.spent_usd() == pytest.approx(0.20)
+    assert again.next_run_cap(0.25) == pytest.approx(0.10)
+    again.record(0.10)
+    assert again.next_run_cap(0.25) is None
+
+
+def test_baseline_command_matches_the_ade_baseline() -> None:
+    from bench.agents import BASELINE_TOOLS, baseline_cli_flags
+    from bench.claims import BASELINE_PROMPT_SUFFIX
+    from bench.harbor.records import baseline_command
+
+    command = baseline_command("Fix the 'model'.", "claude-haiku-5-5", 0.25, 40)
+    assert command.startswith("claude --output-format stream-json --verbose -p ")
+    assert BASELINE_PROMPT_SUFFIX in command
+    assert f"--model claude-haiku-5-5 --allowedTools {' '.join(BASELINE_TOOLS)}" in command
+    assert baseline_cli_flags(0.25, 40) in command
+    assert command.endswith("2>&1 | tee /tmp/agent_output.log")
+
+
+def test_verimend_prompt_tells_it_the_backend_and_project() -> None:
+    from bench.harbor.records import PROJECT_DIR, verimend_prompt
+
+    prompt = verimend_prompt("Fix the report.")
+    assert prompt.endswith("Fix the report.")
+    assert "duckdb" in prompt and PROJECT_DIR in prompt and "no shell" in prompt
+
+
+def test_records_from_trials_attach_our_record(tmp_path: Path) -> None:
+    from bench.harbor.inner import TRIAL_DIR
+    from bench.harbor.records import write_record
+    from verimend.runrecord import AgentRun
+
+    trial_dir = tmp_path / "job" / "a__1"
+    run_record = AgentRun(model="m", prompt_sha="s", report={"verdict": "fixed"}, cost_usd=0.01)
+    write_record(trial_dir / "agent", run_cap_usd=0.25, seconds=12.5,
+                 agent_run=run_record.to_dict())  # fmt: skip
+    with_dir = {**trial("a", "2026-11-19T10:01:00Z", 1.0), TRIAL_DIR: str(trial_dir)}
+    (record,) = records_from_trials([with_dir])
+    assert record.agent_run == run_record
+    assert record.run_cap_usd == 0.25 and record.seconds == 12.5
+    skipped = tmp_path / "job" / "b__1"
+    write_record(skipped / "agent", stopped="batch_cap", run_cap_usd=None)
+    (stopped,) = records_from_trials([{**trial("b", "2026-11-19T10:02:00Z", 0.0),
+                                       TRIAL_DIR: str(skipped)}])  # fmt: skip
+    assert stopped.stopped == "batch_cap" and stopped.agent_run is None
+
+
+def test_harbor_workspace_runs_commands_in_the_project() -> None:
+    import asyncio
+    from types import SimpleNamespace
+
+    from bench.harbor.workspace import HarborWorkspace
+
+    class FakeEnvironment:
+        def __init__(self) -> None:
+            self.calls: list[tuple[str, dict]] = []
+
+        async def exec(self, command: str, **kwargs: object) -> SimpleNamespace:
+            self.calls.append((command, kwargs))
+            out = "/data/retail.duckdb\n" if command == "printenv DUCKDB_PATH" else "ok"
+            return SimpleNamespace(return_code=0, stdout=out, stderr="")
+
+    env = FakeEnvironment()
+    ws = asyncio.run(HarborWorkspace.open(env))
+    assert ws.db_path == "/data/retail.duckdb"
+    assert ws.project_dir == "/app/dbt_models_duckdb"
+    result = asyncio.run(ws.exec(["dbt", "build", "--select", "a b"], timeout=60))
+    command, kwargs = env.calls[-1]
+    assert command == "timeout 60 dbt build --select 'a b'"
+    assert kwargs["cwd"] == "/app/dbt_models_duckdb"
+    assert result.code == 0 and result.output == "ok"

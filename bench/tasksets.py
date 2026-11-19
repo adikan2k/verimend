@@ -55,7 +55,7 @@ SOURCES: dict[str, Source] = {
         task_file="task.toml",
         runner="harbor",
         # The baseline and VeriMend on Harbor come in phase 3.
-        agents=("none", "reference"),
+        agents=("none", "reference", "baseline", "verimend"),
     ),
 }
 
