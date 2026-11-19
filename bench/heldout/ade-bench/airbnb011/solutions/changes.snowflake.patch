@@ -1,0 +1,32 @@
+--- a/snapshots/snap__hosts.sql
++++ b/snapshots/snap__hosts.sql
+@@ -3,7 +3,7 @@
+ {{
+     config(
+-        target_schema='main',
++        target_schema='public',
+         unique_key='ID',
+         strategy='check',
+         check_cols='all',
+--- a/models/source/src_hosts.sql
++++ b/models/source/src_hosts.sql
+@@ -1,7 +1,7 @@
+ {{
+ 	config(
+ 		materialized="table",
+ 		alias="src_hosts",
+-		schema="main",
++		schema="public",
+ 		unique_key="HOST_ID"
+ 	)
+--- a/models/dim/dim_superhost_evolution.sql
++++ b/models/dim/dim_superhost_evolution.sql
+@@ -3,7 +3,7 @@
+     config(
+         materialized="table",
+         alias="dim_superhost_evolution",
+-        schema="main"
++        schema="public"
+     )
+ }}
+

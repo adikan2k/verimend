@@ -1,0 +1,49 @@
+task_id: analytics_engineering005
+status: ready
+description: Create a model that dedupes inventory records.
+prompts:
+  - key: base
+    prompt: |-
+      The fact_inventory model should be unique on inventory_id and it's not. Update the model so that it has only one row per inventory_id.
+author_name: test
+author_email: test
+difficulty: easy
+tags:
+  - data-hygiene
+  - data-inspection
+  - dbt
+  - debugging
+  - model-creation
+
+# Test setup script to run before dbt tests
+test_setup: |-
+  dbt run --select fact_inventory
+
+# Tables to compare for solution
+solution_seeds:
+  - table_name: fact_inventory
+
+# Variants for different database and project combinations
+variants:
+- db_type: duckdb
+  db_name: analytics_engineering
+  project_type: dbt
+  project_name: analytics_engineering
+
+- db_type: snowflake
+  db_name: analytics_engineering
+  project_type: dbt
+  project_name: analytics_engineering
+  migration_directory: analytics_engineering__duckdb_to_snowflake
+
+- db_type: snowflake
+  db_name: analytics_engineering
+  project_type: dbt-fusion
+  project_name: analytics_engineering
+  migration_directory: analytics_engineering__duckdb_to_snowflake
+# Disabled: dbt-fusion + duckdb fails to build fact_inventory due to
+# https://github.com/dbt-labs/dbt-fusion/issues/2226 (STRPTIME->DATE cast + window function)
+#- db_type: duckdb
+#  db_name: analytics_engineering
+#  project_type: dbt-fusion
+#  project_name: analytics_engineering

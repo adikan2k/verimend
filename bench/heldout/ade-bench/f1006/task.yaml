@@ -1,0 +1,53 @@
+task_id: f1006
+status: ready
+description: Fix a calculation error that requires a semantic understanding of data, with no example of correction.
+notes: |-
+  This task changes both driver_points and constructor_points.
+prompts:
+  - key: base
+    prompt: |-
+      Someone noticed that the "points" columns in constructor_points.sql and driver_points.sql look way too high. Can you figure out what's wrong, fix it, and update the table?
+  - key: hard
+    prompt: |-
+      Someone noticed that the results in constructor_points.sql and driver_points.sql look wrong. Can you figure out what's wrong, fix it, and update the table?
+author_name: test
+author_email: test
+difficulty: hard
+tags:
+  - analysis
+  - data-hygiene
+  - data-inspection
+  - dbt
+  - debugging
+  - dbt-project-configuration
+
+test_setup: |-
+  dbt run --select constructor_points driver_points
+
+# Tables to compare for solution
+solution_seeds:
+  - table_name: constructor_points
+  - table_name: driver_points
+
+# Variants for different database and project combinations
+variants:
+- db_type: duckdb
+  db_name: f1
+  project_type: dbt
+  project_name: f1
+
+- db_type: snowflake
+  db_name: f1
+  project_type: dbt
+  project_name: f1
+  migration_directory: f1__duckdb_to_snowflake
+
+- db_type: snowflake
+  db_name: f1
+  project_type: dbt-fusion
+  project_name: f1
+  migration_directory: f1__duckdb_to_snowflake
+- db_type: duckdb
+  db_name: f1
+  project_type: dbt-fusion
+  project_name: f1

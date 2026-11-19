@@ -1,0 +1,43 @@
+task_id: airbnb009
+status: ready
+description: Fix missing days in rollup table
+notes: |-
+prompts:
+  - key: base
+    prompt: |-
+      In mom_agg_reviews, there should be a row for every day. Right now, some days are missing. Can you identify why these days are missing, and fix that model?
+author_name: test
+author_email: test
+difficulty: medium
+tags:
+  - analysis
+  - data-inspection
+  - dbt
+  - debugging
+  - model-refactor
+
+test_setup: |-
+  dbt run --select mom_agg_reviews
+
+# Variants for different database and project combinations
+variants:
+- db_type: duckdb
+  db_name: airbnb
+  project_type: dbt
+  project_name: airbnb
+
+- db_type: snowflake
+  db_name: airbnb
+  project_type: dbt
+  project_name: airbnb
+  migration_directory: airbnb__duckdb_to_snowflake
+
+- db_type: snowflake
+  db_name: airbnb
+  project_type: dbt-fusion
+  project_name: airbnb
+  migration_directory: airbnb__duckdb_to_snowflake_dbtf
+- db_type: duckdb
+  db_name: airbnb
+  project_type: dbt-fusion
+  project_name: airbnb

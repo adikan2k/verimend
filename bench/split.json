@@ -1,0 +1,40 @@
+{
+  "seed": 1119,
+  "dev_fraction": 0.4,
+  "date": "2026-11-19",
+  "sources": {
+    "ade-bench": {
+      "commit": "c305600ebf17e7e7c4550bd401b6ddb530beb7c8",
+      "dev": [
+        "airbnb002",
+        "airbnb009",
+        "analytics_engineering002",
+        "analytics_engineering005",
+        "asana001",
+        "f1007"
+      ],
+      "heldout_count": 10,
+      "excluded": {
+        "asana002": "reference solution fails",
+        "asana005": "reference solution fails"
+      }
+    },
+    "data-eng-bench": {
+      "commit": "74d4bcd4192e1959754f683841f9f602b8bc86e1",
+      "dev": [
+        "dbt-customer-ltv-fix",
+        "dbt-fix-cac-payback-waterfall",
+        "dbt-fix-category-revenue",
+        "dbt-fix-customer-ltv",
+        "dbt-fix-inventory-model",
+        "dbt-fix-product-metrics",
+        "dbt-fix-refund-reconciliation"
+      ],
+      "heldout_count": 10,
+      "excluded": {
+        "dbt-fix-division-by-zero": "reference solution fails",
+        "dbt-fix-marketing-attribution": "reference solution fails"
+      }
+    }
+  }
+}
