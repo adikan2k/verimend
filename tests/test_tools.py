@@ -209,3 +209,19 @@ def test_find_fix_and_rebuild_with_dbt(ctx: ToolContext) -> None:
     totals = call(ctx, "query_data", sql="select total_amount from customer_totals "
                                          "where customer_id = 10")  # fmt: skip
     assert "40.5" in totals.text
+
+
+def test_run_dbt_passes_full_refresh_only_when_asked(ctx: ToolContext) -> None:
+    from verimend.tools.workspace import ExecResult
+
+    seen: list[list[str]] = []
+
+    async def fake_exec(argv: list[str], **_: object) -> ExecResult:
+        seen.append(argv)
+        return ExecResult(0, "")
+
+    ctx.workspace.exec = fake_exec  # type: ignore[method-assign]
+    call(ctx, "run_dbt", selector="mom_agg+")
+    call(ctx, "run_dbt", selector="mom_agg+", full_refresh=True)
+    assert seen[0][-2:] == ["--select", "mom_agg+"]
+    assert seen[1][-3:] == ["--select", "mom_agg+", "--full-refresh"]

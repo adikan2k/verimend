@@ -102,8 +102,12 @@ TOOLS: tuple[ToolSpec, ...] = (
     ToolSpec(
         "run_dbt",
         "Run `dbt build --select <selector>` and report pass or fail per node, for example "
-        "'stg_orders+' for a model and everything downstream of it.",
-        _schema({"selector": {"type": "string"}}, ["selector"]),
+        "'stg_orders+' for a model and everything downstream of it. Set full_refresh to "
+        "rebuild incremental models from scratch after changing their logic.",
+        _schema(
+            {"selector": {"type": "string"}, "full_refresh": {"type": "boolean"}},
+            ["selector"],
+        ),
         run_dbt,
     ),
     ToolSpec(

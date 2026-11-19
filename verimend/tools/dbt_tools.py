@@ -79,6 +79,10 @@ async def run_dbt(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
     selector = str(args.get("selector", "")).strip()
     if not SELECTOR.match(selector):
         return ctx.result("Selector is empty or has characters dbt selectors do not use.", True)
-    summary, _ = await _build(ctx, ["--select", *selector.split()])
+    extra = ["--select", *selector.split()]
+    if args.get("full_refresh") is True:
+        # Rebuilds incremental models from scratch. Safe: the workspace is a sandbox copy.
+        extra.append("--full-refresh")
+    summary, _ = await _build(ctx, extra)
     ctx.manifest = None  # a build re-parses the project
     return ctx.result(summary)
