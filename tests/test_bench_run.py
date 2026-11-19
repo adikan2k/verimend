@@ -6,7 +6,13 @@ from pathlib import Path
 import pytest
 
 import bench.run as run
-from bench.agents import BASELINE_TOOLS, CLI_BUDGET_FRACTION, cli_budget_usd, get_agent
+from bench.agents import (
+    BASELINE_TOOLS,
+    CLI_BUDGET_FRACTION,
+    baseline_cli_flags,
+    cli_budget_usd,
+    get_agent,
+)
 from bench.claims import BASELINE_PROMPT_SUFFIX
 from bench.tasksets import (
     SOURCES,
@@ -137,6 +143,15 @@ def test_baseline_plugin_set_is_ade_benchs_baseline_plus_the_verdict_line() -> N
     assert only["allowed_tools"] == list(BASELINE_TOOLS)
     assert only["skills"] == [] and only["mcp_servers"] == {}
     assert only["prompt_suffix"] == BASELINE_PROMPT_SUFFIX
+
+
+def test_baseline_flags_restrict_offered_tools_and_cap_the_run() -> None:
+    flags = baseline_cli_flags(0.25, 40).split()
+    assert flags[flags.index("--tools") + 1] == "Bash,Edit,Write,Read,Glob,Grep"
+    assert flags[flags.index("--max-turns") + 1] == "40"
+    assert float(flags[flags.index("--max-budget-usd") + 1]) == cli_budget_usd(0.25)
+    i = flags.index("--disallowedTools")
+    assert flags[i + 1 : i + 3] == ["WebSearch", "WebFetch"]
 
 
 def test_cli_gets_less_than_the_real_run_cap() -> None:

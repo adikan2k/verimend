@@ -83,3 +83,19 @@ def get_agent(name: str) -> AgentSpec:
 
 def cli_budget_usd(run_cap_usd: float) -> float:
     return round(run_cap_usd * CLI_BUDGET_FRACTION, 4)
+
+
+def baseline_cli_flags(run_cap_usd: float, max_turns: int) -> str:
+    """Flags appended to ADE-bench's `claude -p ...` command for the baseline.
+
+    `--allowedTools` (set by ADE-bench) only pre-approves tools; without `--tools` the
+    model is still offered every Claude Code tool, subagents and workflows included
+    (seen in the phase 2 smoke run). `--tools` makes the offered set the six file and
+    shell tools SPEC section 6 describes.
+    """
+    return (
+        f" --tools {','.join(BASELINE_TOOLS)}"
+        f" --max-turns {max_turns}"
+        f" --max-budget-usd {cli_budget_usd(run_cap_usd):.4f}"
+        f" --disallowedTools {' '.join(BASELINE_DISALLOWED_TOOLS)}"
+    )

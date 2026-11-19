@@ -24,13 +24,7 @@ from ade_bench.agents.installed_agents.claude_code.claude_code_agent import Clau
 from ade_bench.harness import Harness
 from ade_bench.harness_models import FailureMode, TerminalCommand
 
-from bench.agents import (
-    BASELINE_DISALLOWED_TOOLS,
-    BASELINE_TOOLS,
-    AgentSpec,
-    cli_budget_usd,
-    get_agent,
-)
+from bench.agents import BASELINE_TOOLS, AgentSpec, baseline_cli_flags, get_agent
 from bench.assemble import AgentRecord, write_batch
 from bench.claude_stream import parse_stream
 from bench.grade import grades_from_ade_results
@@ -60,11 +54,7 @@ class BaselineAgent(ClaudeCodeAgent):
         return SETUP_SCRIPT
 
     def _run_agent_commands(self, task_prompt: str) -> list[TerminalCommand]:
-        extra = (
-            f" --max-turns {self._max_turns}"
-            f" --max-budget-usd {cli_budget_usd(self._run_cap_usd):.4f}"
-            f" --disallowedTools {' '.join(BASELINE_DISALLOWED_TOOLS)}"
-        )
+        extra = baseline_cli_flags(self._run_cap_usd, self._max_turns)
         return [
             TerminalCommand(
                 command=c.command + extra,

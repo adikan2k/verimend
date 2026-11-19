@@ -187,3 +187,23 @@ What the pilot does not show: three tasks and one trial each are not a fix rate.
 - **DuckDB versions differ.** The host has duckdb 2.0.0 (pulled in by dbt-duckdb 1.9.6); ADE-bench's image has 1.3.0. A database file written by 2.0 may not open in 1.3. Phase 2 should either pin `duckdb` on the host to the image's version, or keep every write to a benchmark database inside the task container, as the pilot does.
 - **ADE-bench tasks are prompts, not failed runs.** The harness hands the agent the task's prompt, and some fix-style tasks start from a project that builds cleanly. `read_failure` needs a fallback for "nothing fails, but the prompt says what is wrong".
 - **The spec's seven tools have no way to read a file.** The pilot needed `read_path` to see the model it was about to edit; `edit_model` alone would mean editing blind. Phase 3 needs a decision: add a read tool, or have `walk_lineage` return file content.
+
+## Phase 2 addendum: data-eng-bench runs on DuckDB
+
+Checked on 2026-11-19 at data-eng-bench commit `74d4bcd`, with Harbor 0.26.0 and no model calls.
+
+| Step | Result |
+| --- | --- |
+| Setup | `git lfs pull` for `base-image/database/retail.duckdb` (489 MB), then `docker build base-image/ -t ghcr.io/snowflake-labs/data-eng-bench-base:1.0.0`. Harbor lives in its own venv, outside the repo. |
+| Harbor natively on Windows | **Fails.** `invalid mount path: ':' mount path must be absolute`. |
+| Harbor in the Linux runner | **Fails the same way.** So this is not a Windows problem. |
+| Cause | The tasks' `docker-compose.yaml` mounts `${HOST_VERIFIER_LOGS_PATH}:${ENV_VERIFIER_LOGS_PATH}`. Harbor 0.26 sets these only when it bind-mounts its log folders, which it no longer does by default (it copies files instead). |
+| Fix | `--ek auto_mounting=true`, Harbor's own switch for bind mounts. With it, every trial runs. |
+| Oracle (reference solution), 19 fix tasks | **17 pass** (reward 1.0). `dbt-fix-division-by-zero` and `dbt-fix-marketing-attribution` score 0.0 with their own reference solution. For the first, dbt on DuckDB rejects the solution's SQL with a GROUP BY error. Both are excluded by the task check. |
+| `nop` (do nothing), same 19 | **0 pass**: reward 0.0 on every task. |
+
+How data-eng-bench grades: a hidden `pytest` verifier compares the built tables row by row against the reference and writes a reward between 0 and 1. `bench/grade.py` counts a trial as passed only at 1.0.
+
+`bench.run --source data-eng-bench` drives Harbor for the `none` and `reference` agents (`bench/harbor/inner.py`). The baseline and VeriMend on Harbor come in phase 3. `dbt-fix-division-by-zero` was the one task opened for this check. It is excluded, so `bench/pinned_dev.json` pins no data-eng-bench task.
+
+Harbor's DuckDB image pins different versions from ADE-bench's: dbt-duckdb 1.10.0 and duckdb 1.2.2. Each benchmark's database is only ever written inside its own containers.
