@@ -34,7 +34,7 @@ Variables are listed in `.env.example`. Never read `.env`. The API key lives onl
 ## Rules
 
 1. No paid model call runs in a loop without `--limit` and `--max-usd`. The harness prints an estimated cost before it starts and stops when the cap is reached.
-2. Never read, list or edit `bench/heldout/`, with any tool, including shell commands. Aditya runs held-out batches himself.
+2. Never read, list or edit `bench/heldout/`, with any tool, including shell commands. Aditya runs held-out batches himself. The task folders of the benchmark clones in `~/.verimend/vendor/` are off-limits too: the harness reads them inside its containers, scripts may print task IDs and tags but no other content, and Claude Code reads development tasks only from `bench/dev/`.
 3. Never weaken, skip or delete a verifier check or a hidden check to make a run pass. If a check looks wrong, stop and say so.
 4. Every guard ships with a test that proves it blocks what it should.
 5. `verifier/` never imports from `verimend/`. The tools in `verimend/tools/` never import the Agent SDK; only `verimend/agent/` does.
