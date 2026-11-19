@@ -1,0 +1,57 @@
+[project]
+name = "verimend"
+version = "0.1.0"
+description = "An agent that diagnoses a failed dbt run, proposes a fix on a branch, and lets a separate verifier decide whether the fix worked."
+requires-python = ">=3.12"
+dependencies = [
+    "claude-agent-sdk>=0.2.185,<0.3",
+    # Same minor versions as ADE-bench's DuckDB image (docker/base/Dockerfile.duckdb-dbt),
+    # so a run on the host and the benchmark's grading agree.
+    "dbt-core~=1.10.11",
+    "dbt-duckdb~=1.9.3",
+    "pydantic>=2.9,<3",
+    "pydantic-settings>=2.6,<3",
+    "verimend-verifier",
+]
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.390",
+    "pytest>=8.3",
+    "ruff>=0.8",
+]
+
+[build-system]
+requires = ["uv_build>=0.13,<0.14"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "verimend"
+module-root = ""
+
+[tool.uv.workspace]
+members = ["verifier"]
+
+[tool.uv.sources]
+verimend-verifier = { workspace = true }
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+# Benchmark task files are third-party content, and bench/heldout is off-limits.
+extend-exclude = ["bench/heldout", "bench/dev", "bench/results", "site"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.pyright]
+include = ["verimend", "verifier/src", "verifier/tests", "bench", "scripts", "tests"]
+exclude = ["bench/heldout", "bench/dev", "bench/results", "**/__pycache__", ".venv"]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.12"
+typeCheckingMode = "standard"
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "verifier/tests"]
+addopts = "--import-mode=importlib -q"
