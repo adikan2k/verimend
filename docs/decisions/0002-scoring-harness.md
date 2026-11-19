@@ -22,6 +22,13 @@ Status: draft by Claude Code for Aditya to rewrite. Date: 2026-11-19.
    - `--set vendor` is refused once `bench/split.json` exists;
    - a paid run with no result line is charged its whole cap.
 
+## Evidence
+
+- Task check ([validation.json](../../bench/results/validate-2026-11-19/validation.json)): 33 of 37 candidates kept, 16 ADE-bench and 17 data-eng-bench. The four excluded tasks fail with their own reference solution.
+- Split (seed 1119, run by Aditya, [split.json](../../bench/split.json)): ADE-bench 6 dev, 10 held out; data-eng-bench 7 dev, 10 held out.
+- Dev set, no model calls: do-nothing 0 of 13 ([ADE](../../bench/results/dev-none-ade-bench-2026-11-19/summary.json), [DEB](../../bench/results/dev-none-data-eng-bench-2026-11-19/summary.json)), reference 13 of 13 ([ADE](../../bench/results/dev-reference-ade-bench-2026-11-19/summary.json), [DEB](../../bench/results/dev-reference-data-eng-bench-2026-11-19/summary.json)).
+- Baseline on ADE-bench dev, one trial ([summary](../../bench/results/dev-baseline-ade-bench-2026-11-19/summary.json)): 5 of 6 pass. It claimed "fixed" on all six, so one is a false success (`airbnb009`). Mean $0.0061 a run, max $0.0128, total $0.0365, largest prompt 39,635 tokens. One trial on six tasks, so these are not results, only proof the measurement works.
+
 ## Rejected
 
 - **Our own SDK baseline.** More code, and not the agent the benchmark publishes.
@@ -30,5 +37,6 @@ Status: draft by Claude Code for Aditya to rewrite. Date: 2026-11-19.
 
 ## Open, for Aditya
 
-- data-eng-bench: see `docs/spikes.md`, "Phase 2 addendum".
+- data-eng-bench joined the split (see `docs/spikes.md`, "Phase 2 addendum"), but only `none` and `reference` run on it. The baseline and VeriMend on it need a Harbor agent adapter in phase 3.
+- The baseline's one false success came from a single trial. Three trials on dev would show whether it repeats, for about $0.11.
 - The baseline's prompt suffix changes ADE-bench's published baseline by one line. Its numbers are ours, not comparable to ADE-bench's leaderboard.
