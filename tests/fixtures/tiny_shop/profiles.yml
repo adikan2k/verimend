@@ -1,0 +1,7 @@
+tiny_shop:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: shop.duckdb
+      threads: 1
