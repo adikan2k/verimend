@@ -1,0 +1,166 @@
+[
+  {
+    "tool": "build",
+    "params": [
+      "is_full_refresh",
+      "node_selection",
+      "sample",
+      "vars",
+      "yml_selector"
+    ],
+    "status": "works",
+    "output": "OK",
+    "args": {
+      "node_selection": "stg_orders"
+    },
+    "seconds": 4.6
+  },
+  {
+    "tool": "clone",
+    "params": [
+      "is_full_refresh",
+      "node_selection",
+      "state_path",
+      "vars",
+      "yml_selector"
+    ],
+    "status": "works",
+    "output": "OK",
+    "args": {
+      "node_selection": "stg_orders",
+      "state_path": "target"
+    },
+    "seconds": 4.3
+  },
+  {
+    "tool": "compile",
+    "params": [
+      "node_selection",
+      "yml_selector"
+    ],
+    "status": "works",
+    "output": "\n\nwith orders as (\n\n    select * from \"jaffle_shop\".\"main\".\"stg_orders\"\n\n),\n\npayments as (\n\n    select * from \"jaffle_shop\".\"main\".\"stg_payments\"\n\n),\n\norder_payments as (\n\n    select\n        order_id,\n\n        sum(case when payment_method = 'credit_card' then amount else 0 end) as credit_card_amount,\n        sum(case when payment_method = 'coupon' then amount else 0 end) as coupon_amount,\n        sum(case when payment_method = 'bank_transfer' then amount else 0 end) as bank_transfer_amount,\n        sum(case when payment_method = 'gift_card' then amount else 0 end) as gift_card_amount,\n        sum(amount) as total_amount\n\n    from payments\n\n    group by order_id\n\n),\n\nfinal as (\n\n    select\n        orders.order_id,\n        orders.customer_id,\n        orders.order_date,\n        orders.status,\n\n        order_payments.credit_card_amount,\n\n        order_payments.coupon_amount,\n\n        order_payments.bank_transfer_amount,\n\n        order_payments.gift_card_amount,\n\n        order_payments.total_amount as amount\n\n    from orders\n\n\n    left join order_payments\n        on orders.order_id = order_payments.order_id\n\n)\n\nselect * from final\n",
+    "args": {
+      "node_selection": "orders"
+    },
+    "seconds": 4.5
+  },
+  {
+    "tool": "docs",
+    "params": [],
+    "status": "works",
+    "output": "OK",
+    "args": {},
+    "seconds": 4.8
+  },
+  {
+    "tool": "get_lineage_dev",
+    "params": [
+      "depth",
+      "types",
+      "unique_id"
+    ],
+    "status": "works",
+    "output": "{\n  \"model_id\": \"model.jaffle_shop.orders\",\n  \"parents\": [\n    {\n      \"model_id\": \"model.jaffle_shop.stg_orders\",\n      \"parents\": [\n        {\n          \"model_id\": \"seed.jaffle_shop.raw_orders\",\n          \"parents\": []\n        }\n      ]\n    },\n    {\n      \"model_id\": \"model.jaffle_shop.stg_payments\",\n      \"parents\": [\n        {\n          \"model_id\": \"seed.jaffle_shop.raw_payments\",\n          \"parents\": []\n        }\n      ]\n    }\n  ],\n  \"children\": [\n    {\n      \"model_id\": \"test.jaffle_shop.accepted_values_orders_status__placed__shipped__completed__return_pending__returned.be6b5b5ec3\",\n      \"children\": []\n    },\n    {\n      \"model_id\": \"test.jaffle_shop.not_null_orders_amount.106140f9fd\",\n      \"children\": []\n    },\n    {\n      \"model_id\": \"test.jaffle_shop.not_null_orders_bank_transfer_amount.7743500c49\",\n      \"children\": []\n    },\n    {\n      \"model_id\": \"test.jaffle_shop.not_null_orders_coupon_amount.ab90c90625\",\n      \"children\": []\n    },\n    {\n      \"model_id\": \"test.jaffle_shop.not_null_orders_credit_card_amount.d3ca593b59\",\n      \"children\": []\n    },\n    {\n      \"model_id\": \"test.jaffle_shop.not_null_orders_customer_id.c5f02694af\",\n      \"children\": []\n    },\n    {\n      \"model_id\": \"test.jaffle_shop.not_null_orders_gift_card_amount.413a0d2d7a\",\n      \"children\": []\n    },\n    {\n      \"model_id\": \"test.jaffle_shop.not_null_orders_order_id.cf6c17daed\",\n      \"children\": []\n    },\n    {\n      \"model_id\": \"test.jaffle_shop.relationships_orders_customer_id__customer",
+    "args": {
+      "unique_id": "model.jaffle_shop.orders",
+      "depth": 2
+    },
+    "seconds": 4.3
+  },
+  {
+    "tool": "get_node_details_dev",
+    "params": [
+      "node_id"
+    ],
+    "status": "works",
+    "output": "{\n  \"database\": \"jaffle_shop\",\n  \"schema\": \"main\",\n  \"name\": \"orders\",\n  \"resource_type\": \"model\",\n  \"package_name\": \"jaffle_shop\",\n  \"path\": \"orders.sql\",\n  \"original_file_path\": \"models\\\\orders.sql\",\n  \"unique_id\": \"model.jaffle_shop.orders\",\n  \"fqn\": [\n    \"jaffle_shop\",\n    \"orders\"\n  ],\n  \"alias\": \"orders\",\n  \"config\": {\n    \"enabled\": true,\n    \"alias\": null,\n    \"schema\": null,\n    \"database\": null,\n    \"tags\": [],\n    \"meta\": {},\n    \"group\": null,\n    \"materialized\": \"table\",\n    \"incremental_strategy\": null,\n    \"batch_size\": null,\n    \"lookback\": 1,\n    \"begin\": null,\n    \"persist_docs\": {},\n    \"post-hook\": [],\n    \"pre-hook\": [],\n    \"quoting\": {},\n    \"column_types\": {},\n    \"full_refresh\": null,\n    \"unique_key\": null,\n    \"on_schema_change\": \"ignore\",\n    \"on_configuration_change\": \"apply\",\n    \"grants\": {},\n    \"packages\": [],\n    \"docs\": {\n      \"show\": true,\n      \"node_color\": \"gold\"\n    },\n    \"contract\": {\n      \"enforced\": false,\n      \"alias_types\": true\n    },\n    \"event_time\": null,\n    \"concurrent_batches\": null,\n    \"access\": \"protected\",\n    \"freshness\": null\n  },\n  \"tags\": [],\n  \"description\": \"This table has basic information about orders, as well as some derived facts based on payments\",\n  \"columns\": {\n    \"order_id\": {\n      \"name\": \"order_id\",\n      \"description\": \"This is a unique identifier for an order\",\n      \"meta\": {},\n      \"data_type\": null,\n      \"constraints\": [],\n      \"quote\": null,\n      \"config\": {\n        \"meta\": {},\n        \"t",
+    "args": {
+      "node_id": "orders"
+    },
+    "seconds": 4.1
+  },
+  {
+    "tool": "get_product_doc_pages",
+    "params": [
+      "paths",
+      "query"
+    ],
+    "status": "not called",
+    "note": "not a local dbt CLI tool in this probe"
+  },
+  {
+    "tool": "list",
+    "params": [
+      "node_selection",
+      "resource_type",
+      "yml_selector"
+    ],
+    "status": "works",
+    "output": "jaffle_shop.customers\njaffle_shop.orders\njaffle_shop.staging.stg_orders\njaffle_shop.accepted_values_orders_status__placed__shipped__completed__return_pending__returned\njaffle_shop.staging.accepted_values_stg_orders_status__placed__shipped__completed__return_pending__returned\njaffle_shop.not_null_customers_customer_id\njaffle_shop.not_null_orders_amount\njaffle_shop.not_null_orders_bank_transfer_amount\njaffle_shop.not_null_orders_coupon_amount\njaffle_shop.not_null_orders_credit_card_amount\njaffle_shop.not_null_orders_customer_id\njaffle_shop.not_null_orders_gift_card_amount\njaffle_shop.not_null_orders_order_id\njaffle_shop.staging.not_null_stg_orders_order_id\njaffle_shop.relationships_orders_customer_id__customer_id__ref_customers_\njaffle_shop.unique_customers_customer_id\njaffle_shop.unique_orders_order_id\njaffle_shop.staging.unique_stg_orders_order_id\n",
+    "args": {
+      "node_selection": "stg_orders+"
+    },
+    "seconds": 4.6
+  },
+  {
+    "tool": "parse",
+    "params": [],
+    "status": "works",
+    "output": "OK",
+    "args": {},
+    "seconds": 3.9
+  },
+  {
+    "tool": "run",
+    "params": [
+      "is_full_refresh",
+      "node_selection",
+      "sample",
+      "vars",
+      "yml_selector"
+    ],
+    "status": "works",
+    "output": "OK",
+    "args": {
+      "node_selection": "stg_orders"
+    },
+    "seconds": 4.5
+  },
+  {
+    "tool": "search_product_docs",
+    "params": [
+      "query"
+    ],
+    "status": "not called",
+    "note": "not a local dbt CLI tool in this probe"
+  },
+  {
+    "tool": "show",
+    "params": [
+      "limit",
+      "sql_query"
+    ],
+    "status": "works",
+    "output": "10:07:57  Running with dbt=1.10.23\n10:07:57  This version of dbt is deprecated and no longer receives regular patches, including for known bugs. We recommend upgrading to a newer supported version of dbt: https://docs.getdbt.com/docs/dbt-versions\n10:07:58  Registered adapter: duckdb=1.9.6\n10:07:58  Found 5 models, 3 seeds, 20 data tests, 1 sql operation, 473 macros\n10:07:58  \n10:07:58  Concurrency: 24 threads (target='dev')\n10:07:58  \n{\n  \"show\": [\n    {\n      \"n\": 99\n    }\n  ]\n}\n",
+    "args": {
+      "sql_query": "select count(*) as n from {{ ref('orders') }}",
+      "limit": 5
+    },
+    "seconds": 4.7
+  },
+  {
+    "tool": "test",
+    "params": [
+      "node_selection",
+      "vars",
+      "yml_selector"
+    ],
+    "status": "works",
+    "output": "OK",
+    "args": {
+      "node_selection": "stg_orders"
+    },
+    "seconds": 4.4
+  }
+]
