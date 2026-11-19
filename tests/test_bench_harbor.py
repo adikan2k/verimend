@@ -72,8 +72,28 @@ def test_runner_command_for_harbor_installs_the_pinned_harbor(tmp_path: Path) ->
     )  # fmt: skip
     script = command[-1]
     assert f"'harbor=={run.HARBOR_VERSION}'" in script
+    assert "-e /verimend" not in script  # dbt-core and Harbor cannot share a venv
     assert "python -m bench.harbor.inner" in script
     assert f"{run.VENV_VOLUME}-harbor:/opt/venv" in command
+
+
+def test_harbor_side_imports_nothing_from_verimend() -> None:
+    """bench/harbor/inner.py runs in a venv without verimend installed."""
+    import ast
+
+    repo = Path(__file__).resolve().parents[1]
+    todo, seen = ["bench.harbor.inner"], set()
+    while todo:
+        module = todo.pop()
+        if module in seen:
+            continue
+        seen.add(module)
+        path = repo / (module.replace(".", "/") + ".py")
+        for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+            if isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
+                assert not node.module.startswith("verimend"), f"{module} imports {node.module}"
+                if node.module.startswith("bench"):
+                    todo.append(node.module)
 
 
 def test_run_refuses_an_agent_not_wired_for_the_source(

@@ -116,14 +116,19 @@ def runner_command(
     runner: str = "ade",
 ) -> list[str]:
     home_inside = docker_path(home)
-    # ADE-bench is installed from its checkout; Harbor from PyPI at the pinned version.
-    harness = "-e ." if runner == "ade" else f"'harbor=={HARBOR_VERSION}'"
+    # ADE-bench is installed from its checkout next to verimend. Harbor comes from PyPI at
+    # the pinned version and alone: it cannot share a venv with dbt-core 1.10 (pathspec),
+    # and bench/harbor/ needs only the standard-library modules of bench/.
+    if runner == "ade":
+        install = f"-e . -e {REPO_INSIDE}/verifier -e {REPO_INSIDE}"
+    else:
+        install = f"'harbor=={HARBOR_VERSION}'"
     script = "\n".join(
         [
             "set -e",
             f"cd '{docker_path(checkout)}'",
             "uv venv /opt/venv --allow-existing -q",
-            f"uv pip install -q {harness} -e {REPO_INSIDE}/verifier -e {REPO_INSIDE}",
+            f"uv pip install -q {install}",
             f"PYTHONPATH={REPO_INSIDE} python -m bench.{runner}.inner '{docker_path(batch_file)}'",
         ]
     )
