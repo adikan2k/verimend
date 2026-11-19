@@ -186,7 +186,7 @@ What the pilot does not show: three tasks and one trial each are not a fix rate.
 
 - **DuckDB versions differ.** The host has duckdb 2.0.0 (pulled in by dbt-duckdb 1.9.6); ADE-bench's image has 1.3.0. A database file written by 2.0 may not open in 1.3. Phase 2 should either pin `duckdb` on the host to the image's version, or keep every write to a benchmark database inside the task container, as the pilot does. *Phase 2 kept every write inside the containers and left the host unpinned. Still open for phase 4: the verifier's fresh database copy must be written by the same DuckDB version that will read it.*
 - **ADE-bench tasks are prompts, not failed runs.** The harness hands the agent the task's prompt, and some fix-style tasks start from a project that builds cleanly. `read_failure` needs a fallback for "nothing fails, but the prompt says what is wrong".
-- **The spec's seven tools have no way to read a file.** The pilot needed `read_path` to see the model it was about to edit; `edit_model` alone would mean editing blind. Phase 3 needs a decision: add a read tool, or have `walk_lineage` return file content.
+- **The spec's seven tools have no way to read a file.** The pilot needed `read_path` to see the model it was about to edit; `edit_model` alone would mean editing blind. Phase 3 needs a decision: add a read tool, or have `walk_lineage` return file content. *Decided by Aditya on 2026-11-19: an eighth tool, `read_file` (SPEC §4). The masking check now allows a disabled model when an enabled model of the same name replaces it (SPEC §5), so `asana001`'s fix passes.*
 
 ## Phase 2 addendum: data-eng-bench runs on DuckDB
 

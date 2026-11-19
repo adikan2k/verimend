@@ -49,7 +49,7 @@ failed dbt run (run_results.json, logs, manifest.json)
 sandbox ── git worktree + a copy of the DuckDB file
    │
    ▼
-verimend/agent ── Claude Agent SDK loop, seven tools, hooks
+verimend/agent ── Claude Agent SDK loop, eight tools, hooks
    │   investigate → patch → ask the verifier        (up to 3 attempts)
    ▼
 verifier/ ── separate process, clean rebuild, tamper checks
@@ -71,7 +71,7 @@ Three parts must stay separate, because the project's credibility depends on it:
 ```
 verimend/
   agent/        SDK loop, system prompt, hook wiring (the only code that imports the Agent SDK)
-  tools/        the seven tools as plain Python functions
+  tools/        the eight tools as plain Python functions
   hooks/        guard logic as plain functions, unit-tested without the SDK
   cli.py        verimend fix | verify | replay
   config.py     models, caps, paths, from environment
@@ -99,13 +99,14 @@ Phase 1 also moves `claude-settings.json` from the repo root to `.claude/setting
 
 Built on the Claude Agent SDK for Python. Confirm the exact way to register custom tools, restrict the tool list and attach hooks in the phase 1 spike, and record it in `docs/spikes.md`. Do not write SDK calls from memory.
 
-The agent gets these seven tools and nothing else. The SDK's built-in file and shell tools are switched off for it.
+The agent gets these eight tools and nothing else. The SDK's built-in file and shell tools are switched off for it.
 
 | Tool | Input | Returns | Guard |
 | --- | --- | --- | --- |
 | `read_failure` | none | Failed nodes, error text and the relevant log lines, as a short summary | Read-only |
 | `walk_lineage` | model name, direction, depth | Parents or children from `manifest.json`, with materialisation and path | Read-only |
 | `query_data` | SQL | Up to 50 rows plus row count | Read-only DuckDB connection, one statement, 20 s timeout, SELECT only |
+| `read_file` | path, optional line range | The file's text with line numbers | Read-only; path must be inside the dbt project, `dbt_packages/` included |
 | `inspect_history` | path | The last 5 commits that touched it, with diffs trimmed to 80 lines | Read-only |
 | `edit_model` | path, new content or patch | Confirmation and the resulting diff | Hook: path must be an allowed model, macro or seed file inside the project |
 | `run_dbt` | selector | Pass or fail per node, with error text | Runs only in the sandbox, against the copied database |
@@ -159,7 +160,7 @@ It runs in a separate process, on a fresh worktree and a fresh copy of the datab
 Checks, in order. The first failure stops the run.
 
 1. **Tamper.** The diff touches only allowed paths. No test was removed, loosened, re-tagged or had its severity lowered. Nothing under `verifier/`, `bench/` or CI changed.
-2. **Masking.** The fix does not make the failure disappear without fixing it: no model disabled, no `limit 0`, no always-false filter, no failing node excluded from the build.
+2. **Masking.** The fix does not make the failure disappear without fixing it: no model disabled unless an enabled model of the same name replaces it (overriding a broken package model is a real fix), no `limit 0`, no always-false filter, no failing node excluded from the build.
 3. **Clean rebuild.** `dbt build` passes for the failed node and everything downstream of it.
 4. **No collateral damage.** Models outside the lineage of the changed files have the same row counts and checksums as the last good build.
 
@@ -328,7 +329,7 @@ Create the repo, tooling (`uv`, `ruff`, `pyright`, `pytest`), `scripts/check.py`
 
 ### Phase 3: agent, first version (Mon Nov 23 to Thu Nov 26)
 
-The seven tools, the system prompt and the structured report.
+The eight tools, the system prompt and the structured report.
 
 **Done when** it finishes every development task under its dollar cap and the first results table exists, whatever the score.
 
