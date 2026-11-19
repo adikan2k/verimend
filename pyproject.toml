@@ -54,4 +54,7 @@ typeCheckingMode = "standard"
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "verifier/tests"]
-addopts = "--import-mode=importlib -q"
+# Default (prepend) import mode on purpose: importlib mode registers a dummy module named
+# "verifier" for verifier/tests and hides the real package. The price is that test file
+# names must be unique across tests/ and verifier/tests/.
+addopts = "-q"
