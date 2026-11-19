@@ -72,7 +72,7 @@ def assemble_run(
             trace.add("model_usage", t=t, message_id=message_id, prompt_tokens=prompt_tokens)
 
     fixed = spec.fixed_claim()
-    if record.stopped == "batch_cap":
+    if record.stopped in {"batch_cap", "harness_error"}:  # the agent never ran
         claim = Claim.NONE
     elif fixed is not None:
         claim = fixed
@@ -148,10 +148,20 @@ def write_batch(
     spec: AgentSpec,
     meta: dict[str, Any],
     *,
+    expected: list[tuple[str, int]] | None = None,
     include_tests: bool = True,
 ) -> dict[str, Any]:
-    """Write every trace and summary.json; return the summary."""
+    """Write every trace and summary.json; return the summary.
+
+    Every expected (task, trial) gets a run, so a trial the harness failed before the
+    agent started is reported as a failure instead of silently missing.
+    """
     by_key = {(g.task_id, g.trial): g for g in grades}
+    records = list(records)
+    seen = {(r.task, r.trial) for r in records}
+    for task, trial in sorted(set(expected or []) | set(by_key)):
+        if (task, trial) not in seen:
+            records.append(AgentRecord(task, trial, started=0.0, stopped="harness_error"))
     runs: list[RunResult] = []
     for record in sorted(records, key=lambda r: (r.task, r.trial)):
         grade = by_key.get((record.task, record.trial))

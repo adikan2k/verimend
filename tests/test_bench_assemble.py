@@ -81,6 +81,22 @@ def test_missing_grade_and_batch_cap_stop(tmp_path: Path) -> None:
     assert grade_event["failure_mode"] == "missing"
 
 
+def test_trials_the_agent_never_reached_are_reported_as_failures(tmp_path: Path) -> None:
+    records = [AgentRecord("a", 1, 0.0, 1.0)]
+    grades = [grade("a", 1, True), grade("b", 1, False)]
+    summary = write_batch(
+        tmp_path, records, grades, get_agent("reference"), META,
+        expected=[("a", 1), ("b", 1), ("c", 1)],
+    )  # fmt: skip
+    runs = {r["task"]: r for r in summary["runs"]}
+    assert set(runs) == {"a", "b", "c"}
+    for task in ("b", "c"):
+        # The reference agent never ran, so it claims nothing: no false success.
+        assert runs[task]["stopped"] == "harness_error"
+        assert runs[task]["claim"] == "none" and runs[task]["grader_passed"] is False
+    assert summary["metrics"]["grader_pass_rate"] == 1 / 3
+
+
 def test_traces_can_leave_test_names_out(tmp_path: Path) -> None:
     write_batch(
         tmp_path,

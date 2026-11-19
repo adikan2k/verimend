@@ -36,6 +36,16 @@ def ade_candidates(tasks_dir: Path, pinned: list[str]) -> list[str]:
     return sorted(set(found) | set(pinned))
 
 
+def deb_candidates(tasks_dir: Path, pinned: list[str]) -> list[str]:
+    """data-eng-bench's fix tasks: their folder names contain "fix" (19 at the pinned
+    commit; its README files 16 of them under bug-fixes). Reads folder names only."""
+    found = [p.parent.name for p in tasks_dir.glob("*/task.toml") if "fix" in p.parent.name]
+    return sorted(set(found) | set(pinned))
+
+
+CANDIDATES = {"ade-bench": ade_candidates, "data-eng-bench": deb_candidates}
+
+
 def decide(reference_passed: bool | None, none_passed: bool | None) -> tuple[bool, str | None]:
     """Keep a task only if the reference passes and doing nothing fails."""
     if reference_passed is None:
@@ -88,30 +98,37 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, required=True)
     parser.add_argument("--max-usd", type=float, required=True)
     args = parser.parse_args(argv)
-    if args.source != "ade-bench":
-        print("validate_tasks: only ade-bench is wired up", file=sys.stderr)
+    if args.source not in CANDIDATES:
+        print(f"validate_tasks: unknown source {args.source}", file=sys.stderr)
         return 2
 
     source = get_source(args.source)
     pinned = json.loads(args.pinned.read_text(encoding="utf-8")).get(source.name, [])
     checkout = vendor_dir(source, load_settings().verimend_home)
-    tasks = ade_candidates(checkout / source.tasks_subdir, pinned)[: args.limit]
+    tasks = CANDIDATES[source.name](checkout / source.tasks_subdir, pinned)[: args.limit]
     print(f"{len(tasks)} candidates: {', '.join(tasks)}", flush=True)
 
     stamp = date.today().isoformat()
-    reference = passed_by_task(
-        json.loads(run_batch("reference", f"validate-reference-{stamp}", tasks, source.name)
-                   .read_text(encoding="utf-8"))
-    )  # fmt: skip
-    none = passed_by_task(
-        json.loads(run_batch("none", f"validate-none-{stamp}", tasks, source.name)
-                   .read_text(encoding="utf-8"))
-    )  # fmt: skip
-    validation = build_validation(source.name, source.commit, tasks, reference, none)
+    results = {
+        agent: passed_by_task(
+            json.loads(
+                run_batch(
+                    agent, f"validate-{agent}-{source.name}-{stamp}", tasks, source.name
+                ).read_text(encoding="utf-8")
+            )
+        )
+        for agent in ("reference", "none")
+    }
+    validation = build_validation(
+        source.name, source.commit, tasks, results["reference"], results["none"]
+    )
 
+    # One file per day; each source's check adds its own entry.
     out = REPO_ROOT / "bench" / "results" / f"validate-{stamp}" / "validation.json"
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(validation, indent=2) + "\n", encoding="utf-8")
+    merged = json.loads(out.read_text(encoding="utf-8")) if out.exists() else {"sources": {}}
+    merged["sources"].update(validation["sources"])
+    out.write_text(json.dumps(merged, indent=2) + "\n", encoding="utf-8")
     for c in validation["sources"][source.name]["candidates"]:
         ref = {True: "pass", False: "fail", None: "missing"}[c["reference"]]
         nothing = {True: "pass", False: "fail", None: "missing"}[c["none"]]

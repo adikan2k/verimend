@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.validate_tasks import ade_candidates, build_validation, decide
+from scripts.validate_tasks import ade_candidates, build_validation, deb_candidates, decide
 
 
 @pytest.mark.parametrize(
@@ -32,6 +32,14 @@ def test_ade_candidates_are_ready_debugging_tasks_plus_pinned(tmp_path: Path) ->
         (tmp_path / name).mkdir()
         (tmp_path / name / "task.yaml").write_text(text, encoding="utf-8")
     assert ade_candidates(tmp_path, ["pinned_build"]) == ["fix_ready", "pinned_build"]
+
+
+def test_deb_candidates_are_fix_tasks_plus_pinned(tmp_path: Path) -> None:
+    for name in ("dbt-fix-a", "dbt-b-fix", "dbt-build-c", "notask-fix"):
+        (tmp_path / name).mkdir()
+        if name != "notask-fix":
+            (tmp_path / name / "task.toml").write_text("", encoding="utf-8")
+    assert deb_candidates(tmp_path, ["dbt-build-c"]) == ["dbt-b-fix", "dbt-build-c", "dbt-fix-a"]
 
 
 def test_build_validation_matches_the_split_input() -> None:

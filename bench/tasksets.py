@@ -33,6 +33,8 @@ class Source:
     commit: str  # the upstream commit every run must use
     tasks_subdir: str
     task_file: str  # a folder is a task if it has this file
+    runner: Literal["ade", "harbor"]
+    agents: tuple[str, ...]  # agents wired up for this source
 
 
 SOURCES: dict[str, Source] = {
@@ -42,6 +44,18 @@ SOURCES: dict[str, Source] = {
         commit="c305600ebf17e7e7c4550bd401b6ddb530beb7c8",
         tasks_subdir="tasks",
         task_file="task.yaml",
+        runner="ade",
+        agents=("none", "reference", "baseline"),
+    ),
+    "data-eng-bench": Source(
+        name="data-eng-bench",
+        repo_url="https://github.com/snowflake-labs/data-eng-bench",
+        commit="74d4bcd4192e1959754f683841f9f602b8bc86e1",
+        tasks_subdir="tasks",
+        task_file="task.toml",
+        runner="harbor",
+        # The baseline and VeriMend on Harbor come in phase 3.
+        agents=("none", "reference"),
     ),
 }
 

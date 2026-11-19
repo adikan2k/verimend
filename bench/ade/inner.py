@@ -178,8 +178,11 @@ def main(batch_path: Path) -> int:
     recorder = Recorder(spec, BatchBudget(max_usd=batch["max_usd"]), batch["per_run_usd"])
     factory = RecordingFactory(spec, recorder, batch)
     stage = Path(batch["stage_dir"])
+    # As ADE-bench's own CLI does: the reference agent reads solutions from the task set.
+    agent_kwargs = {"dataset_path": stage / "tasks"} if spec.name == "reference" else {}
     harness = Harness(
         dataset_path=stage / "tasks",
+        agent_kwargs=agent_kwargs,
         output_path=stage / "ade-output",
         run_id=batch["batch"],
         agent_factory=factory,
@@ -218,6 +221,7 @@ def main(batch_path: Path) -> int:
         grades,
         spec,
         meta,
+        expected=[(t, n) for t in batch["task_ids"] for n in range(1, batch["trials"] + 1)],
         include_tests=batch["include_tests"],
     )
     for run in summary["runs"]:

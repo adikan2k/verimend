@@ -40,6 +40,7 @@ from verimend.hooks.caps import CapError, estimate_batch_usd, require_batch_caps
 
 RUNNER_IMAGE = "verimend-bench-runner"
 VENV_VOLUME = "verimend-bench-venv"
+HARBOR_VERSION = "0.26.0"  # data-eng-bench's runner; see docs/spikes.md, phase 2 addendum
 AGENT_TIMEOUT_SEC = 1200
 REPO_INSIDE = "/verimend"
 
@@ -106,18 +107,27 @@ def require_source_commit(source: Source, checkout: Path) -> None:
 
 
 def runner_command(
-    *, home: Path, repo: Path, checkout: Path, batch_file: Path, env: Mapping[str, str]
+    *,
+    home: Path,
+    repo: Path,
+    checkout: Path,
+    batch_file: Path,
+    env: Mapping[str, str],
+    runner: str = "ade",
 ) -> list[str]:
     home_inside = docker_path(home)
+    # ADE-bench is installed from its checkout; Harbor from PyPI at the pinned version.
+    harness = "-e ." if runner == "ade" else f"'harbor=={HARBOR_VERSION}'"
     script = "\n".join(
         [
             "set -e",
             f"cd '{docker_path(checkout)}'",
             "uv venv /opt/venv --allow-existing -q",
-            f"uv pip install -q -e . -e {REPO_INSIDE}/verifier -e {REPO_INSIDE}",
-            f"PYTHONPATH={REPO_INSIDE} python -m bench.ade.inner '{docker_path(batch_file)}'",
+            f"uv pip install -q {harness} -e {REPO_INSIDE}/verifier -e {REPO_INSIDE}",
+            f"PYTHONPATH={REPO_INSIDE} python -m bench.{runner}.inner '{docker_path(batch_file)}'",
         ]
     )
+    volume = VENV_VOLUME if runner == "ade" else f"{VENV_VOLUME}-{runner}"
     command = [
         "docker",
         "run",
@@ -129,7 +139,7 @@ def runner_command(
         "-v",
         f"{repo}:{REPO_INSIDE}",
         "-v",
-        f"{VENV_VOLUME}:/opt/venv",
+        f"{volume}:/opt/venv",
     ]
     for key, value in env.items():
         command += ["-e", f"{key}={value}"]
@@ -159,6 +169,9 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
         spec = get_agent(args.agent)
         if not spec.available:
             raise TaskSetError(spec.unavailable_reason)
+        source = get_source(args.source)
+        if spec.name not in source.agents:
+            raise TaskSetError(f"{spec.name} is not wired up for {source.name} yet.")
         set_name = require_set_allowed(args.set_name, env=env, split_exists=SPLIT_MARKER.exists())
         limit, max_usd = require_batch_caps(args.limit, args.max_usd)
         if args.trials < 1:
@@ -166,7 +179,6 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
         settings = load_settings()
         if spec.model_calls:
             settings.require_api_key()
-        source = get_source(args.source)
         home = settings.verimend_home
         checkout = vendor_dir(source, home)
         root = tasks_root(set_name, source, home)
@@ -233,6 +245,7 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
         checkout=checkout,
         batch_file=batch_file,
         env={"DEFAULT_AGENT_TIMEOUT_SEC": str(AGENT_TIMEOUT_SEC)},
+        runner=source.runner,
     )
     code = subprocess.run(command).returncode
     print(f"Results: {results_host}")
