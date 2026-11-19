@@ -1,0 +1,50 @@
+task_id: asana001
+status: ready
+description: Fix a data problem by updating a Fivetran package directly.
+prompts:
+  - key: base
+    prompt: |-
+      We updated the Fivetran Asana package, and now the project is erroring. Fix the issue without updating the underlying data.
+author_name: test
+author_email: test
+difficulty: medium
+tags:
+  - data-hygiene
+  - data-inspection
+  - dbt
+  - dbt-macros
+  - debugging
+  - model-refactor
+
+# Test setup script to run before dbt tests
+test_setup: |-
+  dbt run
+
+# Tables to compare for solution
+solution_seeds:
+  - table_name: asana__task
+    exclude_columns:
+      - days_open
+
+# Variants for different database and project combinations
+variants:
+- db_type: duckdb
+  db_name: asana
+  project_type: dbt
+  project_name: asana
+
+- db_type: snowflake
+  db_name: asana
+  project_type: dbt
+  project_name: asana
+  migration_directory: asana__duckdb_to_snowflake
+
+- db_type: snowflake
+  db_name: asana
+  project_type: dbt-fusion
+  project_name: asana
+  migration_directory: asana__duckdb_to_snowflake_dbtf
+- db_type: duckdb
+  db_name: asana
+  project_type: dbt-fusion
+  project_name: asana

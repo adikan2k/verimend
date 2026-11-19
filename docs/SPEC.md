@@ -49,7 +49,7 @@ failed dbt run (run_results.json, logs, manifest.json)
 sandbox ── git worktree + a copy of the DuckDB file
    │
    ▼
-verimend/agent ── Claude Agent SDK loop, seven tools, hooks
+verimend/agent ── Claude Agent SDK loop, eight tools, hooks
    │   investigate → patch → ask the verifier        (up to 3 attempts)
    ▼
 verifier/ ── separate process, clean rebuild, tamper checks
@@ -71,7 +71,7 @@ Three parts must stay separate, because the project's credibility depends on it:
 ```
 verimend/
   agent/        SDK loop, system prompt, hook wiring (the only code that imports the Agent SDK)
-  tools/        the seven tools as plain Python functions
+  tools/        the eight tools as plain Python functions
   hooks/        guard logic as plain functions, unit-tested without the SDK
   cli.py        verimend fix | verify | replay
   config.py     models, caps, paths, from environment
@@ -99,13 +99,14 @@ Phase 1 also moves `claude-settings.json` from the repo root to `.claude/setting
 
 Built on the Claude Agent SDK for Python. Confirm the exact way to register custom tools, restrict the tool list and attach hooks in the phase 1 spike, and record it in `docs/spikes.md`. Do not write SDK calls from memory.
 
-The agent gets these seven tools and nothing else. The SDK's built-in file and shell tools are switched off for it.
+The agent gets these eight tools and nothing else. The SDK's built-in file and shell tools are switched off for it.
 
 | Tool | Input | Returns | Guard |
 | --- | --- | --- | --- |
 | `read_failure` | none | Failed nodes, error text and the relevant log lines, as a short summary | Read-only |
 | `walk_lineage` | model name, direction, depth | Parents or children from `manifest.json`, with materialisation and path | Read-only |
 | `query_data` | SQL | Up to 50 rows plus row count | Read-only DuckDB connection, one statement, 20 s timeout, SELECT only |
+| `read_file` | path, optional line range | The file's text with line numbers | Read-only; path must be inside the dbt project, `dbt_packages/` included |
 | `inspect_history` | path | The last 5 commits that touched it, with diffs trimmed to 80 lines | Read-only |
 | `edit_model` | path, new content or patch | Confirmation and the resulting diff | Hook: path must be an allowed model, macro or seed file inside the project |
 | `run_dbt` | selector | Pass or fail per node, with error text | Runs only in the sandbox, against the copied database |
@@ -159,7 +160,7 @@ It runs in a separate process, on a fresh worktree and a fresh copy of the datab
 Checks, in order. The first failure stops the run.
 
 1. **Tamper.** The diff touches only allowed paths. No test was removed, loosened, re-tagged or had its severity lowered. Nothing under `verifier/`, `bench/` or CI changed.
-2. **Masking.** The fix does not make the failure disappear without fixing it: no model disabled, no `limit 0`, no always-false filter, no failing node excluded from the build.
+2. **Masking.** The fix does not make the failure disappear without fixing it: no model disabled unless an enabled model of the same name replaces it (overriding a broken package model is a real fix), no `limit 0`, no always-false filter, no failing node excluded from the build.
 3. **Clean rebuild.** `dbt build` passes for the failed node and everything downstream of it.
 4. **No collateral damage.** Models outside the lineage of the changed files have the same row counts and checksums as the last good build.
 
@@ -186,14 +187,14 @@ The results table is the product, so the harness is built before the agent.
 
 | Source | Tasks | Use |
 | --- | --- | --- |
-| Public: the bug-fix tasks in ADE-bench (github.com/dbt-labs/ade-bench) and the fix tasks in data-eng-bench | Count them in phase 1; data-eng-bench has 19 fix tasks | A number other people can compare against, graded by checks we did not write |
+| Public: the bug-fix tasks in ADE-bench (github.com/dbt-labs/ade-bench) and the fix tasks in data-eng-bench | 33: ADE-bench 16 of 18 `debugging` tasks, data-eng-bench 17 of 19 `fix` tasks ([validation.json](../bench/results/validate-2026-11-19/validation.json)) | A number other people can compare against, graded by checks we did not write |
 | Ours: 20 faults injected into the demo pipeline | 20 | The behaviours the public sets do not grade |
 
-Confirm in phase 1 that data-eng-bench runs on DuckDB. If it needs a Snowflake account, use ADE-bench as the only public source. Read both licences before copying any task into this repo.
+Both public sources run on DuckDB with no account (`docs/spikes.md`), and both are Apache-2.0; the split copies their LICENSE next to the tasks. Before the split, every candidate is checked: its reference solution must pass and the do-nothing agent must fail. Four did not, all because the reference fails: `asana002`, `asana005`, `dbt-fix-division-by-zero`, `dbt-fix-marketing-attribution`.
 
 ### The split
 
-`scripts/split_bench.py --seed 1119` splits the public tasks into `bench/dev/` and `bench/heldout/`, stratified by source, about 40% development and 60% held out. Claude Code writes and tests the script on fixtures. Aditya runs it, so Claude Code never sees which tasks were held out.
+`scripts/split_bench.py --seed 1119` splits the public tasks into `bench/dev/` and `bench/heldout/`, stratified by source, about 40% development and 60% held out: 13 and 20 tasks. The tasks in `bench/pinned_dev.json` go to development first, because their prompts reached a model in phase 1. Claude Code writes and tests the script on fixtures. Aditya runs it, so Claude Code never sees which tasks were held out.
 
 Claude Code iterates against `bench/dev/` only. Held-out batches are run by Aditya after the tag `agent-v1` exists.
 
@@ -215,7 +216,7 @@ For the baseline, which has no verifier, "false success" is the agent's own clai
 
 ### Runs to report
 
-1. Plain-agent baseline: same model, the SDK's default file and shell tools inside the sandbox, no VeriMend tools, no verifier. Three trials per task.
+1. Plain-agent baseline: same model, the SDK's default file and shell tools inside the sandbox, no VeriMend tools, no verifier. Three trials per task. It is ADE-bench's own Claude Code agent with caps, a pinned CLI and one verdict line ([decision 0002](decisions/0002-scoring-harness.md)); on data-eng-bench it needs a Harbor adapter, built in phase 3.
 2. VeriMend on Haiku 5.5, three trials per task.
 3. VeriMend on Sonnet 5.5, one trial on eight tasks.
 4. Two ablations on Haiku 5.5, 15 tasks each: without `walk_lineage`, and without the verifier's feedback.
@@ -265,7 +266,7 @@ Each batch also writes `summary.json` with the metrics from section 6. `scripts/
 
 The API budget is the $100 a month in API credits that comes with Aditya's Claude Max plan: about $15 of November's for development and about $33 of December's for the final runs. The rest is headroom. Credits arrive on the plan's billing date and unused ones expire at the end of each cycle.
 
-Measured in the phase 1 pilot ([summary](../bench/results/pilot-2026-11-19/summary.json), details in [`docs/spikes.md`](spikes.md)): **$0.0012 to $0.0105 a run on Haiku 5.5, mean $0.0049**, on three ADE-bench tasks with a draft agent, one attempt and no verifier. Plan on up to $0.03 a run with three attempts. Sonnet 5.5 was not measured; at 20 times Haiku's price per token, expect about $0.10 a run and up to $0.60 with three attempts. The plain-agent baseline is not measured yet; measure it on the development set in phase 2. (The pre-pilot estimates were $0.08 to $0.10 on Haiku and about $1.50 on Sonnet.)
+Measured in the phase 1 pilot ([summary](../bench/results/pilot-2026-11-19/summary.json), details in [`docs/spikes.md`](spikes.md)): **$0.0012 to $0.0105 a run on Haiku 5.5, mean $0.0049**, on three ADE-bench tasks with a draft agent, one attempt and no verifier. Plan on up to $0.03 a run with three attempts. Sonnet 5.5 was not measured; at 20 times Haiku's price per token, expect about $0.10 a run and up to $0.60 with three attempts. The plain-agent baseline, measured on the six ADE-bench development tasks in phase 2 ([summary](../bench/results/dev-baseline-ade-bench-2026-11-19/summary.json)): **$0.0010 to $0.0128 a run on Haiku 5.5, mean $0.0061**, one trial, largest prompt 39,635 tokens. At three trials on the held-out set that is well under $1. (The pre-pilot estimates were $0.08 to $0.10 on Haiku and about $1.50 on Sonnet.)
 
 - `verimend/pricing.py` holds the price table and the date it was checked (last checked 2026-11-19).
 - Haiku 5.5 costs five times as much per token once a prompt passes 100,000 tokens. Keep every prompt under 90,000.
@@ -328,7 +329,7 @@ Create the repo, tooling (`uv`, `ruff`, `pyright`, `pytest`), `scripts/check.py`
 
 ### Phase 3: agent, first version (Mon Nov 23 to Thu Nov 26)
 
-The seven tools, the system prompt and the structured report.
+The eight tools, the system prompt and the structured report.
 
 **Done when** it finishes every development task under its dollar cap and the first results table exists, whatever the score.
 

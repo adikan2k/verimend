@@ -1,0 +1,50 @@
+task_id: analytics_engineering002
+status: ready
+description: Fix a simple syntax error in a single model.
+prompts:
+  - key: base
+    prompt: |-
+      Fix the syntax error in the obt_product_inventory.sql file.
+  - key: medium
+    prompt: |-
+      Fix the error in this dbt project.
+author_name: test
+author_email: test
+difficulty: easy
+tags:
+  - dbt
+  - debugging
+  - model-refactor
+
+# Test setup script to run before dbt tests
+test_setup: |-
+  dbt run --select obt_product_inventory
+
+# Tables to compare for solution
+solution_seeds:
+  - table_name: obt_product_inventory
+
+# Variants for different database and project combinations
+variants:
+- db_type: duckdb
+  db_name: analytics_engineering
+  project_type: dbt
+  project_name: analytics_engineering
+
+- db_type: snowflake
+  db_name: analytics_engineering
+  project_type: dbt
+  project_name: analytics_engineering
+  migration_directory: analytics_engineering__duckdb_to_snowflake
+
+- db_type: snowflake
+  db_name: analytics_engineering
+  project_type: dbt-fusion
+  project_name: analytics_engineering
+  migration_directory: analytics_engineering__duckdb_to_snowflake
+# Disabled: dbt-fusion + duckdb fails to build fact_inventory due to
+# https://github.com/dbt-labs/dbt-fusion/issues/2226 (STRPTIME->DATE cast + window function)
+#- db_type: duckdb
+#  db_name: analytics_engineering
+#  project_type: dbt-fusion
+#  project_name: analytics_engineering

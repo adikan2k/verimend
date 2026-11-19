@@ -1,0 +1,4 @@
+{"event": "run_start", "t": 1795121755.683, "agent": "reference", "model": null, "git_sha": "72b2eae", "source": "data-eng-bench", "source_commit": "74d4bcd4192e1959754f683841f9f602b8bc86e1", "task": "dbt-customer-ltv-fix", "trial": 1, "caps": {"max_usd": null, "max_steps": 40, "max_attempts": 1}, "tools_offered": null}
+{"event": "report", "t": 1795121755.683, "claim": "fixed", "text": null}
+{"event": "grade", "t": 1795121755.683, "grader": "data-eng-bench", "passed": true, "failure_mode": "none", "tests": {"reward": "1.0"}, "expected_test_count": null}
+{"event": "run_end", "t": 1795121774.983, "claim": "fixed", "grader_passed": true, "outcome": "true_fix", "dollars": 0.0, "cost_source": "no_model_calls", "seconds": 19.3, "steps": null, "tool_calls": null, "hook_blocks": 0, "largest_prompt_tokens": null, "stopped": null, "model_usage": null}

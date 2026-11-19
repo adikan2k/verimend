@@ -54,3 +54,16 @@ def test_verifier_never_imports_verimend_or_the_sdk() -> None:
 
 def test_only_the_agent_package_imports_the_sdk() -> None:
     assert violations(REPO / "verimend", {SDK}, skip=("agent/",)) == []
+
+
+def test_the_harness_never_imports_the_sdk() -> None:
+    # Named folders only: walking bench/ would list bench/heldout/ (CLAUDE.md rule 2).
+    for folder in (REPO / "bench", REPO / "bench" / "ade"):
+        files = sorted(folder.glob("*.py"))
+        assert files, f"no Python files in {folder}"
+        bad = [
+            f"{p.name} imports {SDK}"
+            for p in files
+            if SDK in imported_modules(p.read_text("utf-8"))
+        ]
+        assert bad == []

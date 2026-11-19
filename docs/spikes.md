@@ -180,10 +180,30 @@ What the pilot does not show: three tasks and one trial each are not a fix rate.
 
 - **Haiku 5.5:** measured $0.0012 to $0.0105 a run, mean $0.0049. With three attempts, a run that fails twice would cost about three times as much, so plan on **up to $0.03 a run**.
 - **Sonnet 5.5:** not measured. It costs 20 times as much per token as Haiku with no long-prompt tier, so by extrapolation expect **about $0.10 a run, up to $0.60 with three attempts**.
-- **The full plan for December** (SPEC §6): VeriMend on Haiku at three trials, plus the two ablations on 15 tasks, comes to about 100 runs, or $3 at $0.03 a run. Sonnet on eight tasks is under $5. The plain-agent baseline is **not measured**: it reads files through the SDK's own tools, so its prompts will be larger. Measure it on the development set in phase 2 before trusting the total. Even at ten times VeriMend's cost it stays inside the $33 set aside.
+- **The full plan for December** (SPEC §6): VeriMend on Haiku at three trials, plus the two ablations on 15 tasks, comes to about 100 runs, or $3 at $0.03 a run. Sonnet on eight tasks is under $5. The plain-agent baseline is **not measured**: it reads files through the SDK's own tools, so its prompts will be larger. Measure it on the development set in phase 2 before trusting the total. Even at ten times VeriMend's cost it stays inside the $33 set aside. *Measured in phase 2: $0.0061 a run on average, max $0.0128, on six ADE-bench dev tasks ([summary](../bench/results/dev-baseline-ade-bench-2026-11-19/summary.json)).*
 
 ## Open risks
 
-- **DuckDB versions differ.** The host has duckdb 2.0.0 (pulled in by dbt-duckdb 1.9.6); ADE-bench's image has 1.3.0. A database file written by 2.0 may not open in 1.3. Phase 2 should either pin `duckdb` on the host to the image's version, or keep every write to a benchmark database inside the task container, as the pilot does.
+- **DuckDB versions differ.** The host has duckdb 2.0.0 (pulled in by dbt-duckdb 1.9.6); ADE-bench's image has 1.3.0. A database file written by 2.0 may not open in 1.3. Phase 2 should either pin `duckdb` on the host to the image's version, or keep every write to a benchmark database inside the task container, as the pilot does. *Phase 2 kept every write inside the containers and left the host unpinned. Still open for phase 4: the verifier's fresh database copy must be written by the same DuckDB version that will read it.*
 - **ADE-bench tasks are prompts, not failed runs.** The harness hands the agent the task's prompt, and some fix-style tasks start from a project that builds cleanly. `read_failure` needs a fallback for "nothing fails, but the prompt says what is wrong".
-- **The spec's seven tools have no way to read a file.** The pilot needed `read_path` to see the model it was about to edit; `edit_model` alone would mean editing blind. Phase 3 needs a decision: add a read tool, or have `walk_lineage` return file content.
+- **The spec's seven tools have no way to read a file.** The pilot needed `read_path` to see the model it was about to edit; `edit_model` alone would mean editing blind. Phase 3 needs a decision: add a read tool, or have `walk_lineage` return file content. *Decided by Aditya on 2026-11-19: an eighth tool, `read_file` (SPEC §4). The masking check now allows a disabled model when an enabled model of the same name replaces it (SPEC §5), so `asana001`'s fix passes.*
+
+## Phase 2 addendum: data-eng-bench runs on DuckDB
+
+Checked on 2026-11-19 at data-eng-bench commit `74d4bcd`, with Harbor 0.26.0 and no model calls.
+
+| Step | Result |
+| --- | --- |
+| Setup | `git lfs pull` for `base-image/database/retail.duckdb` (489 MB), then `docker build base-image/ -t ghcr.io/snowflake-labs/data-eng-bench-base:1.0.0`. Harbor lives in its own venv, outside the repo. |
+| Harbor natively on Windows | **Fails.** `invalid mount path: ':' mount path must be absolute`. |
+| Harbor in the Linux runner | **Fails the same way.** So this is not a Windows problem. |
+| Cause | The tasks' `docker-compose.yaml` mounts `${HOST_VERIFIER_LOGS_PATH}:${ENV_VERIFIER_LOGS_PATH}`. Harbor 0.26 sets these only when it bind-mounts its log folders, which it no longer does by default (it copies files instead). |
+| Fix | `--ek auto_mounting=true`, Harbor's own switch for bind mounts. With it, every trial runs. |
+| Oracle (reference solution), 19 fix tasks | **17 pass** (reward 1.0). `dbt-fix-division-by-zero` and `dbt-fix-marketing-attribution` score 0.0 with their own reference solution. For the first, dbt on DuckDB rejects the solution's SQL with a GROUP BY error. Both are excluded by the task check. |
+| `nop` (do nothing), same 19 | **0 pass**: reward 0.0 on every task. |
+
+How data-eng-bench grades: a hidden `pytest` verifier compares the built tables row by row against the reference and writes a reward between 0 and 1. `bench/grade.py` counts a trial as passed only at 1.0.
+
+`bench.run --source data-eng-bench` drives Harbor for the `none` and `reference` agents (`bench/harbor/inner.py`). The baseline and VeriMend on Harbor come in phase 3. `dbt-fix-division-by-zero` was the one task opened for this check. It is excluded, so `bench/pinned_dev.json` pins no data-eng-bench task.
+
+Harbor's DuckDB image pins different versions from ADE-bench's: dbt-duckdb 1.10.0 and duckdb 1.2.2. Each benchmark's database is only ever written inside its own containers.

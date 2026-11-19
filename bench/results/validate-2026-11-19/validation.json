@@ -1,0 +1,273 @@
+{
+  "sources": {
+    "ade-bench": {
+      "commit": "c305600ebf17e7e7c4550bd401b6ddb530beb7c8",
+      "candidates": [
+        {
+          "task_id": "airbnb001",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "airbnb002",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "airbnb008",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "airbnb009",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "airbnb011",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "airbnb013",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "analytics_engineering002",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "analytics_engineering005",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "analytics_engineering007",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "asana001",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "asana002",
+          "reference": false,
+          "none": false,
+          "included": false,
+          "excluded_reason": "reference solution fails"
+        },
+        {
+          "task_id": "asana005",
+          "reference": false,
+          "none": false,
+          "included": false,
+          "excluded_reason": "reference solution fails"
+        },
+        {
+          "task_id": "f1001",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "f1004",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "f1005",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "f1006",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "f1007",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "quickbooks001",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        }
+      ]
+    },
+    "data-eng-bench": {
+      "commit": "74d4bcd4192e1959754f683841f9f602b8bc86e1",
+      "candidates": [
+        {
+          "task_id": "dbt-customer-ltv-fix",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-cac-payback-waterfall",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-category-revenue",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-customer-churn",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-customer-ltv",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-customer-snapshot-and-build-dimension",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-daily-cohorts",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-daily-revenue",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-division-by-zero",
+          "reference": false,
+          "none": false,
+          "included": false,
+          "excluded_reason": "reference solution fails"
+        },
+        {
+          "task_id": "dbt-fix-email-attribution",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-inventory-balance",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-inventory-model",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-marketing-attribution",
+          "reference": false,
+          "none": false,
+          "included": false,
+          "excluded_reason": "reference solution fails"
+        },
+        {
+          "task_id": "dbt-fix-multi-touch-attribution",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-paid-search-attribution",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-product-metrics",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-refund-reconciliation",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-repeat-purchase-cohort-revenue",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        },
+        {
+          "task_id": "dbt-fix-timezone-sales",
+          "reference": true,
+          "none": false,
+          "included": true,
+          "excluded_reason": null
+        }
+      ]
+    }
+  }
+}
