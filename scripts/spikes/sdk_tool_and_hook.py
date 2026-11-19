@@ -13,6 +13,7 @@ import argparse
 import asyncio
 import json
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -21,6 +22,7 @@ from claude_agent_sdk import (
     ClaudeAgentOptions,
     ClaudeSDKClient,
     HookMatcher,
+    ResultError,
     ResultMessage,
     SystemMessage,
     TextBlock,
@@ -95,7 +97,26 @@ def to_usage(raw: dict[str, Any]) -> Usage:
     )
 
 
-def build_options(model: str, api_key: str, max_usd: float, cwd: Path) -> ClaudeAgentOptions:
+# Asks whether this repo's CLAUDE.md reached the model. Run with --cwd repo, once with
+# --settings none (our setting) and once with --settings project as the control.
+CONTEXT_PROMPT = (
+    "Without calling any tool: is there any project instruction file (such as CLAUDE.md) "
+    "or text mentioning 'VeriMend' anywhere in your context? Answer YES or NO, and if YES "
+    "quote its first heading."
+)
+
+
+@dataclass(frozen=True)
+class Variant:
+    prompt: str = PROMPT
+    max_turns: int = 6
+    cwd_repo: bool = False
+    project_settings: bool = False
+
+
+def build_options(
+    model: str, api_key: str, max_usd: float, cwd: Path, variant: Variant
+) -> ClaudeAgentOptions:
     server = create_sdk_mcp_server(name=SERVER, version="0.0.1", tools=[edit_model])
     return ClaudeAgentOptions(
         model=model,
@@ -104,34 +125,59 @@ def build_options(model: str, api_key: str, max_usd: float, cwd: Path) -> Claude
         mcp_servers={SERVER: server},
         allowed_tools=[TOOL],
         permission_mode="dontAsk",  # anything not pre-approved is denied, never prompted
-        setting_sources=[],  # do not load user, project or local Claude settings
+        # [] = load no user, project or local Claude settings. ["project"] is the control.
+        setting_sources=["project"] if variant.project_settings else [],
         hooks={"PreToolUse": [HookMatcher(matcher=TOOL, hooks=[guard_edit_path])]},
-        max_turns=6,
+        max_turns=variant.max_turns,
         max_budget_usd=max_usd,
         env={"ANTHROPIC_API_KEY": api_key},
-        cwd=cwd,
+        cwd=REPO_ROOT if variant.cwd_repo else cwd,
     )
 
 
-async def stream(mode: str, options: ClaudeAgentOptions):
+async def stream(mode: str, prompt: str, options: ClaudeAgentOptions):
     if mode == "query":
-        async for message in query(prompt=PROMPT, options=options):
+        async for message in query(prompt=prompt, options=options):
             yield message
     else:
         async with ClaudeSDKClient(options=options) as client:
-            await client.query(PROMPT)
+            await client.query(prompt)
             async for message in client.receive_response():
                 yield message
 
 
-async def run(mode: str, model: str, api_key: str, max_usd: float) -> dict[str, Any]:
+async def guarded(source: Any, events: list[dict[str, Any]]):
+    """Pass messages through; record the ResultError a cap raises instead of crashing.
+
+    Hitting max_turns or max_budget_usd makes the SDK raise ResultError after the stream.
+    Whether the error ResultMessage was yielded first shows up in the transcript.
+    """
+    try:
+        async for message in source:
+            yield message
+    except ResultError as error:
+        data = error.data or {}
+        events.append(
+            {
+                "event": "result_error",
+                "message": str(error),
+                "subtype": data.get("subtype"),
+                "total_cost_usd": data.get("total_cost_usd"),
+                "num_turns": data.get("num_turns"),
+            }
+        )
+
+
+async def run(
+    mode: str, model: str, api_key: str, max_usd: float, variant: Variant
+) -> dict[str, Any]:
     events: list[dict[str, Any]] = []
     usage_by_message: dict[str, dict[str, Any]] = {}
     result: dict[str, Any] = {}
 
     with tempfile.TemporaryDirectory(prefix="verimend-spike1-") as scratch:
-        options = build_options(model, api_key, max_usd, Path(scratch))
-        async for message in stream(mode, options):
+        options = build_options(model, api_key, max_usd, Path(scratch), variant)
+        async for message in guarded(stream(mode, variant.prompt, options), events):
             if isinstance(message, SystemMessage) and message.subtype == "init":
                 keys = ("apiKeySource", "model", "permissionMode", "tools", "claude_code_version")
                 init = {key: message.data.get(key) for key in keys}
@@ -167,16 +213,22 @@ async def run(mode: str, model: str, api_key: str, max_usd: float) -> dict[str, 
                     "usage": message.usage,
                     "model_usage": message.model_usage,
                     "permission_denials": message.permission_denials,
+                    "stop_reason": message.stop_reason,
+                    "terminal_reason": message.terminal_reason,
+                    "errors": message.errors,
                 }
 
-    requests = [to_usage(raw) for raw in usage_by_message.values()]
+    # Run 1 showed AssistantMessage.usage has non-final output tokens, so cost is computed
+    # from the run-level usage. The per-message records stay for prompt sizes.
+    run_usage = to_usage(result.get("usage") or {})
     return {
         "mode": mode,
         "model": model,
+        "variant": variant.__dict__ | {"prompt": variant.prompt[:80]},
         "events": events,
         "hook_blocks": blocked,
         "per_message_usage": list(usage_by_message.values()),
-        "our_cost_usd": sum(request_cost_usd(model, usage) for usage in requests),
+        "our_cost_usd": request_cost_usd(model, run_usage),
         "result": result,
     }
 
@@ -186,20 +238,32 @@ def main() -> None:
     parser.add_argument("--max-usd", type=float, required=True, help="dollar cap for this call")
     parser.add_argument("--mode", choices=["query", "client"], default="query")
     parser.add_argument("--label", default="1", help="suffix for the transcript file name")
+    parser.add_argument("--max-turns", type=int, default=6)
+    parser.add_argument("--prompt", choices=["steps", "context"], default="steps")
+    parser.add_argument("--cwd", choices=["scratch", "repo"], default="scratch")
+    parser.add_argument("--settings", choices=["none", "project"], default="none")
     args = parser.parse_args()
     if not 0 < args.max_usd <= 0.10:
         parser.error("--max-usd must be above 0 and at most 0.10 for this spike")
+    variant = Variant(
+        prompt=CONTEXT_PROMPT if args.prompt == "context" else PROMPT,
+        max_turns=args.max_turns,
+        cwd_repo=args.cwd == "repo",
+        project_settings=args.settings == "project",
+    )
 
     settings = load_settings()
     api_key = settings.require_api_key()
     model = settings.model_default
-    print(f"Spike 1: one call to {model}, mode={args.mode}, cap ${args.max_usd:.2f}", flush=True)
+    print(f"Spike 1: one call to {model}, mode={args.mode}, cap ${args.max_usd}", flush=True)
 
-    record = asyncio.run(run(args.mode, model, api_key, args.max_usd))
+    record = asyncio.run(run(args.mode, model, api_key, args.max_usd, variant))
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out = OUT_DIR / f"sdk_tool_and_hook.{args.mode}.{args.label}.json"
-    text = json.dumps(record, indent=2, default=str).replace(str(Path.home()), "~")
+    text = json.dumps(record, indent=2, default=str)
+    for home in (str(Path.home()), json.dumps(str(Path.home()))[1:-1], Path.home().as_posix()):
+        text = text.replace(home, "~")
     out.write_text(text + "\n", encoding="utf-8")
 
     for event in record["events"]:
