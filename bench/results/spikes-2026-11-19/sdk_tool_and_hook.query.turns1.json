@@ -1,0 +1,163 @@
+{
+  "mode": "query",
+  "model": "claude-haiku-5-5",
+  "variant": {
+    "prompt": "Do these steps in order, then stop.\n1. Call edit_model with path 'models/staging",
+    "max_turns": 1,
+    "cwd_repo": false,
+    "project_settings": false
+  },
+  "events": [
+    {
+      "event": "init",
+      "apiKeySource": "ANTHROPIC_API_KEY",
+      "model": "claude-haiku-5-5",
+      "permissionMode": "dontAsk",
+      "tools": [
+        "mcp__verimend__edit_model"
+      ],
+      "claude_code_version": "2.1.328",
+      "mcp_servers": [
+        {
+          "name": "verimend",
+          "status": "connected",
+          "source": "sdk"
+        }
+      ]
+    },
+    {
+      "event": "tool_use",
+      "name": "mcp__verimend__edit_model",
+      "input": {
+        "path": "models/staging/stg_orders.sql",
+        "content": "select 1 as id"
+      }
+    },
+    {
+      "event": "tool_result",
+      "is_error": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "Wrote 14 characters to models/staging/stg_orders.sql (spike: nothing saved)."
+        }
+      ]
+    },
+    {
+      "event": "tool_use",
+      "name": "mcp__verimend__edit_model",
+      "input": {
+        "path": "tests/assert_positive_amount.sql",
+        "content": "select 1 where false"
+      }
+    },
+    {
+      "event": "tool_result",
+      "is_error": true,
+      "content": "PreToolUse:mcp__verimend__edit_model hook error: edit_model may only touch files under models/; refused 'tests/assert_positive_amount.sql'"
+    },
+    {
+      "event": "result_error",
+      "message": "Claude Code returned an error result: Reached maximum number of turns (1) (exit code: 1)",
+      "subtype": "error_max_turns",
+      "total_cost_usd": 0.00015450499999999999,
+      "num_turns": 2
+    }
+  ],
+  "hook_blocks": [
+    {
+      "tool": "mcp__verimend__edit_model",
+      "reason": "edit_model may only touch files under models/; refused 'tests/assert_positive_amount.sql'"
+    }
+  ],
+  "per_message_usage": [
+    {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 433,
+      "cache_read_input_tokens": 718,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 433,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 24,
+      "service_tier": "standard",
+      "inference_geo": "global",
+      "speed": "standard"
+    }
+  ],
+  "our_cost_usd": 0.00015450499999999999,
+  "result": {
+    "subtype": "error_max_turns",
+    "is_error": true,
+    "num_turns": 2,
+    "duration_ms": 1245,
+    "total_cost_usd": 0.00015450499999999999,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 433,
+      "cache_read_input_tokens": 718,
+      "output_tokens": 186,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 433
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 186,
+          "cache_read_input_tokens": 718,
+          "cache_creation_input_tokens": 433,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 433,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "model_usage": {
+      "claude-haiku-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 186,
+        "cacheReadInputTokens": 718,
+        "cacheCreationInputTokens": 433,
+        "webSearchRequests": 0,
+        "costUSD": 0.00015450499999999999,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 433,
+        "cacheCreationEphemeral1hInputTokens": 0,
+        "canonicalModel": "claude-haiku-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [
+      {
+        "tool_name": "mcp__verimend__edit_model",
+        "tool_use_id": "toolu_01MZ7XSnNvU7XAFnHzV4wtHG",
+        "tool_input": {
+          "path": "tests/assert_positive_amount.sql",
+          "content": "select 1 where false"
+        }
+      }
+    ],
+    "stop_reason": "tool_use",
+    "terminal_reason": "max_turns",
+    "errors": [
+      "Reached maximum number of turns (1)"
+    ]
+  }
+}

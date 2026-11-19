@@ -1,0 +1,113 @@
+{
+  "mode": "query",
+  "model": "claude-haiku-5-5",
+  "variant": {
+    "prompt": "Without calling any tool: is there any project instruction file (such as CLAUDE.",
+    "max_turns": 6,
+    "cwd_repo": true,
+    "project_settings": true
+  },
+  "events": [
+    {
+      "event": "init",
+      "apiKeySource": "ANTHROPIC_API_KEY",
+      "model": "claude-haiku-5-5",
+      "permissionMode": "dontAsk",
+      "tools": [
+        "mcp__verimend__edit_model"
+      ],
+      "claude_code_version": "2.1.328",
+      "mcp_servers": [
+        {
+          "name": "verimend",
+          "status": "connected",
+          "source": "sdk"
+        }
+      ]
+    },
+    {
+      "event": "text",
+      "text": "YES\n\nThe project instruction file is CLAUDE.md (contents shown above), and its first heading is \"# VeriMend\"."
+    }
+  ],
+  "hook_blocks": [],
+  "per_message_usage": [
+    {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2638,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 2638,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 1,
+      "service_tier": "standard",
+      "inference_geo": "global",
+      "speed": "standard"
+    }
+  ],
+  "our_cost_usd": 0.00035045,
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "num_turns": 1,
+    "duration_ms": 1018,
+    "total_cost_usd": 0.00035045000000000003,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2638,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 41,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 2638
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 41,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 2638,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 2638,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "model_usage": {
+      "claude-haiku-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 41,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 2638,
+        "webSearchRequests": 0,
+        "costUSD": 0.00035045000000000003,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 2638,
+        "cacheCreationEphemeral1hInputTokens": 0,
+        "canonicalModel": "claude-haiku-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "stop_reason": "end_turn",
+    "terminal_reason": "completed",
+    "errors": null
+  }
+}

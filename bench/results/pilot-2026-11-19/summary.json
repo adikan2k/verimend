@@ -1,0 +1,74 @@
+{
+  "batch": "pilot-2026-11-19",
+  "model": "claude-haiku-5-5",
+  "ade_run_id": "pilot-2026-11-19__10-13-26",
+  "git_sha": "afe10ef",
+  "runs": [
+    {
+      "task": "analytics_engineering002",
+      "trace": "analytics_engineering002/1.jsonl",
+      "passed": true,
+      "claimed": [
+        "FIXED."
+      ],
+      "dollars": 0.0012109249999999998,
+      "seconds": 13.3,
+      "steps": 7,
+      "tool_calls": 6,
+      "hook_blocks": 0,
+      "tokens": {
+        "input": 10,
+        "output": 1049,
+        "cache_read": 8935,
+        "cache_write": 3719
+      },
+      "largest_prompt_tokens": 3721,
+      "stopped": "success"
+    },
+    {
+      "task": "asana001",
+      "trace": "asana001/1.jsonl",
+      "passed": true,
+      "claimed": [
+        "FIXED."
+      ],
+      "dollars": 0.010463614999999999,
+      "seconds": 63.9,
+      "steps": 31,
+      "tool_calls": 29,
+      "hook_blocks": 1,
+      "tokens": {
+        "input": 32,
+        "output": 11753,
+        "cache_read": 160184,
+        "cache_write": 22799
+      },
+      "largest_prompt_tokens": 23886,
+      "stopped": "success"
+    },
+    {
+      "task": "f1007",
+      "trace": "f1007/1.jsonl",
+      "passed": true,
+      "claimed": [
+        "FIXED:"
+      ],
+      "dollars": 0.0029688450000000003,
+      "seconds": 24.8,
+      "steps": 17,
+      "tool_calls": 16,
+      "hook_blocks": 0,
+      "tokens": {
+        "input": 24,
+        "output": 2921,
+        "cache_read": 54897,
+        "cache_write": 6619
+      },
+      "largest_prompt_tokens": 7706,
+      "stopped": "success"
+    }
+  ],
+  "total_dollars": 0.014643384999999998,
+  "mean_dollars_per_run": 0.0048811283333333325,
+  "passed": 3
+}
