@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from verimend.config import ConfigError, Settings
+from verimend.config import REPO_ROOT, ConfigError, Settings
 
 
 def bare(**overrides: object) -> Settings:
@@ -55,9 +55,16 @@ def test_a_zero_dollar_cap_is_rejected() -> None:
         bare(max_usd_per_run=0)
 
 
-def test_sandboxes_live_outside_the_repository(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+def test_sandboxes_live_in_the_home_folder_outside_the_repository(
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.delenv("VERIMEND_HOME", raising=False)
-    monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
-    assert bare().verimend_home == tmp_path / "verimend"
+    home = bare().verimend_home
+    assert home == Path.home() / ".verimend"
+    assert REPO_ROOT not in home.parents
+    assert "AppData" not in home.parts
+
+
+def test_sandbox_folder_can_be_overridden(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("VERIMEND_HOME", str(tmp_path))
+    assert bare().verimend_home == tmp_path

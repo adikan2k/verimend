@@ -4,7 +4,6 @@ This is the only place model names and spend caps have defaults. The API key is 
 secret, never printed, and handed to the Agent SDK explicitly by the caller.
 """
 
-import os
 from pathlib import Path
 
 from pydantic import Field, SecretStr
@@ -18,15 +17,16 @@ class ConfigError(RuntimeError):
 
 
 def default_home() -> Path:
-    """Where sandboxes, database copies and benchmark checkouts live.
+    """Where sandboxes, database copies and benchmark checkouts live: ~/.verimend.
 
     Kept outside the repository on purpose, so a synced folder such as OneDrive never
     locks or re-uploads worktrees and DuckDB files.
+
+    Not %LOCALAPPDATA%: Windows redirects a packaged app's AppData writes into the app's
+    own package folder (the Claude desktop app is one), so the same path would point at
+    different folders for Claude Code, for a terminal and for Docker.
     """
-    local_app_data = os.environ.get("LOCALAPPDATA")
-    if local_app_data:
-        return Path(local_app_data) / "verimend"
-    return Path.home() / ".local" / "share" / "verimend"
+    return Path.home() / ".verimend"
 
 
 class Settings(BaseSettings):
