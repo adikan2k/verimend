@@ -186,14 +186,14 @@ The results table is the product, so the harness is built before the agent.
 
 | Source | Tasks | Use |
 | --- | --- | --- |
-| Public: the bug-fix tasks in ADE-bench (github.com/dbt-labs/ade-bench) and the fix tasks in data-eng-bench | Count them in phase 1; data-eng-bench has 19 fix tasks | A number other people can compare against, graded by checks we did not write |
+| Public: the bug-fix tasks in ADE-bench (github.com/dbt-labs/ade-bench) and the fix tasks in data-eng-bench | 33: ADE-bench 16 of 18 `debugging` tasks, data-eng-bench 17 of 19 `fix` tasks ([validation.json](../bench/results/validate-2026-11-19/validation.json)) | A number other people can compare against, graded by checks we did not write |
 | Ours: 20 faults injected into the demo pipeline | 20 | The behaviours the public sets do not grade |
 
-Confirm in phase 1 that data-eng-bench runs on DuckDB. If it needs a Snowflake account, use ADE-bench as the only public source. Read both licences before copying any task into this repo.
+Both public sources run on DuckDB with no account (`docs/spikes.md`), and both are Apache-2.0; the split copies their LICENSE next to the tasks. Before the split, every candidate is checked: its reference solution must pass and the do-nothing agent must fail. Four did not, all because the reference fails: `asana002`, `asana005`, `dbt-fix-division-by-zero`, `dbt-fix-marketing-attribution`.
 
 ### The split
 
-`scripts/split_bench.py --seed 1119` splits the public tasks into `bench/dev/` and `bench/heldout/`, stratified by source, about 40% development and 60% held out. Claude Code writes and tests the script on fixtures. Aditya runs it, so Claude Code never sees which tasks were held out.
+`scripts/split_bench.py --seed 1119` splits the public tasks into `bench/dev/` and `bench/heldout/`, stratified by source, about 40% development and 60% held out: 13 and 20 tasks. The tasks in `bench/pinned_dev.json` go to development first, because their prompts reached a model in phase 1. Claude Code writes and tests the script on fixtures. Aditya runs it, so Claude Code never sees which tasks were held out.
 
 Claude Code iterates against `bench/dev/` only. Held-out batches are run by Aditya after the tag `agent-v1` exists.
 
