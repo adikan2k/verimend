@@ -263,9 +263,11 @@ Each batch also writes `summary.json` with the metrics from section 6. `scripts/
 
 ## 9. Cost guardrails
 
-The API budget is the $100 a month in API credits that comes with Aditya's Claude Max plan: about $15 of November's for development and about $33 of December's for the final runs. The rest is headroom. Credits arrive on the plan's billing date and unused ones expire at the end of each cycle. Estimates are $0.08 to $0.10 a run on Haiku 5.5 and about $1.50 on Sonnet 5.5. The phase 1 pilot replaces these with measured numbers.
+The API budget is the $100 a month in API credits that comes with Aditya's Claude Max plan: about $15 of November's for development and about $33 of December's for the final runs. The rest is headroom. Credits arrive on the plan's billing date and unused ones expire at the end of each cycle.
 
-- `verimend/pricing.py` holds the price table and the date it was checked. Check it against the Anthropic pricing page in phase 1.
+Measured in the phase 1 pilot ([summary](../bench/results/pilot-2026-11-19/summary.json), details in [`docs/spikes.md`](spikes.md)): **$0.0012 to $0.0105 a run on Haiku 5.5, mean $0.0049**, on three ADE-bench tasks with a draft agent, one attempt and no verifier. Plan on up to $0.03 a run with three attempts. Sonnet 5.5 was not measured; at 20 times Haiku's price per token, expect about $0.10 a run and up to $0.60 with three attempts. The plain-agent baseline is not measured yet; measure it on the development set in phase 2. (The pre-pilot estimates were $0.08 to $0.10 on Haiku and about $1.50 on Sonnet.)
+
+- `verimend/pricing.py` holds the price table and the date it was checked (last checked 2026-11-19).
 - Haiku 5.5 costs five times as much per token once a prompt passes 100,000 tokens. Keep every prompt under 90,000.
 - Keep the system prompt and tool definitions byte-identical across runs so prompt caching applies.
 - Every run has `--max-usd`. Every batch has `--limit` and its own `--max-usd`. The harness prints the estimate, then runs.

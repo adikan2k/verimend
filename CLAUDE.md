@@ -23,6 +23,9 @@ Phase 1 creates these. If one changes, update this list in the same commit.
 - Verify any diff, no agent involved: `uv run verimend verify --project-dir demo/jaffle_shop --diff fix.diff`
 - Benchmark, development set only: `uv run python -m bench.run --agent verimend --set dev --limit 5 --max-usd 2`
 - Site: `pnpm -C site dev`, `pnpm -C site lint`, `pnpm -C site typecheck`, `pnpm -C site test`
+- One ADE-bench task through its own harness, no model calls (Linux runner, Docker Desktop): `powershell -File scripts/spikes/ade_run.ps1 <task>.base sage` (or `none`)
+
+Sandboxes, database copies and benchmark checkouts live in `~/.verimend`, never under AppData (see `docs/spikes.md`).
 
 ## Environment
 
