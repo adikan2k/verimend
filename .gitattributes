@@ -1,0 +1,5 @@
+# LF everywhere, so prompts, diffs and traces are byte-identical on every machine.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.duckdb binary

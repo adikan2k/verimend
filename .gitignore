@@ -1,0 +1,32 @@
+# Secrets
+.env
+.env.local
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/
+.pyright/
+*.egg-info/
+dist/
+build/
+
+# Node / site
+node_modules/
+.next/
+out/
+
+# dbt and DuckDB
+*.duckdb
+*.duckdb.wal
+target/
+dbt_packages/
+logs/
+
+# Editors and OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

@@ -1,0 +1,51 @@
+# VeriMend
+
+An agent that diagnoses a failed dbt run, proposes a fix on a branch, and lets a separate verifier decide whether the fix worked.
+
+- What to build, phase by phase: `docs/SPEC.md`
+- How the replay site must look and move: `docs/DESIGN.md`
+- What the phase 1 spikes found (real SDK calls, benchmark setup, measured cost per run): `docs/spikes.md`. Never guess an Agent SDK signature; use what that file records.
+
+The name is "VeriMend" in prose and `verimend` in code, package names and commands.
+
+## Layout
+
+`verimend/` agent, tools, hooks, CLI · `verifier/` the independent verifier, its own package · `bench/` harness, `dev/` tasks, `heldout/` tasks (off-limits), `faults/` our fault suite, `results/` traces and scores · `action/` the GitHub Action · `site/` Next.js replay site · `demo/` sample dbt project · `scripts/` one-off tools · `docs/` spec, design, spikes, decisions
+
+## Commands
+
+Phase 1 creates these. If one changes, update this list in the same commit.
+
+- All checks (lint, types, tests, Python and site): `uv run python scripts/check.py`
+- Python tests: `uv run pytest` · one file: `uv run pytest verifier/tests/test_tamper.py`
+- Python lint and types: `uv run ruff check .` and `uv run pyright`
+- Fix a failed dbt project: `uv run verimend fix --project-dir demo/jaffle_shop --max-usd 0.25`
+- Verify any diff, no agent involved: `uv run verimend verify --project-dir demo/jaffle_shop --diff fix.diff`
+- Benchmark, development set only: `uv run python -m bench.run --agent verimend --set dev --limit 5 --max-usd 2`
+- Site: `pnpm -C site dev`, `pnpm -C site lint`, `pnpm -C site typecheck`, `pnpm -C site test`
+
+## Environment
+
+Variables are listed in `.env.example`. Never read `.env`. The API key lives only in `.env`: never set `ANTHROPIC_API_KEY` as a system environment variable, because Claude Code would then bill the key instead of the Max plan. The API key, model names and spend caps come from environment variables or `verimend/config.py`, never from code.
+
+## Rules
+
+1. No paid model call runs in a loop without `--limit` and `--max-usd`. The harness prints an estimated cost before it starts and stops when the cap is reached.
+2. Never read, list or edit `bench/heldout/`, with any tool, including shell commands. Aditya runs held-out batches himself.
+3. Never weaken, skip or delete a verifier check or a hidden check to make a run pass. If a check looks wrong, stop and say so.
+4. Every guard ships with a test that proves it blocks what it should.
+5. `verifier/` never imports from `verimend/`. The tools in `verimend/tools/` never import the Agent SDK; only `verimend/agent/` does.
+6. Model names live only in config: `claude-haiku-5-5` by default, `claude-sonnet-5-5` for the comparison run.
+7. Keep every prompt under 100,000 tokens. Cap and summarise tool output before it reaches the model.
+8. Every number in the README or on the site comes from a file under `bench/results/` and links to it.
+9. The agent opens pull requests. Nothing merges itself and nothing pushes to a default branch.
+10. Ask before adding a dependency.
+11. The site uses only the tokens in `docs/DESIGN.md`. A new token goes into that file first.
+
+## How we work
+
+- Start each phase in plan mode against `docs/SPEC.md`. No code until the plan is approved.
+- Small slices, one commit each, on a feature branch.
+- Before calling something done, show evidence: the command you ran and its output, a trace of a real run, or a screenshot at 375, 1280 and 1600 px for site work.
+- After each phase, draft `docs/decisions/NNNN-<topic>.md` (what was chosen, what was rejected, why) for Aditya to rewrite in his own words.
+- Once the tag `agent-v1` exists, any change to prompts, tools or hooks gets its own decision note, because it changes what the published numbers mean.

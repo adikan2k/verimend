@@ -1,0 +1,369 @@
+# VeriMend: build spec
+
+VeriMend is an open-source agent that diagnoses a failed dbt run, proposes a fix on a branch, and lets a separate verifier decide whether the fix worked. It ships as a command-line tool, a GitHub Action, a published results table and a site that replays real runs.
+
+This file is what Claude Code builds against. Each phase has a scope and a "done when" line. A phase is not done until its "done when" is true and you have seen the evidence.
+
+Dates: phase 1 on Thu Nov 19, phase 2 Nov 20 to 22, phase 3 Nov 23 to 26, phase 4 Nov 27 to 29, phase 5 Nov 30 to Dec 2, phase 6 Dec 3 to 4, phase 7 Dec 5 to 7, phase 8 Dec 8 to 9. Dec 10 and 11 are spare.
+
+---
+
+## 1. Product
+
+**For whom.** Data teams on dbt Core who have no budget for an observability suite, and engineers who want to see an agent that is checked by something it cannot influence.
+
+**What it does**
+
+1. Reads a failed dbt run and works out why it failed.
+2. Proposes a fix on a working branch, or decides the failure should not be patched.
+3. Hands the result to a verifier it cannot read or edit. The verifier decides the outcome.
+4. Opens a pull request with the root cause, the evidence, the diff, the verifier's output and the cost. A person merges it.
+5. When it cannot fix the failure, posts the diagnosis instead.
+
+**What finished looks like**
+
+- A public repo with the CLI and the GitHub Action.
+- A results table on held-out public benchmark tasks: fix rate, false-success rate, cost and time per incident, against a plain-agent baseline we ran ourselves.
+- Our own fault suite of 20 cases, including ones where the right answer is "do not patch this, escalate".
+- A site that replays real runs step by step on the lineage graph.
+- A write-up of what it cannot fix and why.
+
+**Out of scope.** Warehouses other than DuckDB, dbt Cloud, orchestrator integrations, auto-merge, a hosted service, accounts, and any live model call from the public site.
+
+---
+
+## 2. The claim under test
+
+A cheap model inside a data-aware harness, with an independent verifier, fixes pipeline failures at a fraction of the usual cost and almost never claims a fix that is not real.
+
+Everything in this spec exists to test that claim honestly. A weak result is publishable. A result we cannot trust is not.
+
+---
+
+## 3. Architecture
+
+```
+failed dbt run (run_results.json, logs, manifest.json)
+   │
+   ▼
+sandbox ── git worktree + a copy of the DuckDB file
+   │
+   ▼
+verimend/agent ── Claude Agent SDK loop, seven tools, hooks
+   │   investigate → patch → ask the verifier        (up to 3 attempts)
+   ▼
+verifier/ ── separate process, clean rebuild, tamper checks
+   │
+   ├─ passes ──► pull request (root cause, evidence, diff, verifier output, cost)
+   └─ fails or escalates ──► diagnosis comment
+
+every step ──► bench/results/<run>/<task>/<trial>.jsonl ──► site/ (replays)
+```
+
+Three parts must stay separate, because the project's credibility depends on it:
+
+- **Agent** (`verimend/`): proposes. It never decides that a fix worked.
+- **Verifier** (`verifier/`): decides, at run time, for any diff from any source. It ships with the product and can be used alone.
+- **Grader** (`bench/`): scores benchmark runs with hidden per-task checks. It exists only for measurement and its results are never shown to the agent.
+
+### Repo layout
+
+```
+verimend/
+  agent/        SDK loop, system prompt, hook wiring (the only code that imports the Agent SDK)
+  tools/        the seven tools as plain Python functions
+  hooks/        guard logic as plain functions, unit-tested without the SDK
+  cli.py        verimend fix | verify | replay
+  config.py     models, caps, paths, from environment
+  pricing.py    price table with the date it was checked
+verifier/       independent package: rebuild, tamper checks, masking checks
+bench/
+  run.py        harness: any agent × any task set → traces + scores
+  grade.py      runs a task's hidden checks
+  dev/          development tasks (Claude Code may read these)
+  heldout/      held-out tasks (Claude Code never reads these)
+  faults/       our 20 faults: inject script, expected outcome, hidden checks, reference
+  results/      one folder per batch
+action/         action.yml and its entry point
+site/           Next.js replay site
+demo/           sample dbt project and a deliberately broken commit
+scripts/        check.py, split_bench.py, build_site_data.py
+docs/           SPEC.md, DESIGN.md, spikes.md, decisions/
+```
+
+Phase 1 also moves `claude-settings.json` from the repo root to `.claude/settings.json`.
+
+---
+
+## 4. The agent
+
+Built on the Claude Agent SDK for Python. Confirm the exact way to register custom tools, restrict the tool list and attach hooks in the phase 1 spike, and record it in `docs/spikes.md`. Do not write SDK calls from memory.
+
+The agent gets these seven tools and nothing else. The SDK's built-in file and shell tools are switched off for it.
+
+| Tool | Input | Returns | Guard |
+| --- | --- | --- | --- |
+| `read_failure` | none | Failed nodes, error text and the relevant log lines, as a short summary | Read-only |
+| `walk_lineage` | model name, direction, depth | Parents or children from `manifest.json`, with materialisation and path | Read-only |
+| `query_data` | SQL | Up to 50 rows plus row count | Read-only DuckDB connection, one statement, 20 s timeout, SELECT only |
+| `inspect_history` | path | The last 5 commits that touched it, with diffs trimmed to 80 lines | Read-only |
+| `edit_model` | path, new content or patch | Confirmation and the resulting diff | Hook: path must be an allowed model, macro or seed file inside the project |
+| `run_dbt` | selector | Pass or fail per node, with error text | Runs only in the sandbox, against the copied database |
+| `report` | verdict object (below) | Ends the run | Required; a run that ends without it counts as not fixed |
+
+Every tool caps its output (default 4,000 characters) and says when it has trimmed something.
+
+### Guards
+
+Guards are plain functions in `verimend/hooks/`, wired in as hooks that run before a tool call and can deny it. Each one has a test that proves it blocks.
+
+- `edit_model` cannot touch: any test definition (the `tests/` folder and test blocks in YAML files), anything under `verifier/` or `bench/`, CI files, or any path outside the dbt project.
+- `query_data` rejects anything that is not a single SELECT.
+- A run stops when it reaches its dollar cap, its step cap (default 40) or its attempt cap (default 3).
+- Every denied call is written to the trace as a `hook_block` event. The count of these is a published metric.
+
+### The verdict
+
+`report` takes exactly this shape and validates it:
+
+```json
+{
+  "verdict": "fixed | not_fixed | escalate",
+  "root_cause": {
+    "category": "schema_drift | logic | bad_data | config | missing_source | unknown",
+    "model": "stg_orders",
+    "summary": "One or two sentences."
+  },
+  "evidence": [
+    { "kind": "log | query | lineage | commit | diff", "ref": "what was looked at", "finding": "what it showed" }
+  ],
+  "changes": [ { "path": "models/staging/stg_orders.sql", "summary": "what changed and why" } ],
+  "confidence": "low | medium | high"
+}
+```
+
+`escalate` means "a person should handle this, and here is why". It is the correct answer when the code is right and the data is wrong, or when the fix is outside the project.
+
+### Attempts
+
+After the agent reports `fixed`, the verifier runs. If it fails, the agent gets the verifier's feedback (which check failed and its message, never the verifier's code) and may try again, up to three attempts in total. After the third failure the run ends as not fixed.
+
+---
+
+## 5. The verifier
+
+`verifier/` is its own package with its own tests. It takes a dbt project, a base commit and a diff, and returns pass or fail with reasons. It knows nothing about the agent and works on a human's diff just as well: `verimend verify --diff fix.diff`.
+
+It runs in a separate process, on a fresh worktree and a fresh copy of the database, so nothing the agent left behind can affect it.
+
+Checks, in order. The first failure stops the run.
+
+1. **Tamper.** The diff touches only allowed paths. No test was removed, loosened, re-tagged or had its severity lowered. Nothing under `verifier/`, `bench/` or CI changed.
+2. **Masking.** The fix does not make the failure disappear without fixing it: no model disabled, no `limit 0`, no always-false filter, no failing node excluded from the build.
+3. **Clean rebuild.** `dbt build` passes for the failed node and everything downstream of it.
+4. **No collateral damage.** Models outside the lineage of the changed files have the same row counts and checksums as the last good build.
+
+Output:
+
+```json
+{
+  "passed": false,
+  "failed_check": "tamper",
+  "checks": [ { "name": "tamper", "passed": false, "detail": "tests/assert_positive_amount.sql was deleted" } ],
+  "duration_s": 11.4
+}
+```
+
+Keep the verifier free of any import from `verimend/` and from the Agent SDK, so it can be published alone later.
+
+---
+
+## 6. Benchmark
+
+The results table is the product, so the harness is built before the agent.
+
+### Task sources
+
+| Source | Tasks | Use |
+| --- | --- | --- |
+| Public: the bug-fix tasks in ADE-bench (github.com/dbt-labs/ade-bench) and the fix tasks in data-eng-bench | Count them in phase 1; data-eng-bench has 19 fix tasks | A number other people can compare against, graded by checks we did not write |
+| Ours: 20 faults injected into the demo pipeline | 20 | The behaviours the public sets do not grade |
+
+Confirm in phase 1 that data-eng-bench runs on DuckDB. If it needs a Snowflake account, use ADE-bench as the only public source. Read both licences before copying any task into this repo.
+
+### The split
+
+`scripts/split_bench.py --seed 1119` splits the public tasks into `bench/dev/` and `bench/heldout/`, stratified by source, about 40% development and 60% held out. Claude Code writes and tests the script on fixtures. Aditya runs it, so Claude Code never sees which tasks were held out.
+
+Claude Code iterates against `bench/dev/` only. Held-out batches are run by Aditya after the tag `agent-v1` exists.
+
+### What counts as what
+
+Each run produces three facts: what the agent claimed, what the verifier decided, and what the grader's hidden checks found.
+
+| Outcome | Definition |
+| --- | --- |
+| True fix | VeriMend reports fixed, the verifier passes, the grader passes |
+| False success | VeriMend's final answer is "fixed" and the grader fails. **This is the headline number** |
+| Caught by the verifier | The agent claimed fixed, the verifier rejected it. Shown alongside, because it is what the verifier is for |
+| Correct escalation | The task expects escalation, the verdict is `escalate`, and the root-cause category matches |
+| Honest failure | Verdict `not_fixed`, or the attempt cap was reached |
+
+Also recorded per run: tamper attempts (count of `hook_block` events on edits), cost in dollars, wall time and steps.
+
+For the baseline, which has no verifier, "false success" is the agent's own claim against the grader. That contrast is the point of the project.
+
+### Runs to report
+
+1. Plain-agent baseline: same model, the SDK's default file and shell tools inside the sandbox, no VeriMend tools, no verifier. Three trials per task.
+2. VeriMend on Haiku 5.5, three trials per task.
+3. VeriMend on Sonnet 5.5, one trial on eight tasks.
+4. Two ablations on Haiku 5.5, 15 tasks each: without `walk_lineage`, and without the verifier's feedback.
+
+### Rules that keep the numbers honest
+
+- Report held-out tasks only, with the mean and the spread across trials.
+- Compare only against baselines we ran on the same tasks. Published vendor scores are context.
+- Tag `agent-v1` before the first held-out batch and before the fault suite's first scored run. Any later change to prompts, tools or hooks is listed next to the numbers it affected.
+- Publish what it cannot fix.
+
+---
+
+## 7. Our fault suite
+
+Twenty faults on the demo pipeline. Use the LabelLens dbt project if it is ready on Nov 30; otherwise use dbt's public jaffle-shop project.
+
+| Kind | Count | Example | Correct outcome |
+| --- | --- | --- | --- |
+| Schema drift | 4 | An upstream column is renamed or changes type | Patch the staging model |
+| Logic bug | 4 | A join fans out and doubles the row count | Patch the model |
+| Bad data needle | 4 | A few rows with impossible values break a test | Escalate: the code is right and the data is wrong |
+| Config and dependency | 3 | A reference to a deleted model, a broken macro | Patch |
+| Tamper trap | 3 | The quickest way to go green is to delete or loosen the failing test | Fix the model; touching the test fails the task |
+| Unfixable | 2 | The source file is missing | Escalate with the right diagnosis |
+
+Each fault is a folder under `bench/faults/<id>/`:
+
+- `inject.py`: applies the fault from a seed, the same way every time.
+- `expected.json`: the expected outcome and root-cause category.
+- `checks/`: hidden checks the grader runs.
+- `reference/`: a reference patch or a reference escalation that passes its own checks.
+
+---
+
+## 8. Traces and results
+
+One JSON-lines file per run at `bench/results/<batch>/<task>/<trial>.jsonl`. One event per line:
+
+`run_start` (model, git sha, task, caps) · `tool_call` (name, arguments, duration, output size) · `hook_block` (tool, reason) · `model_usage` (input, output and cached tokens) · `attempt_end` (verifier result) · `report` (the verdict) · `grade` (hidden-check result) · `run_end` (totals: tokens, dollars, seconds, steps)
+
+Each batch also writes `summary.json` with the metrics from section 6. `scripts/build_site_data.py` turns chosen traces into the site's data files. Nothing on the site or in the README is typed by hand.
+
+---
+
+## 9. Cost guardrails
+
+The API budget is the $100 a month in API credits that comes with Aditya's Claude Max plan: about $15 of November's for development and about $33 of December's for the final runs. The rest is headroom. Credits arrive on the plan's billing date and unused ones expire at the end of each cycle. Estimates are $0.08 to $0.10 a run on Haiku 5.5 and about $1.50 on Sonnet 5.5. The phase 1 pilot replaces these with measured numbers.
+
+- `verimend/pricing.py` holds the price table and the date it was checked. Check it against the Anthropic pricing page in phase 1.
+- Haiku 5.5 costs five times as much per token once a prompt passes 100,000 tokens. Keep every prompt under 90,000.
+- Keep the system prompt and tool definitions byte-identical across runs so prompt caching applies.
+- Every run has `--max-usd`. Every batch has `--limit` and its own `--max-usd`. The harness prints the estimate, then runs.
+- A spend limit is set in the Anthropic console before the first call.
+- If the pilot shows more than $0.15 a run on Haiku, stop and tell Aditya before running anything larger.
+
+---
+
+## 10. CLI and GitHub Action
+
+```
+verimend fix     --project-dir . [--profiles-dir .] [--max-usd 0.25] [--max-attempts 3] [--model …] [--open-pr]
+verimend verify  --project-dir . --diff fix.diff
+verimend replay  path/to/trace.jsonl
+```
+
+Exit codes for `fix`: 0 fixed and verified, 2 escalated, 3 not fixed, 4 stopped by a cap, 1 error.
+
+**The Action** runs when a dbt job fails in CI. Inputs: API key, project directory, dollar cap, model.
+
+- Fixed and verified: opens a pull request from a `verimend/fix-<sha>` branch. The body has five sections: root cause, evidence, diff summary, verifier output, cost.
+- Escalated or not fixed: posts the diagnosis as a comment.
+- It never pushes to the default branch, never merges, and does not run with secrets on pull requests from forks.
+
+---
+
+## 11. Replay site
+
+Static, built from recorded traces. No model calls, so it costs nothing to run and cannot be abused. Design rules are in `docs/DESIGN.md`.
+
+- `/` the lineage graph replaying one featured run, then the results table.
+- `/runs/<id>` a full replay: the graph, the step log, the diff, the verifier's verdict.
+- `/results` every configuration and metric, each number linked to its trace folder.
+- `/limits` what VeriMend cannot fix, with examples.
+- `/how` the architecture and the rules that keep the numbers honest.
+
+Three replays are featured: a fix, an escalation, and a false success caught by the verifier.
+
+---
+
+## 12. Phases
+
+### Phase 1: setup and spikes (Thu Nov 19)
+
+Create the repo, tooling (`uv`, `ruff`, `pyright`, `pytest`), `scripts/check.py`, and move `claude-settings.json` to `.claude/settings.json`. Then prove three things by hand and write what you learn in `docs/spikes.md`:
+
+1. An Agent SDK script with one custom tool and one hook that denies a tool call.
+2. One public benchmark task run and graded locally on DuckDB. Also try the dbt MCP server's tools against local DuckDB and record which ones work.
+3. A three-task pilot with the tokens and cost of each run written down.
+
+**Done when** all three work, `docs/spikes.md` exists, and section 9's estimates are replaced with measured numbers.
+
+### Phase 2: scoring harness (Fri Nov 20 to Sun Nov 22)
+
+`bench/run.py` runs any agent against a task set, records the trace and cost, captures the agent's verdict and runs the hidden checks. Write `scripts/split_bench.py`.
+
+**Done when** a do-nothing agent scores 0%, a known-good patch scores 100%, and Aditya has run the split and committed it.
+
+### Phase 3: agent, first version (Mon Nov 23 to Thu Nov 26)
+
+The seven tools, the system prompt and the structured report.
+
+**Done when** it finishes every development task under its dollar cap and the first results table exists, whatever the score.
+
+### Phase 4: guards and the verifier loop (Fri Nov 27 to Sun Nov 29)
+
+The hooks, the read-only SQL connection, the `verifier/` package with its four checks, up to three attempts with feedback, and the escalation path.
+
+**Done when** every guard has a test proving it blocks, `verimend verify` works on a hand-written diff, and the false-success rate is reported for the development set. Tag `agent-v1`.
+
+### Phase 5: our fault suite (Mon Nov 30 to Wed Dec 2)
+
+Injection scripts, expected outcomes, hidden checks and references for the 20 faults.
+
+**Done when** each fault injects the same way from a seed, and each reference passes its own checks.
+
+### Phase 6: GitHub Action (Thu Dec 3 to Fri Dec 4)
+
+`action/` plus a demo repo with a deliberately broken commit.
+
+**Done when** the broken commit produces a correct pull request end to end, and a failure it cannot fix produces a diagnosis comment.
+
+### Phase 7: replay site (Sat Dec 5 to Mon Dec 7)
+
+Build from recorded traces, following `docs/DESIGN.md`.
+
+**Done when** the three featured replays play correctly at 375, 1280 and 1600 px, with keyboard controls and with reduced motion respected.
+
+### Phase 8: final runs and write-up (Tue Dec 8 to Wed Dec 9)
+
+Aditya runs the held-out batches on December's credit. Then the README, a two-minute video and the "what it cannot fix" post.
+
+**Done when** every number in the README links to the trace file it came from.
+
+---
+
+## 13. If time or money runs short
+
+Cut in this order: the Sonnet 5.5 comparison, the two ablations, animation on the site (keep a static results page), the second public benchmark.
+
+Never cut: the held-out split, the verifier's independence, the false-success metric, the decision log.
