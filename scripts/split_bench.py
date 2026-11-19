@@ -1,7 +1,7 @@
 """Split the checked public tasks into bench/dev/ and bench/heldout/. Aditya runs this.
 
     uv run python scripts/split_bench.py --seed 1119 \
-        --validation bench/results/validate-2026-11-20/validation.json
+        --validation bench/results/validate-2026-11-19/validation.json
 
 Claude Code writes and tests this script on fixtures only and never runs it, so it never
 learns which tasks were held out (SPEC section 6, CLAUDE.md rule 2).

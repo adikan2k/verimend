@@ -215,7 +215,7 @@ For the baseline, which has no verifier, "false success" is the agent's own clai
 
 ### Runs to report
 
-1. Plain-agent baseline: same model, the SDK's default file and shell tools inside the sandbox, no VeriMend tools, no verifier. Three trials per task.
+1. Plain-agent baseline: same model, the SDK's default file and shell tools inside the sandbox, no VeriMend tools, no verifier. Three trials per task. It is ADE-bench's own Claude Code agent with caps, a pinned CLI and one verdict line ([decision 0002](decisions/0002-scoring-harness.md)); on data-eng-bench it needs a Harbor adapter, built in phase 3.
 2. VeriMend on Haiku 5.5, three trials per task.
 3. VeriMend on Sonnet 5.5, one trial on eight tasks.
 4. Two ablations on Haiku 5.5, 15 tasks each: without `walk_lineage`, and without the verifier's feedback.
