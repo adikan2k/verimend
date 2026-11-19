@@ -193,3 +193,11 @@ def test_summarize_empty_batch() -> None:
     s = summarize([])
     assert s["runs"] == 0 and s["grader_pass_rate"] is None
     assert s["dollars"]["mean_per_run"] is None
+
+
+def test_claim_from_report_reads_only_a_valid_verdict() -> None:
+    from bench.claims import Claim, claim_from_report
+
+    assert claim_from_report({"verdict": "escalate"}) == Claim.ESCALATE
+    assert claim_from_report(None) == Claim.NONE
+    assert claim_from_report({"verdict": "sort of"}) == Claim.NONE

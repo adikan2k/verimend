@@ -7,6 +7,7 @@ from bench.agents import get_agent
 from bench.assemble import AgentRecord, write_batch
 from bench.grade import Grade
 from bench.trace import read_trace
+from verimend.runrecord import AgentRun
 
 META = {"batch": "b", "model": "claude-haiku-5-5", "git_sha": "abc", "max_steps": 40}
 
@@ -108,3 +109,49 @@ def test_traces_can_leave_test_names_out(tmp_path: Path) -> None:
     )
     text = (tmp_path / "a" / "1.jsonl").read_text(encoding="utf-8")
     assert '"tests"' not in text
+
+
+def verimend_run(verdict: str | None, cost: float | None, **extra: object) -> AgentRun:
+    report = None if verdict is None else {"verdict": verdict, "root_cause": {}}
+    run = AgentRun(model="claude-haiku-5-5", prompt_sha="sha", report=report, cost_usd=cost,
+                   num_turns=9, subtype="success", seconds=12.0,
+                   prompt_tokens={"m1": 1000, "m2": 3000})  # fmt: skip
+    run.events = [
+        {"event": "tool_call", "t": 5.0, "name": "read_failure", "arguments": {},
+         "duration_s": 3.0, "output_chars": 120, "is_error": False},
+        {"event": "hook_block", "t": 6.0, "tool": "edit_model", "reason": "tests/"},
+        {"event": "tool_call", "t": 7.0, "name": "report", "arguments": {},
+         "duration_s": 0.0, "output_chars": 40, "is_error": False},
+    ]  # fmt: skip
+    for key, value in extra.items():
+        setattr(run, key, value)
+    return run
+
+
+def test_verimend_trace_claim_and_cost_come_from_its_record(tmp_path: Path) -> None:
+    records = [
+        AgentRecord("a", 1, 1.0, 20.0, run_cap_usd=0.25, agent_run=verimend_run("fixed", 0.01)),
+        AgentRecord("b", 1, 1.0, 20.0, run_cap_usd=0.25, agent_run=verimend_run("fixed", 0.02)),
+        AgentRecord("c", 1, 1.0, 20.0, run_cap_usd=0.25, agent_run=verimend_run(None, None,
+                    subtype=None, error="CLIConnectionError: gone")),  # fmt: skip
+        AgentRecord("d", 1, 1.0, 20.0, run_cap_usd=0.25,
+                    agent_run=verimend_run("escalate", 0.03, subtype="error_max_turns")),
+    ]  # fmt: skip
+    grades = [grade("a", 1, True), grade("b", 1, False), grade("c", 1, False),
+              grade("d", 1, False)]  # fmt: skip
+    summary = write_batch(tmp_path, records, grades, get_agent("verimend"), META)
+    a, b, c, d = summary["runs"]
+    assert (a["claim"], a["outcome"], a["dollars"]) == ("fixed", "true_fix", 0.01)
+    assert (b["claim"], b["outcome"]) == ("fixed", "false_success")
+    # No report and no result: claim none, whole cap charged, stopped says why.
+    assert (c["claim"], c["dollars"], c["stopped"]) == ("none", 0.25, "agent_error")
+    assert (d["claim"], d["stopped"]) == ("escalate", "error_max_turns")
+    assert a["hook_blocks"] == 1 and a["tool_calls"] == 2 and a["largest_prompt_tokens"] == 3000
+    events = read_trace(tmp_path / "a" / "1.jsonl")
+    names = [e["event"] for e in events]
+    assert names[0] == "run_start" and names[-1] == "run_end"
+    assert names.count("tool_call") == 2 and names.count("hook_block") == 1
+    assert names.count("model_usage") == 2
+    assert events[0]["prompt_sha"] == "sha"
+    (report,) = [e for e in events if e["event"] == "report"]
+    assert report["verdict"]["verdict"] == "fixed"

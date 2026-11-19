@@ -92,6 +92,82 @@ def safe_relative(path: str, project_dir: str) -> str | None:
     return candidate.as_posix()
 
 
+class ShellWorkspace:
+    """A project inside a Linux container, reached only by running commands in it.
+
+    Subclasses supply two primitives: `run` (a command and its exit code and output) and
+    `upload` (bytes to an absolute path). Everything else is POSIX tools: cat, rm, find.
+    """
+
+    def __init__(self, project_dir: str, db_path: str, python: str = "python3", dbt: str = "dbt"):
+        self._project_dir = project_dir.rstrip("/")
+        self._db_path = db_path
+        self._python = [python]
+        self._dbt = [dbt]
+
+    @property
+    def project_dir(self) -> str:
+        return self._project_dir
+
+    @property
+    def db_path(self) -> str:
+        return self._db_path
+
+    @property
+    def python(self) -> list[str]:
+        return self._python
+
+    @property
+    def dbt(self) -> list[str]:
+        return self._dbt
+
+    async def run(self, argv: list[str], env: Mapping[str, str] | None) -> tuple[int, str]:
+        raise NotImplementedError
+
+    async def upload(self, path: str, data: bytes) -> None:
+        raise NotImplementedError
+
+    def _abs(self, rel: str) -> str:
+        relative = safe_relative(rel, self._project_dir)
+        if relative is None:
+            raise ValueError(f"path leaves the project: {rel!r}")
+        return self._project_dir if relative == "." else f"{self._project_dir}/{relative}"
+
+    async def exec(
+        self, argv: list[str], *, env: Mapping[str, str] | None = None, timeout: float | None = None
+    ) -> ExecResult:
+        command = ["timeout", str(max(int(timeout), 1)), *argv] if timeout else argv
+        code, output = await self.run(command, env)
+        return ExecResult(code, output, timed_out=bool(timeout) and code == 124)
+
+    async def read_text(self, rel: str) -> str | None:
+        path = self._abs(rel)
+        code, output = await self.run(["sh", "-c", 'test -f "$1" && cat "$1"', "sh", path], None)
+        return output if code == 0 else None
+
+    async def write_text(self, rel: str, text: str) -> None:
+        path = self._abs(rel)
+        await self.run(["mkdir", "-p", str(PurePosixPath(path).parent)], None)
+        await self.upload(path, text.encode("utf-8"))
+
+    async def remove(self, rel: str) -> None:
+        await self.run(["rm", "-f", self._abs(rel)], None)
+
+    async def list_files(self, rel: str, max_depth: int) -> list[str] | None:
+        base = self._abs(rel)
+        script = (
+            'test -d "$1" || exit 3; cd "$1" && find . -mindepth 1 -maxdepth "$2" '
+            + "\\( "
+            + " -o ".join(f"-name {n}" for n in NOISE_DIRS)
+            + " \\) -prune -o -type f -print"
+        )
+        code, output = await self.run(["sh", "-c", script, "sh", base, str(max_depth)], None)
+        if code == 3:
+            return None
+        prefix = "" if base == self._project_dir else base[len(self._project_dir) + 1 :] + "/"
+        return sorted(prefix + line[2:] for line in output.splitlines() if line.startswith("./"))
+
+
 def _local_dbt() -> str:
     """The dbt executable installed next to this Python."""
     name = "dbt.exe" if os.name == "nt" else "dbt"

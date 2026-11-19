@@ -9,6 +9,7 @@ import bench.run as run
 from bench.agents import (
     BASELINE_TOOLS,
     CLI_BUDGET_FRACTION,
+    AgentSpec,
     baseline_cli_flags,
     cli_budget_usd,
     get_agent,
@@ -76,10 +77,14 @@ def test_run_refuses_a_batch_without_usable_caps(
     assert "--limit" in capsys.readouterr().err
 
 
-def test_run_refuses_the_unbuilt_verimend_agent(capsys: pytest.CaptureFixture[str]) -> None:
-    argv = ["--agent", "verimend", "--set", "dev", "--limit", "1", "--max-usd", "1", "--dry-run"]
+def test_run_refuses_an_unavailable_agent(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    unbuilt = AgentSpec("later", "x", True, 0.1, "report", False, "built in phase 9")
+    monkeypatch.setattr(run, "get_agent", lambda name: unbuilt)
+    argv = ["--agent", "later", "--set", "dev", "--limit", "1", "--max-usd", "1", "--dry-run"]
     assert run.main(argv, env={}) == 2
-    assert "phase 3" in capsys.readouterr().err
+    assert "built in phase 9" in capsys.readouterr().err
 
 
 def test_dry_run_prints_the_plan_and_estimate(

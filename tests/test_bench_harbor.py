@@ -77,23 +77,53 @@ def test_runner_command_for_harbor_installs_the_pinned_harbor(tmp_path: Path) ->
     assert f"{run.VENV_VOLUME}-harbor:/opt/venv" in command
 
 
-def test_harbor_side_imports_nothing_from_verimend() -> None:
-    """bench/harbor/inner.py runs in a venv without verimend installed."""
+HARBOR_VENV = {"harbor", "claude_agent_sdk", "pydantic", "pydantic_settings"}
+
+
+def harbor_side_imports(*roots: str) -> dict[str, set[str]]:
+    """Third-party packages imported anywhere reachable from `roots`, by importing module.
+
+    bench/ and verimend/ come from PYTHONPATH in the Harbor venv; everything else must be
+    installed there, and dbt-core cannot be (its pathspec pin conflicts with Harbor's).
+    """
     import ast
+    import sys
 
     repo = Path(__file__).resolve().parents[1]
-    todo, seen = ["bench.harbor.inner"], set()
+    todo, seen = list(roots), set()
+    found: dict[str, set[str]] = {}
     while todo:
         module = todo.pop()
         if module in seen:
             continue
         seen.add(module)
         path = repo / (module.replace(".", "/") + ".py")
+        if not path.exists():
+            path = repo / module.replace(".", "/") / "__init__.py"
         for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+            names: list[str] = []
             if isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
-                assert not node.module.startswith("verimend"), f"{module} imports {node.module}"
-                if node.module.startswith("bench"):
-                    todo.append(node.module)
+                names = [node.module]
+            elif isinstance(node, ast.Import):
+                names = [alias.name for alias in node.names]
+            for name in names:
+                top = name.split(".")[0]
+                if top in {"bench", "verimend"}:
+                    todo.append(name)
+                elif top not in sys.stdlib_module_names:
+                    found.setdefault(top, set()).add(module)
+    return found
+
+
+def test_harbor_side_needs_only_what_the_harbor_venv_has() -> None:
+    imports = harbor_side_imports("bench.harbor.inner")
+    assert set(imports) <= HARBOR_VENV, imports
+    assert "dbt" not in imports and "duckdb" not in imports
+
+
+def test_harbor_import_check_sees_third_party_imports() -> None:
+    imports = harbor_side_imports("bench.ade.inner")  # the ADE side imports ade_bench
+    assert "ade_bench" in imports
 
 
 def test_run_refuses_an_agent_not_wired_for_the_source(

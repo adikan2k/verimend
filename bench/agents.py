@@ -6,7 +6,7 @@
 | `reference` | applies the task's own reference solution: 100%    | no          |
 | `baseline`  | ADE-bench's Claude Code agent with its default     | yes         |
 |             | tools, capped, plus one verdict line in the prompt |             |
-| `verimend`  | the agent this project builds (phase 3)            | yes         |
+| `verimend`  | the agent this project builds (verimend/agent/)    | yes         |
 """
 
 from dataclasses import dataclass
@@ -59,12 +59,11 @@ AGENTS: dict[str, AgentSpec] = {
         ),
         AgentSpec(
             "verimend",
-            "VeriMend.",
+            "VeriMend: eight data-aware tools, guards, structured report; one attempt.",
             True,
+            # The phase 1 pilot measured $0.0012 to $0.0105 a run (docs/spikes.md).
             0.03,
             "report",
-            available=False,
-            unavailable_reason="VeriMend's agent is built in phase 3.",
         ),
     )
 }

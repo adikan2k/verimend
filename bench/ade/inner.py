@@ -24,12 +24,15 @@ from ade_bench.agents.installed_agents.claude_code.claude_code_agent import Clau
 from ade_bench.harness import Harness
 from ade_bench.harness_models import FailureMode, TerminalCommand
 
+from bench.ade.workspace import AdeWorkspace
 from bench.agents import BASELINE_TOOLS, AgentSpec, baseline_cli_flags, get_agent
 from bench.assemble import AgentRecord, write_batch
 from bench.claude_stream import parse_stream
 from bench.grade import grades_from_ade_results
+from verimend.agent.run import run_agent_sync
 from verimend.config import load_settings
-from verimend.hooks.caps import BatchBudget
+from verimend.hooks.caps import BatchBudget, RunCaps
+from verimend.runrecord import AgentRun
 
 SETUP_SCRIPT = Path(__file__).with_name("claude-code-setup.sh")
 AGENT_LOG = "/tmp/agent_output.log"  # where ADE-bench's installed agents tee their output
@@ -65,6 +68,50 @@ class BaselineAgent(ClaudeCodeAgent):
             )
             for c in super()._run_agent_commands(task_prompt)
         ]
+
+
+class VerimendAgent(BaseAgent):
+    """VeriMend in an ADE-bench task container: our tools act on /app through `docker exec`,
+    the model loop runs here in the runner. One attempt, no verifier (phase 3)."""
+
+    NAME = AgentName.NONE  # a label only; staging and grading are ADE-bench's, unchanged
+
+    def __init__(self, *, api_key: str, model: str, caps: RunCaps, output_chars: int,
+                 cwd: Path) -> None:  # fmt: skip
+        super().__init__()
+        self._api_key = api_key
+        self._model = model
+        self._caps = caps
+        self._output_chars = output_chars
+        self._cwd = cwd
+        self.last_run: AgentRun | None = None
+
+    def perform_task(
+        self,
+        task_prompt: str,
+        session: Any,
+        logging_dir: Path | None = None,
+        task_name: str | None = None,
+    ) -> AgentResult:
+        workspace = AdeWorkspace.open(session.container)
+        run = run_agent_sync(
+            task_prompt,
+            workspace,
+            model=self._model,
+            api_key=self._api_key,
+            caps=self._caps,
+            cwd=self._cwd,
+            output_chars=self._output_chars,
+        )
+        self.last_run = run
+        return AgentResult(
+            input_tokens=0,
+            output_tokens=0,
+            num_turns=run.num_turns or 0,
+            cost_usd=run.cost_usd or 0.0,
+            model_name=self._model,
+            failure_mode=FailureMode.NONE,
+        )
 
 
 class Recorder:
@@ -122,7 +169,12 @@ class RecordingAgent(BaseAgent):
             )
         finally:
             record.seconds = round(time.monotonic() - started, 1)
-            if self._recorder.spec.model_calls:
+            if isinstance(self._inner, VerimendAgent):
+                record.agent_run = self._inner.last_run
+                cost = record.agent_run.cost_usd if record.agent_run else None
+                # No result: charge the whole cap, never assume it was cheaper.
+                self._recorder.budget.record(cost if cost is not None else self._run_cap or 0.0)
+            elif self._recorder.spec.model_calls:
                 raw = session.container.exec_run(["cat", AGENT_LOG]).output
                 log = raw.decode("utf-8", errors="replace")
                 record.stream_log = log
@@ -138,14 +190,16 @@ class RecordingFactory(AgentFactory):
         self._batch = batch
         names = {"none": AgentName.NONE, "reference": AgentName.SAGE}
         self._named = NamedAgentFactory(names[spec.name]) if spec.name in names else None
-        if spec.name == "baseline":
-            settings = load_settings()
-            self._api_key = settings.require_api_key()
+        self._settings = load_settings()
+        if spec.model_calls:
+            self._api_key = self._settings.require_api_key()
 
     @property
     def agent_name(self) -> AgentName:
         # SAGE must show through: the harness then passes the task id to the agent.
-        return self._named.agent_name if self._named else AgentName.CLAUDE_CODE
+        if self._named:
+            return self._named.agent_name
+        return AgentName.CLAUDE_CODE if self._spec.name == "baseline" else AgentName.NONE
 
     def get_agent(self, **kwargs: Any) -> BaseAgent:
         if self._named is not None:
@@ -153,6 +207,16 @@ class RecordingFactory(AgentFactory):
         run_cap = self._recorder.budget.next_run_cap(self._recorder.per_run_usd)
         if run_cap is None:
             return RecordingAgent(None, self._recorder, None)
+        if self._spec.name == "verimend":
+            caps = RunCaps(max_usd=run_cap, max_steps=self._batch["max_steps"], max_attempts=1)
+            agent = VerimendAgent(
+                api_key=self._api_key,
+                model=self._batch["model"],
+                caps=caps,
+                output_chars=self._settings.tool_output_chars,
+                cwd=self._settings.verimend_home / "agent-cwd",
+            )
+            return RecordingAgent(agent, self._recorder, run_cap)
         inner = BaselineAgent(
             api_key=self._api_key,
             model=self._batch["model"],
