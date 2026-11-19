@@ -71,6 +71,26 @@ class Usage:
         )
 
 
+def usage_from_api(raw: dict[str, object]) -> Usage:
+    """Usage from the API's usage dict (as the Agent SDK passes it through)."""
+
+    def count(value: object) -> int:
+        return int(value) if isinstance(value, int | float) else 0
+
+    split = raw.get("cache_creation")
+    split = split if isinstance(split, dict) else {}
+    created = count(raw.get("cache_creation_input_tokens"))
+    one_hour = count(split.get("ephemeral_1h_input_tokens"))
+    five_min = split.get("ephemeral_5m_input_tokens")
+    return Usage(
+        input_tokens=count(raw.get("input_tokens")),
+        output_tokens=count(raw.get("output_tokens")),
+        cache_read_tokens=count(raw.get("cache_read_input_tokens")),
+        cache_write_5m_tokens=count(five_min) if five_min is not None else created - one_hour,
+        cache_write_1h_tokens=one_hour,
+    )
+
+
 def price_for(model: str) -> Price:
     try:
         return PRICES[model]
