@@ -22,7 +22,7 @@ Raw evidence:
 
 ## Spike 1: Agent SDK, one custom tool and one hook that denies
 
-Script: [`scripts/spikes/sdk_tool_and_hook.py`](../scripts/spikes/sdk_tool_and_hook.py). Seven calls on `claude-haiku-5-5`, $0.0022 in total.
+Script: [`scripts/spikes/sdk_tool_and_hook.py`](../scripts/spikes/sdk_tool_and_hook.py). Nine calls on `claude-haiku-5-5`, about $0.0022 in total. The turn-cap and dollar-cap calls ran twice, because the first try crashed on the uncaught `ResultError`. Phase 1's whole model spend, pilot included, was about $0.017.
 
 ### The calls that work
 
