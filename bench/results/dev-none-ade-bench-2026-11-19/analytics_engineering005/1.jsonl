@@ -1,0 +1,4 @@
+{"event": "run_start", "t": 1795121681.509, "agent": "none", "model": null, "git_sha": "72b2eae", "source": "ade-bench", "source_commit": "c305600ebf17e7e7c4550bd401b6ddb530beb7c8", "task": "analytics_engineering005", "trial": 1, "caps": {"max_usd": null, "max_steps": 40, "max_attempts": 1}, "tools_offered": null}
+{"event": "report", "t": 1795121681.509, "claim": "none", "text": null}
+{"event": "grade", "t": 1795121681.509, "grader": "ade-bench", "passed": false, "failure_mode": "none", "tests": {"dbt_compile": "passed", "AUTO_fact_inventory_equality": "passed", "AUTO_fact_inventory_existence": "passed", "check_row_count": "failed"}, "expected_test_count": 3}
+{"event": "run_end", "t": 1795121681.609, "claim": "none", "grader_passed": false, "outcome": "no_claim", "dollars": 0.0, "cost_source": "no_model_calls", "seconds": 0.1, "steps": null, "tool_calls": null, "hook_blocks": 0, "largest_prompt_tokens": null, "stopped": null, "model_usage": null}

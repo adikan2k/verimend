@@ -1,0 +1,4 @@
+{"event": "run_start", "t": 1795121629.268, "agent": "none", "model": null, "git_sha": "72b2eae", "source": "data-eng-bench", "source_commit": "74d4bcd4192e1959754f683841f9f602b8bc86e1", "task": "dbt-fix-inventory-model", "trial": 1, "caps": {"max_usd": null, "max_steps": 40, "max_attempts": 1}, "tools_offered": null}
+{"event": "report", "t": 1795121629.268, "claim": "none", "text": null}
+{"event": "grade", "t": 1795121629.268, "grader": "data-eng-bench", "passed": false, "failure_mode": "none", "tests": {"reward": "0.0"}, "expected_test_count": null}
+{"event": "run_end", "t": 1795121629.268, "claim": "none", "grader_passed": false, "outcome": "no_claim", "dollars": 0.0, "cost_source": "no_model_calls", "seconds": 0.0, "steps": null, "tool_calls": null, "hook_blocks": 0, "largest_prompt_tokens": null, "stopped": null, "model_usage": null}

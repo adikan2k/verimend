@@ -1,0 +1,4 @@
+{"event": "run_start", "t": 1795122002.75, "agent": "reference", "model": null, "git_sha": "72b2eae", "source": "ade-bench", "source_commit": "c305600ebf17e7e7c4550bd401b6ddb530beb7c8", "task": "asana001", "trial": 1, "caps": {"max_usd": null, "max_steps": 40, "max_attempts": 1}, "tools_offered": null}
+{"event": "report", "t": 1795122002.75, "claim": "fixed", "text": null}
+{"event": "grade", "t": 1795122002.75, "grader": "ade-bench", "passed": true, "failure_mode": "none", "tests": {"dbt_compile": "passed", "AUTO_asana__task_equality": "passed", "AUTO_asana__task_existence": "passed"}, "expected_test_count": 2}
+{"event": "run_end", "t": 1795122002.85, "claim": "fixed", "grader_passed": true, "outcome": "true_fix", "dollars": 0.0, "cost_source": "no_model_calls", "seconds": 0.1, "steps": null, "tool_calls": null, "hook_blocks": 0, "largest_prompt_tokens": null, "stopped": null, "model_usage": null}
