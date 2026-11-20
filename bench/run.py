@@ -128,17 +128,21 @@ def runner_command(
     # the pinned version without verimend's own dependencies: it cannot share a venv with
     # dbt-core 1.10 (pathspec). bench/ and verimend/ come from PYTHONPATH; the agents need
     # only the Agent SDK and pydantic-settings on top of Harbor (approved for phase 3).
+    # The verifier's source is uploaded into task containers from verifier/src, so on
+    # Harbor it comes from PYTHONPATH too.
     if runner == "ade":
         install = f"-e . -e {REPO_INSIDE}/verifier -e {REPO_INSIDE}"
+        pythonpath = REPO_INSIDE
     else:
         install = " ".join(f"'{pin}'" for pin in HARBOR_VENV_PINS)
+        pythonpath = f"{REPO_INSIDE}:{REPO_INSIDE}/verifier/src"
     script = "\n".join(
         [
             "set -e",
             f"cd '{docker_path(checkout)}'",
             "uv venv /opt/venv --allow-existing -q",
             f"uv pip install -q {install}",
-            f"PYTHONPATH={REPO_INSIDE} python -m bench.{runner}.inner '{docker_path(batch_file)}'",
+            f"PYTHONPATH={pythonpath} python -m bench.{runner}.inner '{docker_path(batch_file)}'",
         ]
     )
     volume = VENV_VOLUME if runner == "ade" else f"{VENV_VOLUME}-{runner}"

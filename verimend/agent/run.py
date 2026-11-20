@@ -29,7 +29,7 @@ from verimend.hooks.caps import RunCaps, sdk_budget_usd
 from verimend.hooks.guards import content_refusal, refusal_for
 from verimend.pricing import usage_from_api
 from verimend.runrecord import AgentRun
-from verimend.tools.base import DEFAULT_OUTPUT_CHARS, ToolContext, ToolResult
+from verimend.tools.base import DEFAULT_OUTPUT_CHARS, ToolContext, ToolResult, Verifier
 from verimend.tools.edits import planned_content
 from verimend.tools.registry import TOOL_NAMES, TOOLS, ToolSpec
 from verimend.tools.workspace import Workspace, safe_relative
@@ -172,13 +172,28 @@ async def run_agent(
     caps: RunCaps,
     cwd: Path,
     output_chars: int = DEFAULT_OUTPUT_CHARS,
+    verifier: Verifier | None = None,
+    feedback: bool = True,
 ) -> AgentRun:
-    """One attempt on one task. Never raises for a model or cap problem: the record says."""
-    ctx = ToolContext(workspace, output_chars)
+    """One run on one task, with up to `caps.max_attempts` verified attempts. Never raises
+    for a model, cap or verifier problem: the record says.
+
+    With a verifier, the project is snapshotted before the model is called; if that
+    fails, the model is never called and the record carries `verifier_error`.
+    """
+    ctx = ToolContext(workspace, output_chars, verifier=verifier, feedback=feedback,
+                      max_attempts=caps.max_attempts)  # fmt: skip
     run = AgentRun(model=model, prompt_sha=prompt_sha())
+    started = time.monotonic()
+    if verifier is not None:
+        try:
+            run.snapshot = await verifier.prepare()
+        except Exception as error:
+            run.verifier_error = f"snapshot failed: {type(error).__name__}: {error}"[:ERROR_CHARS]
+            run.seconds = round(time.monotonic() - started, 1)
+            return run
     cwd.mkdir(parents=True, exist_ok=True)
     options = build_options(ctx, run, model=model, api_key=api_key, caps=caps, cwd=cwd)
-    started = time.monotonic()
     try:
         async for message in query(prompt=task_prompt, options=options):
             absorb(run, message)
@@ -187,10 +202,22 @@ async def run_agent(
     except Exception as error:
         run.error = f"{type(error).__name__}: {error}"[:ERROR_CHARS]
     finally:
+        finish(run, ctx)
         run.seconds = round(time.monotonic() - started, 1)
-        run.report = ctx.report
-        run.diffs = list(ctx.diffs)
     return run
+
+
+def finish(run: AgentRun, ctx: ToolContext) -> None:
+    """Copy the context's outcome into the record. A run the verifier rejected that then
+    stopped without an accepted report (a cap, say) ends as not fixed (SPEC section 4)."""
+    run.report = ctx.report
+    run.diffs = list(ctx.diffs)
+    run.attempts = list(ctx.attempts)
+    run.verifier_error = run.verifier_error or ctx.verifier_error
+    if ctx.accepted:
+        run.final_verdict = ctx.final_verdict
+    elif ctx.attempts:
+        run.final_verdict = "not_fixed"
 
 
 def run_agent_sync(task_prompt: str, workspace: Workspace, **kwargs: Any) -> AgentRun:

@@ -26,7 +26,14 @@ full_refresh, or the old rows stay.
 fixed, reconcile the model's output against its sources with query_data: totals, row \
 counts and the grain the task describes. Check every problem the task lists, not only the \
 first one you find.
-6. Call report exactly once, as your last action.
+6. Call report as your last action.
+
+An independent verifier checks every fixed report. It rebuilds the project from a clean \
+copy and rejects a fix that changes or removes tests, disables a model, filters rows away, \
+does not build, or changes models outside the fix's lineage. It cannot tell whether your \
+numbers are right: that is still your job. If it rejects the fix you are told which check \
+failed and why; find the cause, fix it, rebuild, and call report again. You have a limited \
+number of attempts.
 
 Rules:
 - Never edit, delete, disable or weaken a test, and never make a failure disappear \

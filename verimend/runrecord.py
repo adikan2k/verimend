@@ -25,6 +25,16 @@ class AgentRun:
     seconds: float | None = None
     error: str | None = None  # an exception the SDK raised, other than a cap stop
     diffs: list[dict[str, str]] = field(default_factory=list)
+    # The verifier loop. `report` above is the last report the agent made; the run's answer
+    # is `final_verdict`, which is "not_fixed" after the verifier rejected every attempt.
+    snapshot: dict[str, Any] | None = None  # the verifier's snapshot before the run
+    attempts: list[dict[str, Any]] = field(default_factory=list)  # one per verifier run
+    final_verdict: str | None = None
+    verifier_error: str | None = None  # the verifier could not run: a harness problem
+
+    @property
+    def verifier_rejections(self) -> int:
+        return sum(1 for a in self.attempts if not a.get("passed"))
 
     @property
     def largest_prompt_tokens(self) -> int:

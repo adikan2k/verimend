@@ -83,7 +83,8 @@ HARBOR_VENV = {"harbor", "claude_agent_sdk", "pydantic", "pydantic_settings", "y
 def harbor_side_imports(*roots: str) -> dict[str, set[str]]:
     """Third-party packages imported anywhere reachable from `roots`, by importing module.
 
-    bench/ and verimend/ come from PYTHONPATH in the Harbor venv; everything else must be
+    bench/, verimend/ and verifier/src come from PYTHONPATH in the Harbor venv; everything
+    else must be
     installed there, and dbt-core cannot be (its pathspec pin conflicts with Harbor's).
     """
     import ast
@@ -97,9 +98,10 @@ def harbor_side_imports(*roots: str) -> dict[str, set[str]]:
         if module in seen:
             continue
         seen.add(module)
-        path = repo / (module.replace(".", "/") + ".py")
+        root = repo / "verifier" / "src" if module.split(".")[0] == "verifier" else repo
+        path = root / (module.replace(".", "/") + ".py")
         if not path.exists():
-            path = repo / module.replace(".", "/") / "__init__.py"
+            path = root / module.replace(".", "/") / "__init__.py"
         for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
             names: list[str] = []
             if isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
@@ -108,7 +110,7 @@ def harbor_side_imports(*roots: str) -> dict[str, set[str]]:
                 names = [alias.name for alias in node.names]
             for name in names:
                 top = name.split(".")[0]
-                if top in {"bench", "verimend"}:
+                if top in {"bench", "verimend", "verifier"}:
                     todo.append(name)
                 elif top not in sys.stdlib_module_names:
                     found.setdefault(top, set()).add(module)

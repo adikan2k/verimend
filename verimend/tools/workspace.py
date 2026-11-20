@@ -69,6 +69,11 @@ class Workspace(Protocol):
         """Project-relative paths under a folder, or None if it is not a folder."""
         ...
 
+    async def put_file(self, path: str, data: bytes) -> None:
+        """Write a file at an absolute path outside the project (the verifier's code).
+        Never used by the agent's tools."""
+        ...
+
 
 def safe_relative(path: str, project_dir: str) -> str | None:
     """A project-relative POSIX path, or None if the path leaves the project.
@@ -152,6 +157,10 @@ class ShellWorkspace:
 
     async def remove(self, rel: str) -> None:
         await self.run(["rm", "-f", self._abs(rel)], None)
+
+    async def put_file(self, path: str, data: bytes) -> None:
+        await self.run(["mkdir", "-p", str(PurePosixPath(path).parent)], None)
+        await self.upload(path, data)
 
     async def list_files(self, rel: str, max_depth: int) -> list[str] | None:
         base = self._abs(rel)
@@ -250,6 +259,11 @@ class LocalWorkspace:
 
     async def remove(self, rel: str) -> None:
         self._path(rel).unlink(missing_ok=True)
+
+    async def put_file(self, path: str, data: bytes) -> None:
+        target = Path(path)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(data)
 
     async def list_files(self, rel: str, max_depth: int) -> list[str] | None:
         base = self._path(rel)
