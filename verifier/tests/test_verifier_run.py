@@ -15,7 +15,7 @@ from verifier.project import (
     read_profile,
     write_profiles,
 )
-from verifier.run import diff_from_project, snapshot, verify
+from verifier.run import RECHECK_BUILDS, diff_from_project, snapshot, verify
 
 FIXTURE = Path(__file__).parent / "fixtures" / "tiny_shop"
 DBT = default_dbt()
@@ -375,8 +375,8 @@ def test_a_skipped_fix_that_still_fails_on_its_own_is_rejected(messy_snap):
 
 def test_collateral_rechecks_the_base_before_rejecting(messy_snap):
     """A model the two calibration builds happened to agree on: forget that random_draw is
-    unstable, then verify the real fix. Collateral flags it, rebuilds the unchanged base,
-    sees it move there too, and passes; the snapshot remembers it from then on."""
+    unstable, then verify the real fix. Collateral flags it, rebuilds it on the unchanged
+    base, sees it move there too, and passes; the snapshot remembers it from then on."""
     work = messy_snap[0]
     state_file = work / "state.json"
     state = json.loads(state_file.read_text())
@@ -384,10 +384,20 @@ def test_collateral_rechecks_the_base_before_rejecting(messy_snap):
     state_file.write_text(json.dumps(state))
     result = run(work, FIX)
     assert result["passed"], result
-    assert (
-        "found 1 more unstable model(s): model.tiny_shop.random_draw"
-        in (result["checks"][-1]["detail"])
-    )
+    detail = result["checks"][-1]["detail"]
+    assert "1 suspect model(s) were rebuilt on the unchanged base (1 build(s))" in detail
+    assert "1 moved there too: model.tiny_shop.random_draw" in detail
     assert json.loads(state_file.read_text())["unstable"] == {
         "model.tiny_shop.random_draw": "contents"
     }
+
+
+def test_collateral_still_rejects_a_real_change_after_the_recheck(snap):
+    """The recheck only excuses a model that moves on the unchanged base. order_count is
+    deterministic, so all five rebuilds match the snapshot and the fix is rejected."""
+    result = run(snap[1], with_fix(COLLATERAL))
+    assert result["failed_check"] == "collateral", result
+    detail = result["checks"][-1]["detail"]
+    assert "order_count" in detail
+    assert f"rebuilt on the unchanged base ({RECHECK_BUILDS} build(s))" in detail
+    assert "none moved there" in detail

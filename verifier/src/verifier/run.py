@@ -246,28 +246,66 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
     new_stats = table_stats(project.parent / "db" / state["db_name"], built_manifest, statuses)
     unstable = state.get("unstable") or {}
     collateral = checks.collateral(state["stats"], new_stats, in_lineage, unstable)
-    if not collateral.passed:
-        # Recheck before rejecting (decision 0004, with Aditya): two calibration builds can
-        # agree by chance on a model that only sometimes differs. Rebuild the unchanged base
-        # once more; whatever moves there too is unstable from now on.
-        again, dbt_again = _build_copy(work, "recheck", state, dbt_exe, timeout)
-        dbt_again.run(again, "build")
-        third = table_stats(again.parent / "db" / state["db_name"], base_manifest,
-                            node_statuses(again))  # fmt: skip
-        shutil.rmtree(work / "recheck", ignore_errors=True)
+    suspects = checks.collateral_suspects(state["stats"], new_stats, in_lineage, unstable)
+    if not collateral.passed and suspects:
+        # Recheck before rejecting (decision 0004, with Aditya): two calibration builds
+        # often agree by chance on a model that only sometimes differs (the stability probe,
+        # bench/results/probe-stability-2026-11-20). Rebuild just the suspects and their
+        # parents on the unchanged base, a few times; whatever moves there is unstable.
+        moved, builds = _recheck(work, state, base_manifest, suspects, dbt_exe, timeout)
         newly = {
-            uid: kind
-            for uid, kind in checks.unstable_models(state["stats"], third).items()
-            if unstable.get(uid) != kind and unstable.get(uid) != "rows"
+            uid: kind for uid, kind in moved.items() if unstable.get(uid) not in ("rows", kind)
         }
         if newly:
             unstable = {**unstable, **newly}
             state["unstable"] = unstable
             (work / "state.json").write_text(json.dumps(state, indent=1), "utf-8")
             collateral = checks.collateral(state["stats"], new_stats, in_lineage, unstable)
-            collateral.detail = (
-                f"{collateral.detail}; a rebuild of the unchanged base found "
-                f"{len(newly)} more unstable model(s): {', '.join(sorted(newly)[:5])}"
-            )[:1500]
+        found_text = (
+            f"{len(newly)} moved there too: {', '.join(sorted(newly)[:5])}"
+            if newly
+            else "none moved there"
+        )
+        collateral.detail = (
+            f"{collateral.detail}; {len(suspects)} suspect model(s) were rebuilt on the "
+            f"unchanged base ({builds} build(s)), and {found_text}"
+        )[:1500]
     found.append(collateral)
     return _result(found, started)
+
+
+RECHECK_BUILDS = 5
+
+
+def _recheck(
+    work: Path,
+    state: dict[str, Any],
+    base_manifest: dict[str, Any],
+    suspects: dict[str, str],
+    dbt_exe: str,
+    timeout: float,
+) -> tuple[dict[str, str], int]:
+    """Build the suspect models and their parents (no tests) on a fresh copy of the
+    unchanged base, up to RECHECK_BUILDS times, stopping once every suspect has moved as
+    much as it did after the fix. Returns how each suspect moved, and the builds run."""
+    project, dbt = _build_copy(work, "recheck", state, dbt_exe, timeout)
+    nodes = base_manifest.get("nodes", {})
+    subset = {"nodes": {uid: nodes[uid] for uid in suspects if uid in nodes}}
+    selection = [f"+{name}" for name in checks.selectable_names(sorted(suspects), base_manifest)]
+    before = {uid: state["stats"][uid] for uid in suspects}
+    db = project.parent / "db" / state["db_name"]
+    moved: dict[str, str] = {}
+    builds = 0
+    try:
+        while builds < RECHECK_BUILDS:
+            builds += 1
+            dbt.run(project, "build", "--select", *selection, "--exclude", "resource_type:test")
+            after = table_stats(db, subset, node_statuses(project))
+            for uid, kind in checks.unstable_models(before, after).items():
+                if moved.get(uid) != "rows":
+                    moved[uid] = kind
+            if all(checks.excused(moved.get(uid), need) for uid, need in suspects.items()):
+                break
+    finally:
+        shutil.rmtree(work / "recheck", ignore_errors=True)
+    return moved, builds

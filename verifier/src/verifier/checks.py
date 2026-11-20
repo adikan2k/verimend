@@ -343,8 +343,8 @@ def collateral(
     unstable: dict[str, str] | None = None,
 ) -> Check:
     """Models outside the fix's lineage keep their row count and checksum. A model that
-    is unstable between two identical builds is compared by row count only, or not at all
-    if its row count moves too; the detail says how many."""
+    is unstable between builds of the unchanged project is compared by row count only, or
+    not at all if its row count moves too; the detail says how many."""
     unstable = unstable or {}
     compared = by_count = skipped = 0
     problems: list[str] = []
@@ -374,9 +374,40 @@ def collateral(
     if by_count or skipped:
         detail += (
             f" ({by_count} compared by row count only and {skipped} not compared, because "
-            "they differ between two builds of the unchanged project)"
+            "they differ between builds of the unchanged project)"
         )
     return Check("collateral", True, detail)
+
+
+def collateral_suspects(
+    base_stats: dict[str, Any],
+    new_stats: dict[str, Any],
+    in_lineage: set[str],
+    unstable: dict[str, str] | None = None,
+) -> dict[str, str]:
+    """The models collateral would reject that a rebuild of the unchanged base could
+    excuse, with what they must be seen to do there: "rows" when their row count changed
+    (only a model whose row count moves on its own is excused), "contents" when only the
+    checksum did. A model that could not be read after the fix is never a suspect."""
+    unstable = unstable or {}
+    suspects: dict[str, str] = {}
+    for uid, before in base_stats.items():
+        if uid in in_lineage or before is None or unstable.get(uid) == "rows":
+            continue
+        after = new_stats.get(uid)
+        if after is None:
+            continue
+        if after[0] != before[0]:
+            suspects[uid] = "rows"
+        elif after[1] != before[1] and unstable.get(uid) != "contents":
+            suspects[uid] = "contents"
+    return suspects
+
+
+def excused(moved: str | None, needed: str) -> bool:
+    """Whether a model seen to move like `moved` on the unchanged base excuses a change
+    of kind `needed` after the fix."""
+    return moved == "rows" or (moved == "contents" and needed == "contents")
 
 
 # ---- When the base does not parse --------------------------------------------------

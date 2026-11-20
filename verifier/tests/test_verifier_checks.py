@@ -309,3 +309,28 @@ def test_selectable_names_reach_tests_through_their_models():
     }
     assert checks.selectable_names(["model.p.fixed", "test.p.fixed_unique"], manifest) == ["fixed"]
     assert checks.selectable_names(["test.p.other"], manifest) == ["b"]
+
+
+def test_collateral_suspects_and_what_excuses_them():
+    base = {
+        "model.p.a": [3, "h1"],
+        "model.p.b": [5, "h2"],
+        "model.p.c": [2, "h3"],
+        "model.p.d": [1, "h4"],
+        "model.p.lin": [7, "h5"],
+        "model.p.gone": [4, "h6"],
+    }
+    after = {
+        "model.p.a": [3, "x"],
+        "model.p.b": [6, "y"],
+        "model.p.c": [2, "h3"],
+        "model.p.d": [1, "z"],
+        "model.p.lin": [8, "w"],
+    }
+    suspects = checks.collateral_suspects(base, after, {"model.p.lin"}, {"model.p.d": "contents"})
+    # a: contents moved; b: rows moved; c unchanged; d already compared by count only;
+    # lin is in the lineage; gone cannot be read, which no rebuild excuses.
+    assert suspects == {"model.p.a": "contents", "model.p.b": "rows"}
+    assert checks.excused("contents", "contents") and checks.excused("rows", "contents")
+    assert checks.excused("rows", "rows")
+    assert not checks.excused("contents", "rows") and not checks.excused(None, "contents")
