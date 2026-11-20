@@ -234,3 +234,32 @@ def test_collateral_compares_only_models_outside_the_lineage():
     ):
         check = checks.collateral(before, after, lineage)
         assert not check.passed and words in check.detail
+
+
+def status(s: str) -> dict:
+    return {"status": s, "message": "m"}
+
+
+def test_clean_rebuild_excuses_only_old_failures_outside_the_fix():
+    base = {"seed.p.cats": status("error"), "model.p.a": status("success"),
+            "model.p.b": status("error")}  # fmt: skip
+    downstream = {"model.p.b", "test.p.b_not_null"}
+    # The seed failed before and is not downstream of the fix: still failing is excused.
+    now = {"seed.p.cats": status("error"), "model.p.a": status("success"),
+           "model.p.b": status("success"), "test.p.b_not_null": status("pass")}  # fmt: skip
+    check = checks.clean_rebuild(1, now, "", base, downstream)
+    assert check.passed and "seed.p.cats" in check.detail and "already failed" in check.detail
+    for broken, why in (
+        ({**now, "model.p.b": status("error")}, "the fixed node still fails"),
+        ({**now, "test.p.b_not_null": status("fail")}, "a test downstream fails"),
+        ({**now, "model.p.a": status("error")}, "a node that passed before fails"),
+        ({**now, "model.p.new": status("skipped")}, "a new node fails"),
+    ):
+        assert not checks.clean_rebuild(1, broken, "", base, downstream).passed, why
+    # Without a base build nothing is excused.
+    assert not checks.clean_rebuild(1, now, "", None, None).passed
+
+
+def test_downstream_of_follows_children_only():
+    manifest = lineage_manifest()
+    assert checks.downstream_of({"model.p.stg"}, manifest) == {"model.p.stg", "model.p.totals"}

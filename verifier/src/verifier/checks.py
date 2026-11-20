@@ -183,18 +183,50 @@ def masking(base: dict[str, Any], new: dict[str, Any], patches: list[FilePatch])
 # ---- 3. Clean rebuild ---------------------------------------------------------------
 
 
-def clean_rebuild(code: int, statuses: dict[str, dict[str, str]], output: str) -> Check:
-    failed = [
-        f"{uid} {info['status']}: {info['message']}".rstrip(": ")
-        for uid, info in statuses.items()
-        if info["status"] in FAILED_STATUSES
-    ]
+def clean_rebuild(
+    code: int,
+    statuses: dict[str, dict[str, str]],
+    output: str,
+    base_statuses: dict[str, dict[str, str]] | None = None,
+    downstream: set[str] | None = None,
+) -> Check:
+    """SPEC section 5: the build passes for the failed node and everything downstream.
+
+    With a base build (decision 0004, with Aditya): the changed nodes and everything
+    downstream of them must pass, and nothing that passed before may fail now. A node that
+    already failed before the change and is not downstream of it may still fail: some
+    projects never build cleanly (data-eng-bench fails 293 nodes before any change). Those
+    are listed. Without a base build every node must pass.
+    """
+    must_pass = downstream or set()
+    failed: list[str] = []
+    excused: list[str] = []
+    for uid, info in statuses.items():
+        if info["status"] not in FAILED_STATUSES:
+            continue
+        before = (base_statuses or {}).get(uid, {}).get("status")
+        line = f"{uid} {info['status']}: {info['message']}".rstrip(": ")
+        if base_statuses is not None and before in FAILED_STATUSES and uid not in must_pass:
+            excused.append(uid)
+        else:
+            failed.append(line)
     if failed:
         return Check("clean_rebuild", False, "dbt build failed: " + _listed(failed))
-    if code != 0 or not statuses:
+    if not statuses or (code != 0 and not excused):
         tail = "\n".join(output.strip().splitlines()[-15:])
         return Check("clean_rebuild", False, f"dbt build exited {code}: {tail}"[:1500])
-    return Check("clean_rebuild", True, f"dbt build passed: {len(statuses)} node(s)")
+    detail = f"dbt build passed: {len(statuses) - len(excused)} node(s)"
+    if excused:
+        detail += (
+            f"; {len(excused)} node(s) that already failed before the change, none downstream "
+            f"of it, still fail: {_listed(sorted(excused))}"
+        )
+    return Check("clean_rebuild", True, detail[:1500])
+
+
+def downstream_of(changed: set[str], manifest: dict[str, Any]) -> set[str]:
+    """The changed nodes and everything downstream of them, tests included."""
+    return _reach(changed, manifest.get("child_map", {}))
 
 
 # ---- 4. No collateral damage --------------------------------------------------------

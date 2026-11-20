@@ -197,9 +197,17 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
     if not found[-1].passed:
         return _result(found, started)
 
+    vars_changed = project_vars(project) != state.get("vars")
+    if base_manifest is not None:
+        changed = checks.changed_nodes(base_manifest, new_manifest, vars_changed)
+        downstream = checks.downstream_of(changed, new_manifest)
+        base_statuses = state.get("statuses") or {}
+    else:  # no base build: nothing excuses a failure
+        changed, downstream, base_statuses = set(), None, None
+
     code, output = dbt.run(project, "build")
     statuses = node_statuses(project)
-    found.append(checks.clean_rebuild(code, statuses, output))
+    found.append(checks.clean_rebuild(code, statuses, output, base_statuses, downstream))
     if not found[-1].passed:
         return _result(found, started)
 
@@ -207,7 +215,6 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
         found.append(checks.Check("collateral", True, checks.NO_BASE_BUILD))
         return _result(found, started)
     built_manifest = read_json(project / "target" / "manifest.json") or new_manifest
-    vars_changed = project_vars(project) != state.get("vars")
     changed = checks.changed_nodes(base_manifest, built_manifest, vars_changed)
     in_lineage = checks.lineage(changed, base_manifest, built_manifest)
     new_stats = table_stats(project.parent / "db" / state["db_name"], built_manifest, statuses)
