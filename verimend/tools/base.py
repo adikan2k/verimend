@@ -22,8 +22,9 @@ class ToolContext:
     output_chars: int = DEFAULT_OUTPUT_CHARS
     failure_summary: str | None = None  # read_failure's first answer
     manifest: dict[str, Any] | None = None  # cleared after every edit
-    report: dict[str, Any] | None = None  # the validated verdict, once report succeeds
+    report: dict[str, Any] | None = None  # the latest validated verdict
     diffs: list[dict[str, str]] = field(default_factory=list)
+    accepted: bool = False  # a report ended the run; every later tool call is refused
 
     def result(self, text: str, is_error: bool = False) -> ToolResult:
         return ToolResult(cap(text, self.output_chars), is_error)

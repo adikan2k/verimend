@@ -26,12 +26,13 @@ from claude_agent_sdk import (
 from verimend import __version__
 from verimend.agent.prompt import SYSTEM_PROMPT, prompt_sha
 from verimend.hooks.caps import RunCaps, sdk_budget_usd
-from verimend.hooks.guards import refusal_for
+from verimend.hooks.guards import content_refusal, refusal_for
 from verimend.pricing import usage_from_api
 from verimend.runrecord import AgentRun
 from verimend.tools.base import DEFAULT_OUTPUT_CHARS, ToolContext, ToolResult
+from verimend.tools.edits import planned_content
 from verimend.tools.registry import TOOL_NAMES, TOOLS, ToolSpec
-from verimend.tools.workspace import Workspace
+from verimend.tools.workspace import Workspace, safe_relative
 
 SERVER = "verimend"
 ARGUMENT_CHARS = 300  # how much of each tool argument the trace keeps
@@ -84,13 +85,26 @@ def wrap_tool(spec: ToolSpec, ctx: ToolContext, run: AgentRun) -> SdkMcpTool[Any
     return tool(spec.name, spec.description, spec.input_schema)(handler)
 
 
+async def edit_content_refusal(ctx: ToolContext, arguments: dict[str, Any]) -> str | None:
+    """The content half of the edit guard: what the edit would write, judged before it is
+    written. A malformed call is left to the tool, which explains the problem."""
+    relative = safe_relative(str(arguments.get("path", "")), ctx.workspace.project_dir)
+    if relative is None:
+        return None
+    before = await ctx.workspace.read_text(relative)
+    after, _ = planned_content(before, arguments)
+    return None if after is None else content_refusal(relative, before, after)
+
+
 def build_hooks(ctx: ToolContext, run: AgentRun) -> dict[str, list[HookMatcher]]:
     async def guard(input_data: Any, tool_use_id: str | None, context: Any) -> dict[str, Any]:
         name = short_name(str(input_data.get("tool_name", "")))
         arguments = dict(input_data.get("tool_input") or {})
         reason = refusal_for(
-            name, arguments, project_dir=ctx.workspace.project_dir, reported=ctx.report is not None
+            name, arguments, project_dir=ctx.workspace.project_dir, reported=ctx.accepted
         )
+        if reason is None and name == "edit_model":
+            reason = await edit_content_refusal(ctx, arguments)
         if reason is None:
             return {}
         run.events.append({"event": "hook_block", "t": round(time.time(), 3), "tool": name,

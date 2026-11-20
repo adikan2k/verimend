@@ -68,4 +68,5 @@ async def report(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
         )
         return ctx.result(f"Invalid report; fix it and call report again: {problems}", True)
     ctx.report = verdict.model_dump()
+    ctx.accepted = True
     return ctx.result(RECORDED)

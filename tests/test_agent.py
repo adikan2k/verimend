@@ -100,12 +100,20 @@ def test_guard_hook_blocks_and_records(ctx: ToolContext) -> None:
     assert ask("edit_model", path="models/staging/stg_orders.sql", content="x") == {}
     assert deny_reason(ask("edit_model", path="tests/assert_positive_amount.sql", content="x"))
     assert deny_reason(ask("query_data", sql="drop table stg_orders"))
+    # The content half: the hook reads the file and judges what the edit would write.
+    removal = ask("edit_model", path="models/schema.yml", old_text="          - unique\n",
+                  new_text="")  # fmt: skip
+    assert "may not remove or change tests" in str(deny_reason(removal))
+    assert ask("edit_model", path="models/schema.yml", old_text="absent", new_text="x") == {}
     assert [e["tool"] for e in run.events if e["event"] == "hook_block"] == [
         "edit_model",
         "query_data",
+        "edit_model",
     ]
     ctx.report = {"verdict": "fixed"}
-    assert deny_reason(ask("read_file", path="models"))  # nothing after report
+    assert ask("read_file", path="models") == {}  # a report alone does not end the run
+    ctx.accepted = True
+    assert deny_reason(ask("read_file", path="models"))  # nothing after an accepted report
 
 
 def test_absorb_reads_init_usage_text_and_result() -> None:

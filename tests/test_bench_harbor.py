@@ -77,7 +77,7 @@ def test_runner_command_for_harbor_installs_the_pinned_harbor(tmp_path: Path) ->
     assert f"{run.VENV_VOLUME}-harbor:/opt/venv" in command
 
 
-HARBOR_VENV = {"harbor", "claude_agent_sdk", "pydantic", "pydantic_settings"}
+HARBOR_VENV = {"harbor", "claude_agent_sdk", "pydantic", "pydantic_settings", "yaml"}
 
 
 def harbor_side_imports(*roots: str) -> dict[str, set[str]]:

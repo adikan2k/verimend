@@ -41,11 +41,13 @@ from verimend.hooks.caps import CapError, estimate_batch_usd, require_batch_caps
 RUNNER_IMAGE = "verimend-bench-runner"
 VENV_VOLUME = "verimend-bench-venv"
 HARBOR_VERSION = "0.26.0"  # data-eng-bench's runner; see docs/spikes.md, phase 2 addendum
-# What the Harbor venv holds. Same versions as uv.lock for the two verimend needs.
+# What the Harbor venv holds. Same versions as uv.lock for what verimend needs there:
+# the SDK, settings, and PyYAML for the edit guard on YAML test blocks.
 HARBOR_VENV_PINS = (
     f"harbor=={HARBOR_VERSION}",
     "claude-agent-sdk==0.2.185",
     "pydantic-settings==2.16.3",
+    "pyyaml==6.0.3",
 )
 AGENT_TIMEOUT_SEC = 1200
 REPO_INSIDE = "/verimend"
