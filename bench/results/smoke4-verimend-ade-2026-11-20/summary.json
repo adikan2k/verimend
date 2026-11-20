@@ -1,0 +1,86 @@
+{
+  "batch": "smoke4-verimend-ade-2026-11-20",
+  "set": "dev",
+  "source": "ade-bench",
+  "source_commit": "c305600ebf17e7e7c4550bd401b6ddb530beb7c8",
+  "git_sha": "a944ea4",
+  "git_dirty": true,
+  "model": "claude-haiku-5-5",
+  "trials": 1,
+  "max_usd": 0.15,
+  "per_run_usd": 0.15,
+  "max_steps": 40,
+  "task_ids": [
+    "airbnb009"
+  ],
+  "max_attempts": 3,
+  "with_verifier": true,
+  "grader": "ade-bench",
+  "spent_usd": 0.0067157499999999995,
+  "agent": "verimend",
+  "metrics": {
+    "runs": 1,
+    "not_started": 0,
+    "tasks": 1,
+    "trials": 1,
+    "grader_pass_rate": 0.0,
+    "false_success_rate": 1.0,
+    "claimed_fixed": 1,
+    "outcomes": {
+      "true_fix": 0,
+      "false_success": 1,
+      "caught_by_verifier": 0,
+      "correct_escalation": 0,
+      "unneeded_escalation": 0,
+      "honest_failure": 0,
+      "no_claim": 0
+    },
+    "pass_rate_across_trials": {
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "stdev": 0.0
+    },
+    "false_success_rate_across_trials": {
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0,
+      "stdev": 0.0
+    },
+    "dollars": {
+      "total": 0.0067157499999999995,
+      "mean_per_run": 0.0067157499999999995,
+      "max_per_run": 0.0067157499999999995
+    },
+    "mean_seconds": 58.5,
+    "mean_steps": 19.0,
+    "hook_blocks": 0,
+    "largest_prompt_tokens": 15952,
+    "verifier": {
+      "runs_checked": 1,
+      "last_attempt_passed": 1,
+      "mean_attempts": 1.0,
+      "failed_checks": {}
+    }
+  },
+  "runs": [
+    {
+      "task": "airbnb009",
+      "trial": 1,
+      "claim": "fixed",
+      "grader_passed": false,
+      "outcome": "false_success",
+      "dollars": 0.0067157499999999995,
+      "seconds": 58.5,
+      "steps": 19,
+      "tool_calls": 16,
+      "hook_blocks": 0,
+      "largest_prompt_tokens": 15952,
+      "stopped": null,
+      "trace": "airbnb009/1.jsonl",
+      "attempts": 1,
+      "verifier_passed": true,
+      "failed_check": null
+    }
+  ]
+}
