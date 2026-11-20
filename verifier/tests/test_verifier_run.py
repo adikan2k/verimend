@@ -371,3 +371,23 @@ def test_a_fix_skipped_behind_an_old_failure_is_built_on_its_own(messy_snap):
 def test_a_skipped_fix_that_still_fails_on_its_own_is_rejected(messy_snap):
     result = run(messy_snap[0], STILL_BROKEN)
     assert result["failed_check"] == "clean_rebuild", result
+
+
+def test_collateral_rechecks_the_base_before_rejecting(messy_snap):
+    """A model the two calibration builds happened to agree on: forget that random_draw is
+    unstable, then verify the real fix. Collateral flags it, rebuilds the unchanged base,
+    sees it move there too, and passes; the snapshot remembers it from then on."""
+    work = messy_snap[0]
+    state_file = work / "state.json"
+    state = json.loads(state_file.read_text())
+    state["unstable"] = {}
+    state_file.write_text(json.dumps(state))
+    result = run(work, FIX)
+    assert result["passed"], result
+    assert (
+        "found 1 more unstable model(s): model.tiny_shop.random_draw"
+        in (result["checks"][-1]["detail"])
+    )
+    assert json.loads(state_file.read_text())["unstable"] == {
+        "model.tiny_shop.random_draw": "contents"
+    }

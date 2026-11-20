@@ -245,5 +245,29 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
     in_lineage = checks.lineage(changed, base_manifest, built_manifest)
     new_stats = table_stats(project.parent / "db" / state["db_name"], built_manifest, statuses)
     unstable = state.get("unstable") or {}
-    found.append(checks.collateral(state["stats"], new_stats, in_lineage, unstable))
+    collateral = checks.collateral(state["stats"], new_stats, in_lineage, unstable)
+    if not collateral.passed:
+        # Recheck before rejecting (decision 0004, with Aditya): two calibration builds can
+        # agree by chance on a model that only sometimes differs. Rebuild the unchanged base
+        # once more; whatever moves there too is unstable from now on.
+        again, dbt_again = _build_copy(work, "recheck", state, dbt_exe, timeout)
+        dbt_again.run(again, "build")
+        third = table_stats(again.parent / "db" / state["db_name"], base_manifest,
+                            node_statuses(again))  # fmt: skip
+        shutil.rmtree(work / "recheck", ignore_errors=True)
+        newly = {
+            uid: kind
+            for uid, kind in checks.unstable_models(state["stats"], third).items()
+            if unstable.get(uid) != kind and unstable.get(uid) != "rows"
+        }
+        if newly:
+            unstable = {**unstable, **newly}
+            state["unstable"] = unstable
+            (work / "state.json").write_text(json.dumps(state, indent=1), "utf-8")
+            collateral = checks.collateral(state["stats"], new_stats, in_lineage, unstable)
+            collateral.detail = (
+                f"{collateral.detail}; a rebuild of the unchanged base found "
+                f"{len(newly)} more unstable model(s): {', '.join(sorted(newly)[:5])}"
+            )[:1500]
+    found.append(collateral)
     return _result(found, started)
