@@ -10,11 +10,12 @@ from pathlib import Path
 from typing import Any
 
 from bench.agents import AgentSpec
-from bench.claims import Claim, parse_verdict
+from bench.claims import Claim, claim_from_report, parse_verdict
 from bench.claude_stream import parse_stream
 from bench.grade import Grade
 from bench.outcomes import RunResult, classify, summarize
 from bench.trace import Trace
+from verimend.runrecord import AgentRun
 
 REPORT_TEXT_CHARS = 2_000
 
@@ -30,6 +31,7 @@ class AgentRecord:
     run_cap_usd: float | None = None
     stopped: str | None = None  # "batch_cap" when the batch had no money left for it
     stream_log: str | None = None  # the baseline's Claude Code output
+    agent_run: AgentRun | None = None  # VeriMend's own record of the run
 
 
 def assemble_run(
@@ -40,6 +42,8 @@ def assemble_run(
     *,
     include_tests: bool = True,
 ) -> tuple[Trace, RunResult]:
+    if record.agent_run is not None:
+        return _assemble_verimend(record, record.agent_run, grade, spec, meta, include_tests)
     trace = Trace(record.task, record.trial)
     stream = parse_stream(record.stream_log) if record.stream_log is not None else None
     t = record.started
@@ -121,6 +125,96 @@ def assemble_run(
         tool_calls=tool_calls,
         hook_blocks=0,
         largest_prompt_tokens=largest,
+        stopped=stopped,
+        trace=f"{record.task}/{record.trial}.jsonl",
+    )
+    return trace, result
+
+
+def _assemble_verimend(
+    record: AgentRecord,
+    run: AgentRun,
+    grade: Grade | None,
+    spec: AgentSpec,
+    meta: dict[str, Any],
+    include_tests: bool,
+) -> tuple[Trace, RunResult]:
+    """VeriMend's trace: its own timed tool calls and hook blocks, and its report."""
+    trace = Trace(record.task, record.trial)
+    t = record.started
+    trace.add(
+        "run_start",
+        t=t,
+        agent=spec.name,
+        model=run.model,
+        git_sha=meta.get("git_sha"),
+        source=meta.get("source"),
+        source_commit=meta.get("source_commit"),
+        task=record.task,
+        trial=record.trial,
+        caps={"max_usd": record.run_cap_usd, "max_steps": meta.get("max_steps"), "max_attempts": 1},
+        prompt_sha=run.prompt_sha,
+        tools_offered=run.tools_offered,
+    )
+    for event in sorted(run.events, key=lambda e: e.get("t", 0.0)):
+        data = {k: v for k, v in event.items() if k not in {"event", "t"}}
+        trace.add(event["event"], t=event.get("t", t), **data)
+    for message_id, prompt_tokens in run.prompt_tokens.items():
+        trace.add("model_usage", t=t, message_id=message_id, prompt_tokens=prompt_tokens)
+
+    claim = claim_from_report(run.report)
+    trace.add(
+        "report",
+        t=t + (run.seconds or 0.0),
+        claim=str(claim),
+        verdict=run.report,
+        diffs=run.diffs,
+        text=run.final_text[-REPORT_TEXT_CHARS:] or None,
+    )
+    passed = bool(grade and grade.passed)
+    if grade is not None:
+        trace.add("grade", t=t, **grade.as_event(include_tests=include_tests))
+    else:
+        trace.add("grade", t=t, grader=meta.get("grader"), passed=False, failure_mode="missing")
+
+    if run.cost_usd is not None:
+        dollars, cost_source = run.cost_usd, "result_line"
+    else:  # no result: charge the whole cap, never assume it was cheaper
+        dollars, cost_source = float(record.run_cap_usd or 0.0), "run_cap_assumed"
+    outcome = classify(claim, passed)
+    stopped = record.stopped or (run.subtype if run.subtype != "success" else None)
+    if run.error:
+        stopped = stopped or "agent_error"
+    seconds = record.seconds if record.seconds is not None else run.seconds
+    trace.add(
+        "run_end",
+        t=t + (seconds or 0.0),
+        claim=str(claim),
+        grader_passed=passed,
+        outcome=str(outcome),
+        dollars=dollars,
+        cost_source=cost_source,
+        seconds=seconds,
+        steps=run.num_turns,
+        tool_calls=run.tool_calls,
+        hook_blocks=run.hook_blocks,
+        largest_prompt_tokens=run.largest_prompt_tokens,
+        stopped=stopped,
+        error=run.error,
+        model_usage=run.model_usage,
+    )
+    result = RunResult(
+        task=record.task,
+        trial=record.trial,
+        claim=claim,
+        grader_passed=passed,
+        outcome=outcome,
+        dollars=dollars,
+        seconds=seconds,
+        steps=run.num_turns,
+        tool_calls=run.tool_calls,
+        hook_blocks=run.hook_blocks,
+        largest_prompt_tokens=run.largest_prompt_tokens,
         stopped=stopped,
         trace=f"{record.task}/{record.trial}.jsonl",
     )

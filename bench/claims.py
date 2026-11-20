@@ -28,6 +28,15 @@ _VERDICT_LINE = re.compile(
 )
 
 
+def claim_from_report(report: dict[str, object] | None) -> Claim:
+    """VeriMend's claim: the verdict of its validated report, or none without one."""
+    verdict = (report or {}).get("verdict")
+    try:
+        return Claim(str(verdict)) if verdict is not None else Claim.NONE
+    except ValueError:
+        return Claim.NONE
+
+
 def parse_verdict(text: str | None) -> Claim:
     """The claim on the last VERDICT line of the text, or Claim.NONE."""
     matches = _VERDICT_LINE.findall(text or "")

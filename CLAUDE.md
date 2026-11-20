@@ -21,7 +21,8 @@ Phase 1 creates these. If one changes, update this list in the same commit.
 - Python lint and types: `uv run ruff check .` and `uv run pyright`
 - Fix a failed dbt project: `uv run verimend fix --project-dir demo/jaffle_shop --max-usd 0.25`
 - Verify any diff, no agent involved: `uv run verimend verify --project-dir demo/jaffle_shop --diff fix.diff`
-- Benchmark, development set only: `uv run python -m bench.run --agent verimend --set dev --limit 5 --max-usd 2`. Agents: `none`, `reference`, `baseline` (paid), `verimend` (phase 3). Add `--source data-eng-bench` for that benchmark (`none` and `reference` only, for now), `--trials 3`, `--tasks a,b` or `--dry-run`. Runs in the Linux runner (Docker Desktop).
+- Benchmark, development set only: `uv run python -m bench.run --agent verimend --set dev --limit 5 --max-usd 2`. Agents: `none`, `reference`, `baseline` (paid), `verimend` (paid). Add `--source data-eng-bench` for that benchmark, `--trials 3`, `--tasks a,b` or `--dry-run`. Runs in the Linux runner (Docker Desktop).
+- Results table from batch summaries: `uv run python scripts/results_table.py --out docs/results-dev.md --batch <name> --batch <name> ...`
 - Pre-split task check, no model calls: `uv run python scripts/validate_tasks.py --source ade-bench --limit 30 --max-usd 0.01` (or `--source data-eng-bench`)
 - The split, run by Aditya only: `uv run python scripts/split_bench.py --seed 1119 --validation bench/results/validate-2026-11-19/validation.json`
 - Site: `pnpm -C site dev`, `pnpm -C site lint`, `pnpm -C site typecheck`, `pnpm -C site test`

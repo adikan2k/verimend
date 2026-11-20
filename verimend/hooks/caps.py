@@ -8,6 +8,14 @@ Two layers:
 
 from dataclasses import dataclass
 
+# The SDK checks its dollar cap after each request, so a run can pass it by one request's
+# cost (docs/spikes.md, spike 1). The SDK gets this fraction of the run's real cap.
+SDK_BUDGET_FRACTION = 0.8
+
+
+def sdk_budget_usd(run_cap_usd: float) -> float:
+    return round(run_cap_usd * SDK_BUDGET_FRACTION, 4)
+
 
 class CapError(RuntimeError):
     """A paid loop was started without the caps it needs, or with unusable ones."""

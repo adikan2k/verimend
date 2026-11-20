@@ -41,6 +41,12 @@ from verimend.hooks.caps import CapError, estimate_batch_usd, require_batch_caps
 RUNNER_IMAGE = "verimend-bench-runner"
 VENV_VOLUME = "verimend-bench-venv"
 HARBOR_VERSION = "0.26.0"  # data-eng-bench's runner; see docs/spikes.md, phase 2 addendum
+# What the Harbor venv holds. Same versions as uv.lock for the two verimend needs.
+HARBOR_VENV_PINS = (
+    f"harbor=={HARBOR_VERSION}",
+    "claude-agent-sdk==0.2.185",
+    "pydantic-settings==2.16.3",
+)
 AGENT_TIMEOUT_SEC = 1200
 REPO_INSIDE = "/verimend"
 
@@ -117,12 +123,13 @@ def runner_command(
 ) -> list[str]:
     home_inside = docker_path(home)
     # ADE-bench is installed from its checkout next to verimend. Harbor comes from PyPI at
-    # the pinned version and alone: it cannot share a venv with dbt-core 1.10 (pathspec),
-    # and bench/harbor/ needs only the standard-library modules of bench/.
+    # the pinned version without verimend's own dependencies: it cannot share a venv with
+    # dbt-core 1.10 (pathspec). bench/ and verimend/ come from PYTHONPATH; the agents need
+    # only the Agent SDK and pydantic-settings on top of Harbor (approved for phase 3).
     if runner == "ade":
         install = f"-e . -e {REPO_INSIDE}/verifier -e {REPO_INSIDE}"
     else:
-        install = f"'harbor=={HARBOR_VERSION}'"
+        install = " ".join(f"'{pin}'" for pin in HARBOR_VENV_PINS)
     script = "\n".join(
         [
             "set -e",
@@ -231,6 +238,7 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
         "max_usd": max_usd,
         "per_run_usd": min(settings.max_usd_per_run, max_usd),
         "max_steps": settings.max_steps,
+        "agent_timeout_sec": AGENT_TIMEOUT_SEC,
         "task_ids": task_ids,
         "stage_dir": docker_path(stage),
         "results_dir": results_inside,
