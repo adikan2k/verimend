@@ -239,3 +239,25 @@ def test_harbor_workspace_runs_commands_in_the_project() -> None:
     assert command == "timeout 60 dbt build --select 'a b'"
     assert kwargs["cwd"] == "/app/dbt_models_duckdb"
     assert result.code == 0 and result.output == "ok"
+
+
+def test_harbor_config_wraps_nop_and_oracle_with_the_verifier() -> None:
+    batch = {"batch": "b", "trials": 1, "agent": "reference", "with_verifier": True}
+    (entry,) = harbor_config(batch, "/stage/batch.json")["agents"]
+    assert entry["import_path"] == "bench.harbor.agents:CheckedOracle"
+    (nop,) = harbor_config({**batch, "agent": "none"}, "x")["agents"]
+    assert nop["import_path"] == "bench.harbor.agents:CheckedNop"
+    (plain,) = harbor_config({**batch, "with_verifier": False}, "x")["agents"]
+    assert plain == {"name": "oracle"}
+
+
+def test_records_from_trials_carry_the_verifier(tmp_path: Path) -> None:
+    from bench.harbor.inner import TRIAL_DIR
+    from bench.harbor.records import write_record
+
+    trial_dir = tmp_path / "job" / "a__1"
+    checked = {"snapshot": {"ok": True}, "attempts": [{"passed": True}], "error": None}
+    write_record(trial_dir / "agent", run_cap_usd=None, seconds=3.0, verifier=checked)
+    with_dir = {**trial("a", "2026-11-19T10:01:00Z", 1.0), TRIAL_DIR: str(trial_dir)}
+    (record,) = records_from_trials([with_dir])
+    assert record.verifier == checked

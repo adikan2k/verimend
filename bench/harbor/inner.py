@@ -29,6 +29,10 @@ IMPORTED_AGENTS = {  # ours, loaded by Harbor from bench/harbor/agents.py
     "verimend": "bench.harbor.agents:VerimendHarborAgent",
     "baseline": "bench.harbor.agents:BaselineHarborAgent",
 }
+CHECKED_AGENTS = {  # nop and oracle with the verifier around them (--with-verifier)
+    "none": "bench.harbor.agents:CheckedNop",
+    "reference": "bench.harbor.agents:CheckedOracle",
+}
 BASE_IMAGE = "ghcr.io/snowflake-labs/data-eng-bench-base:1.0.0"
 
 
@@ -59,6 +63,7 @@ def records_from_trials(trials: list[dict[str, Any]]) -> list[AgentRecord]:
             record.run_cap_usd = ours.get("run_cap_usd")
             record.stopped = ours.get("stopped")
             record.stream_log = ours.get("stream_log")
+            record.verifier = ours.get("verifier")
             if ours.get("agent_run") is not None:
                 record.agent_run = AgentRun.from_dict(ours["agent_run"])
             if ours.get("seconds") is not None:
@@ -69,9 +74,12 @@ def records_from_trials(trials: list[dict[str, Any]]) -> list[AgentRecord]:
 
 def harbor_config(batch: dict[str, Any], batch_file: str = "") -> dict[str, Any]:
     agent = batch["agent"]
-    if agent in IMPORTED_AGENTS:
+    imported = dict(IMPORTED_AGENTS)
+    if batch.get("with_verifier"):
+        imported.update(CHECKED_AGENTS)
+    if agent in imported:
         entry: dict[str, Any] = {
-            "import_path": IMPORTED_AGENTS[agent],
+            "import_path": imported[agent],
             "kwargs": {"batch_file": batch_file},
             "override_timeout_sec": float(batch.get("agent_timeout_sec", 1200)),
         }
@@ -122,6 +130,8 @@ def main(batch_path: Path) -> int:
     meta = {key: batch[key] for key in ("batch", "set", "source", "source_commit", "git_sha",
                                         "git_dirty", "model", "trials", "max_usd",
                                         "per_run_usd", "max_steps", "task_ids")}  # fmt: skip
+    meta["max_attempts"] = batch.get("max_attempts", 1)
+    meta["with_verifier"] = batch.get("with_verifier", False)
     meta["grader"] = "data-eng-bench"
     meta["spent_usd"] = Ledger(stage / "ledger.json", batch["max_usd"]).spent_usd()
     summary = write_batch(
@@ -138,6 +148,11 @@ def main(batch_path: Path) -> int:
         print(
             f"{run['task']:48} trial {run['trial']}  grader={grader}  claim={run['claim']}"
             f"  ${run['dollars']:.4f}"
+            + (
+                f"  verifier={run['failed_check'] or 'pass'} x{run['attempts']}"
+                if run["attempts"]
+                else ""
+            )
         )
     print(f"grader pass rate {summary['metrics']['grader_pass_rate']}", flush=True)
     return 0

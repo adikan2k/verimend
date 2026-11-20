@@ -14,7 +14,8 @@ def batch(results: Path, name: str, agent: str, source: str, passed: list[bool])
     for i, ok in enumerate(passed):
         task = f"{source}-t{i}"  # task names never repeat across benchmarks
         run = AgentRun(model="m", prompt_sha="s", report={"verdict": "fixed"}, cost_usd=0.01,
-                       num_turns=10, subtype="success", seconds=20.0)  # fmt: skip
+                       num_turns=10, subtype="success", seconds=20.0,
+                       final_verdict="fixed")  # fmt: skip
         records.append(AgentRecord(task, 1, 0.0, 20.0, run_cap_usd=0.25,
                                    agent_run=run if agent == "verimend" else None))  # fmt: skip
         grades.append(Grade(task_id=task, trial=1, passed=ok, grader="g"))

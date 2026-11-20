@@ -49,7 +49,11 @@ HARBOR_VENV_PINS = (
     "pydantic-settings==2.16.3",
     "pyyaml==6.0.3",
 )
-AGENT_TIMEOUT_SEC = 1200
+# Phase 4: the verifier's snapshot and up to three verifier builds come on top of the agent;
+# on data-eng-bench each full build takes about 2.5 minutes.
+AGENT_TIMEOUT_SEC = 2400
+# The free agents the verifier can be run on, to measure its false rejections.
+VERIFIER_CHECKED_AGENTS = ("none", "reference")
 REPO_INSIDE = "/verimend"
 
 
@@ -66,6 +70,11 @@ def parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument("--max-usd", type=float, help="dollar cap for the batch (required)")
     parser.add_argument("--batch", help="batch name; default: <agent>-<set>-<timestamp>")
     parser.add_argument("--dry-run", action="store_true", help="print the plan, run nothing")
+    parser.add_argument(
+        "--with-verifier",
+        action="store_true",
+        help="also run the verifier on what none or reference leaves (no model calls)",
+    )
     return parser.parse_args(argv)
 
 
@@ -194,6 +203,11 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
         limit, max_usd = require_batch_caps(args.limit, args.max_usd)
         if args.trials < 1:
             raise CapError("--trials must be at least 1")
+        if args.with_verifier and spec.name not in VERIFIER_CHECKED_AGENTS:
+            raise TaskSetError(
+                "--with-verifier is for none and reference; VeriMend always runs its verifier "
+                "and the baseline never does."
+            )
         settings = load_settings()
         if spec.model_calls:
             settings.require_api_key()
@@ -244,6 +258,8 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
         "max_usd": max_usd,
         "per_run_usd": min(settings.max_usd_per_run, max_usd),
         "max_steps": settings.max_steps,
+        "max_attempts": settings.max_attempts if spec.name == "verimend" else 1,
+        "with_verifier": spec.name == "verimend" or bool(args.with_verifier),
         "agent_timeout_sec": AGENT_TIMEOUT_SEC,
         "task_ids": task_ids,
         "stage_dir": docker_path(stage),

@@ -188,3 +188,13 @@ def test_agent_registry() -> None:
     assert get_agent("baseline").fixed_claim() is None
     with pytest.raises(KeyError):
         get_agent("gpt")
+
+
+@pytest.mark.parametrize("agent", ["verimend", "baseline"])
+def test_with_verifier_is_only_for_the_free_agents(
+    agent: str, capsys: pytest.CaptureFixture[str]
+) -> None:
+    argv = ["--agent", agent, "--set", "dev", "--limit", "1", "--max-usd", "1",
+            "--with-verifier", "--dry-run"]  # fmt: skip
+    assert run.main(argv, env={}) == 2
+    assert "--with-verifier is for none and reference" in capsys.readouterr().err

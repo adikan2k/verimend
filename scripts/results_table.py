@@ -62,6 +62,7 @@ def row(agent: str, source: str, metrics: dict[str, Any], links: list[str]) -> s
         across,
         pct(metrics["false_success_rate"]),
         str(metrics["claimed_fixed"]),
+        verifier_cell(metrics),
         f"{money(dollars['mean_per_run'])} / {money(dollars['max_per_run'])}",
         number(metrics["mean_seconds"]),
         number(metrics["mean_steps"], 1),
@@ -71,11 +72,24 @@ def row(agent: str, source: str, metrics: dict[str, Any], links: list[str]) -> s
     return "| " + " | ".join(cells) + " |"
 
 
+def verifier_cell(metrics: dict[str, Any]) -> str:
+    """Caught by the verifier, and how the verifier decided on the runs it checked."""
+    checked = metrics.get("verifier")
+    if not checked:
+        return "n/a"
+    caught = metrics["outcomes"].get("caught_by_verifier", 0)
+    attempts = number(checked["mean_attempts"], 1)
+    return (
+        f"{caught} caught; passed {checked['last_attempt_passed']} of "
+        f"{checked['runs_checked']}; {attempts} attempts"
+    )
+
+
 HEADER = [
     "| Agent | Benchmark | Runs (tasks × trials) | Grader pass rate | Across trials "
-    "| False-success rate | Claimed fixed | $ per run (mean / max) | Seconds per run "
-    "| Steps | Hook blocks | Data |",
-    "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+    "| False-success rate | Claimed fixed | Verifier | $ per run (mean / max) "
+    "| Seconds per run | Steps | Hook blocks | Data |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
 ]
 
 
@@ -130,8 +144,12 @@ def main(argv: list[str] | None = None) -> int:
         build_table(batches, prefix),
         "",
         "- **Grader pass rate:** share of runs the benchmark's hidden checks passed.",
-        "- **False-success rate:** share of runs where the agent claimed `fixed` and the "
-        "grader failed. In phase 3 VeriMend has no verifier yet.",
+        "- **False-success rate:** share of runs whose final answer was `fixed` and the "
+        "grader failed. For VeriMend the final answer is `fixed` only once the verifier passed "
+        "it; the baseline has no verifier, so its own claim counts.",
+        "- **Verifier:** runs the verifier rejected on every attempt (caught), how many "
+        "runs' last verifier check passed, and the mean number of verifier runs. "
+        "For `none` and `reference` it is a measure of the verifier itself, with no agent.",
         "- **Across trials:** lowest and highest pass rate of a single trial.",
         "",
     ]

@@ -114,7 +114,7 @@ def test_traces_can_leave_test_names_out(tmp_path: Path) -> None:
 def verimend_run(verdict: str | None, cost: float | None, **extra: object) -> AgentRun:
     report = None if verdict is None else {"verdict": verdict, "root_cause": {}}
     run = AgentRun(model="claude-haiku-5-5", prompt_sha="sha", report=report, cost_usd=cost,
-                   num_turns=9, subtype="success", seconds=12.0,
+                   num_turns=9, subtype="success", seconds=12.0, final_verdict=verdict,
                    prompt_tokens={"m1": 1000, "m2": 3000})  # fmt: skip
     run.events = [
         {"event": "tool_call", "t": 5.0, "name": "read_failure", "arguments": {},
@@ -155,3 +155,67 @@ def test_verimend_trace_claim_and_cost_come_from_its_record(tmp_path: Path) -> N
     assert events[0]["prompt_sha"] == "sha"
     (report,) = [e for e in events if e["event"] == "report"]
     assert report["verdict"]["verdict"] == "fixed"
+
+
+# --- the verifier loop (phase 4) ---------------------------------------------------------
+
+
+def attempt(n: int, passed: bool, check: str | None = None) -> dict:
+    return {"attempt": n, "passed": passed, "failed_check": check, "duration_s": 3.0,
+            "checks": [{"name": check or "collateral", "passed": passed, "detail": "d"}],
+            "diff": "--- a/x\n+++ b/x\n"}  # fmt: skip
+
+
+def test_verimend_claim_is_the_final_verdict_after_the_verifier(tmp_path: Path) -> None:
+    rejected = [attempt(1, False, "masking"), attempt(2, False, "clean_rebuild"),
+                attempt(3, False, "tamper")]  # fmt: skip
+    records = [
+        # Rejected three times: the agent said fixed, the run says not fixed. Caught.
+        AgentRecord("a", 1, 1.0, 20.0, run_cap_usd=0.25,
+                    agent_run=verimend_run("not_fixed", 0.02, attempts=rejected,
+                                           report={"verdict": "fixed"})),
+        # Passed on the second attempt, the grader still fails it: a false success.
+        AgentRecord("b", 1, 1.0, 20.0, run_cap_usd=0.25,
+                    agent_run=verimend_run("fixed", 0.02,
+                                           attempts=[attempt(1, False, "masking"),
+                                                     attempt(2, True)])),
+        # The verifier could not run: a harness problem, recorded as such.
+        AgentRecord("c", 1, 1.0, 20.0, run_cap_usd=0.25,
+                    agent_run=verimend_run(None, 0.01, verifier_error="snapshot failed: x")),
+    ]  # fmt: skip
+    grades = [grade("a", 1, False), grade("b", 1, False), grade("c", 1, False)]
+    meta = {**META, "max_attempts": 3}
+    summary = write_batch(tmp_path, records, grades, get_agent("verimend"), meta)
+    a, b, c = summary["runs"]
+    assert (a["claim"], a["outcome"], a["attempts"]) == ("not_fixed", "caught_by_verifier", 3)
+    assert a["verifier_passed"] is False and a["failed_check"] == "tamper"
+    assert (b["claim"], b["outcome"], b["attempts"]) == ("fixed", "false_success", 2)
+    assert b["verifier_passed"] is True
+    assert (c["claim"], c["stopped"], c["attempts"]) == ("none", "verifier_error", 0)
+    metrics = summary["metrics"]
+    assert metrics["outcomes"]["caught_by_verifier"] == 1
+    expected = {"runs_checked": 2, "last_attempt_passed": 1, "mean_attempts": 2.5,
+                "failed_checks": {"tamper": 1}}  # fmt: skip
+    assert metrics["verifier"] == expected
+    events = read_trace(tmp_path / "a" / "1.jsonl")
+    ends = [e for e in events if e["event"] == "attempt_end"]
+    assert [e["failed_check"] for e in ends] == ["masking", "clean_rebuild", "tamper"]
+    assert events[0]["caps"]["max_attempts"] == 3
+    assert events[-1]["event"] == "run_end" and events[-1]["outcome"] == "caught_by_verifier"
+
+
+def test_free_agents_carry_the_verifiers_decision(tmp_path: Path) -> None:
+    checked = {"snapshot": {"ok": True, "base_failures": [], "nodes": 5, "duration_s": 2.0},
+               "attempts": [attempt(1, True)], "error": None}  # fmt: skip
+    empty = {"snapshot": checked["snapshot"], "attempts": [attempt(1, False, "empty_diff")],
+             "error": None}  # fmt: skip
+    records = [AgentRecord("a", 1, 1.0, 5.0, verifier=checked)]
+    summary = write_batch(tmp_path, records, [grade("a", 1, True)], get_agent("reference"), META)
+    (run,) = summary["runs"]
+    assert run["claim"] == "fixed" and run["verifier_passed"] is True and run["attempts"] == 1
+    events = read_trace(tmp_path / "a" / "1.jsonl")
+    assert events[0]["verifier_snapshot"]["nodes"] == 5
+    assert [e["event"] for e in events].count("attempt_end") == 1
+    nothing = write_batch(tmp_path / "n", [AgentRecord("a", 1, 1.0, 5.0, verifier=empty)],
+                          [grade("a", 1, False)], get_agent("none"), META)  # fmt: skip
+    assert nothing["metrics"]["verifier"]["failed_checks"] == {"empty_diff": 1}
