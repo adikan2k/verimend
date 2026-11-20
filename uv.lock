@@ -1720,6 +1720,16 @@ dev = [
 name = "verimend-verifier"
 version = "0.1.0"
 source = { editable = "verifier" }
+dependencies = [
+    { name = "duckdb" },
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "duckdb", specifier = ">=1.1" },
+    { name = "pyyaml", specifier = ">=6.0.1,<7" },
+]
 
 [[package]]
 name = "zipp"
