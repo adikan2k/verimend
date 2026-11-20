@@ -126,3 +126,11 @@ def test_creating_a_file_that_exists_is_refused(tmp_path: Path):
     write(tmp_path, {"a.sql": "x\n"})
     with pytest.raises(DiffError, match="already exists"):
         apply_diff(tmp_path, parse_diff("--- /dev/null\n+++ b/a.sql\n@@ -0,0 +1 @@\n+y\n"))
+
+
+def test_a_changed_connection_profile_is_left_out_of_a_computed_diff(tmp_path: Path):
+    base, changed = tmp_path / "base", tmp_path / "changed"
+    write(base, {"profiles.yml": "path: ../db.duckdb\n", "models/a.sql": "x\n"})
+    write(changed, {"profiles.yml": "path: /app/db.duckdb\n", "models/a.sql": "y\n"})
+    diff = make_diff(base, changed)
+    assert "models/a.sql" in diff and "profiles.yml" not in diff

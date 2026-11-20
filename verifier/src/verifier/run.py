@@ -94,15 +94,24 @@ def snapshot(
     code, output = dbt.run(project, "build")
     statuses = node_statuses(project)
     manifest = read_json(project / "target" / "manifest.json")
-    if manifest is None:
-        raise VerifierError(f"the base project does not parse: {output[-800:]}")
-    (work / "base" / "manifest.json").write_text(json.dumps(manifest), "utf-8")
+    # A project that does not even parse is a real failed run (a compile error can be the
+    # bug). Then there is no base manifest and no base build: the checks fall back to the
+    # base's source files, and collateral has nothing to compare against.
+    state["base_parsed"] = manifest is not None
+    if manifest is not None:
+        (work / "base" / "manifest.json").write_text(json.dumps(manifest), "utf-8")
     state["statuses"] = statuses
-    state["stats"] = table_stats(project.parent / "db" / state["db_name"], manifest, statuses)
+    state["stats"] = (
+        table_stats(project.parent / "db" / state["db_name"], manifest, statuses)
+        if manifest is not None
+        else {}
+    )
     (work / "state.json").write_text(json.dumps(state, indent=1), "utf-8")
     failures = sorted(uid for uid, s in statuses.items() if s["status"] in FAILED_STATUSES)
     return {
         "ok": True,
+        "base_parsed": state["base_parsed"],
+        "base_parse_error": None if manifest is not None else output.strip()[-600:],
         "base_failures": failures,
         "nodes": len(statuses),
         "duration_s": round(time.monotonic() - started, 1),
@@ -129,8 +138,9 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
     started = time.monotonic()
     state = read_json(work / "state.json")
     base_manifest = read_json(work / "base" / "manifest.json")
-    if state is None or base_manifest is None:
+    if state is None or (base_manifest is None and state.get("base_parsed", True)):
         raise VerifierError(f"no snapshot in {work} (run snapshot first)")
+    base_project = work / "base" / "project"
 
     if not diff_text.strip():
         empty = checks.Check("empty_diff", False, "The diff changes nothing.")
@@ -170,12 +180,20 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
         return _result(found, started)
 
     # Tamper has two halves, the paths and the tests; report them as one check.
-    tests = checks.tamper_tests(base_manifest, new_manifest)
+    if base_manifest is not None:
+        tests = checks.tamper_tests(base_manifest, new_manifest)
+    else:
+        tests = checks.tamper_tests_from_source(base_project, project, state["paths"])
     found[0] = checks.Check("tamper", tests.passed, f"{found[0].detail}; {tests.detail}")
     if not tests.passed:
         found[0].detail = tests.detail
         return _result(found, started)
-    found.append(checks.masking(base_manifest, new_manifest, patches))
+    if base_manifest is not None:
+        found.append(checks.masking(base_manifest, new_manifest, patches))
+    else:
+        found.append(
+            checks.masking_from_source(base_project, new_manifest, patches, state["paths"])
+        )
     if not found[-1].passed:
         return _result(found, started)
 
@@ -185,6 +203,9 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
     if not found[-1].passed:
         return _result(found, started)
 
+    if base_manifest is None:
+        found.append(checks.Check("collateral", True, checks.NO_BASE_BUILD))
+        return _result(found, started)
     built_manifest = read_json(project / "target" / "manifest.json") or new_manifest
     vars_changed = project_vars(project) != state.get("vars")
     changed = checks.changed_nodes(base_manifest, built_manifest, vars_changed)

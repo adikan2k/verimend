@@ -258,3 +258,69 @@ def test_read_profile_takes_an_explicit_target_over_a_templated_one(tmp_path: Pa
     }
     profile = read_profile(FIXTURE, profiles_dir(tmp_path, templated), "ci")
     assert profile.target == "ci"
+
+
+# ---- a base that does not parse (the compile error is the bug) ------------------------
+
+UNPARSEABLE = (
+    "select customer_id, sum(amount) as total_amount\n"
+    "from {{ ref('stg_orders' }}\n"
+    "group by customer_id\n"
+)
+PARSE_FIX = """\
+--- a/models/marts/customer_totals.sql
++++ b/models/marts/customer_totals.sql
+@@ -1,3 +1,3 @@
+ select customer_id, sum(amount) as total_amount
+-from {{ ref('stg_orders' }}
++from {{ ref('stg_orders') }}
+ group by customer_id
+"""
+
+
+@pytest.fixture(scope="module")
+def broken_snap(tmp_path_factory: pytest.TempPathFactory) -> tuple[Path, dict]:
+    root = tmp_path_factory.mktemp("unparseable")
+    project = root / "project"
+    shutil.copytree(FIXTURE, project)
+    (project / "models/marts/customer_totals.sql").write_text(UNPARSEABLE)
+    work = root / "work"
+    return work, snapshot(project, project / "shop.duckdb", work, dbt_exe=DBT)
+
+
+def test_a_base_that_does_not_parse_is_snapshotted_without_a_manifest(broken_snap):
+    work, taken = broken_snap
+    assert taken["ok"] and taken["base_parsed"] is False and taken["base_parse_error"]
+    assert not (work / "base" / "manifest.json").exists()
+
+
+def test_the_fix_of_a_parse_error_passes_and_collateral_says_why_it_compared_nothing(
+    broken_snap,
+):
+    result = run(broken_snap[0], PARSE_FIX)
+    assert result["passed"], result
+    collateral = result["checks"][-1]
+    assert collateral["name"] == "collateral" and "did not parse" in collateral["detail"]
+
+
+@pytest.mark.parametrize(
+    ("extra", "failed_check", "words"),
+    [
+        (DELETE_TEST, "tamper", "stg_orders.order_id"),
+        (
+            "--- a/models/marts/order_count.sql\n+++ /dev/null\n@@ -1,3 +0,0 @@\n"
+            "--- Outside customer_totals' lineage: the collateral-damage check compares it.\n"
+            "-{{ config(materialized='table') }}\n"
+            "-select count(*) as orders from {{ ref('raw_orders') }}\n",
+            "masking",
+            "model order_count was disabled or removed",
+        ),
+    ],
+)
+def test_without_a_base_manifest_tamper_and_masking_read_the_source(
+    broken_snap, extra, failed_check, words
+):
+    result = run(broken_snap[0], PARSE_FIX + extra)
+    assert result["failed_check"] == failed_check, result
+    failing = next(c for c in result["checks"] if not c["passed"])
+    assert words in failing["detail"]

@@ -20,6 +20,9 @@ NO_NEWLINE = "\\ No newline at end of file"
 SKIP_DIRS = frozenset({"target", "logs", ".git", "__pycache__", ".venv", "node_modules"})
 SKIP_SUFFIXES = (".duckdb", ".duckdb.wal", ".pyc")
 SKIP_FILES = frozenset({".user.yml", "package-lock.yml"})
+# The connection, not the code: left out of a computed diff (decision 0004). The verifier
+# never builds with the project's own profiles.yml; it writes one pointed at its copy.
+ENVIRONMENT_FILES = frozenset({"profiles.yml"})
 
 _HUNK = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@")
 
@@ -71,7 +74,7 @@ def project_files(root: Path) -> dict[str, Path]:
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = sorted(d for d in dirnames if d not in SKIP_DIRS)
         for name in sorted(filenames):
-            if name in SKIP_FILES or name.endswith(SKIP_SUFFIXES):
+            if name in SKIP_FILES or name in ENVIRONMENT_FILES or name.endswith(SKIP_SUFFIXES):
                 continue
             path = Path(dirpath) / name
             found[path.relative_to(root).as_posix()] = path
