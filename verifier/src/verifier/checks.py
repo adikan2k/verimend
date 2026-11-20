@@ -198,18 +198,11 @@ def clean_rebuild(
     projects never build cleanly (data-eng-bench fails 293 nodes before any change). Those
     are listed. Without a base build every node must pass.
     """
-    must_pass = downstream or set()
-    failed: list[str] = []
-    excused: list[str] = []
-    for uid, info in statuses.items():
-        if info["status"] not in FAILED_STATUSES:
-            continue
-        before = (base_statuses or {}).get(uid, {}).get("status")
-        line = f"{uid} {info['status']}: {info['message']}".rstrip(": ")
-        if base_statuses is not None and before in FAILED_STATUSES and uid not in must_pass:
-            excused.append(uid)
-        else:
-            failed.append(line)
+    failing, excused = _sort_failures(statuses, base_statuses, downstream)
+    failed = [
+        f"{uid} {statuses[uid]['status']}: {statuses[uid]['message']}".rstrip(": ")
+        for uid in failing
+    ]
     if failed:
         return Check("clean_rebuild", False, "dbt build failed: " + _listed(failed))
     if not statuses or (code != 0 and not excused):
@@ -222,6 +215,59 @@ def clean_rebuild(
             f"of it, still fail: {_listed(sorted(excused))}"
         )
     return Check("clean_rebuild", True, detail[:1500])
+
+
+def _sort_failures(
+    statuses: dict[str, dict[str, str]],
+    base_statuses: dict[str, dict[str, str]] | None,
+    downstream: set[str] | None,
+) -> tuple[list[str], list[str]]:
+    """(failures that count, old failures outside the fix that are excused)."""
+    must_pass = downstream or set()
+    failing: list[str] = []
+    excused: list[str] = []
+    for uid, info in statuses.items():
+        if info["status"] not in FAILED_STATUSES:
+            continue
+        before = (base_statuses or {}).get(uid, {}).get("status")
+        if base_statuses is not None and before in FAILED_STATUSES and uid not in must_pass:
+            excused.append(uid)
+        else:
+            failing.append(uid)
+    return failing, excused
+
+
+def skipped_behind_old_failures(
+    statuses: dict[str, dict[str, str]],
+    base_statuses: dict[str, dict[str, str]] | None,
+    downstream: set[str] | None,
+) -> list[str]:
+    """Nodes the fix must pass that the full build skipped, when skips are the only
+    failures that count: something upstream that already failed blocked them, so the
+    full build never judged the fix. Empty when anything really failed."""
+    if base_statuses is None:
+        return []
+    failing, _ = _sort_failures(statuses, base_statuses, downstream)
+    if failing and all(statuses[uid]["status"] == "skipped" for uid in failing):
+        return sorted(failing)
+    return []
+
+
+def selectable_names(uids: list[str], manifest: dict[str, Any]) -> list[str]:
+    """dbt --select names for these nodes: models, seeds and snapshots by name, and a
+    test by the nodes it tests (dbt build runs a selected node's tests with it)."""
+    nodes = manifest.get("nodes", {})
+    names: set[str] = set()
+    for uid in uids:
+        node = nodes.get(uid) or {}
+        if node.get("resource_type") in BUILT_TYPES:
+            names.add(str(node["name"]))
+        elif node.get("resource_type") == "test":
+            for parent in (node.get("depends_on") or {}).get("nodes") or []:
+                parent_node = nodes.get(parent) or {}
+                if parent_node.get("resource_type") in BUILT_TYPES:
+                    names.add(str(parent_node["name"]))
+    return sorted(names)
 
 
 def downstream_of(changed: set[str], manifest: dict[str, Any]) -> set[str]:
@@ -275,13 +321,38 @@ def lineage(changed: set[str], base: dict[str, Any], new: dict[str, Any]) -> set
     return reached
 
 
+def unstable_models(first: dict[str, Any], second: dict[str, Any]) -> dict[str, str]:
+    """Models that differ between two builds of the same unchanged project: "contents"
+    when only the checksum moved, "rows" when even the row count did."""
+    unstable: dict[str, str] = {}
+    for uid, a in first.items():
+        b = second.get(uid)
+        if a is None or b is None:
+            continue
+        if a[0] != b[0]:
+            unstable[uid] = "rows"
+        elif a[1] != b[1]:
+            unstable[uid] = "contents"
+    return unstable
+
+
 def collateral(
-    base_stats: dict[str, Any], new_stats: dict[str, Any], in_lineage: set[str]
+    base_stats: dict[str, Any],
+    new_stats: dict[str, Any],
+    in_lineage: set[str],
+    unstable: dict[str, str] | None = None,
 ) -> Check:
-    compared = 0
+    """Models outside the fix's lineage keep their row count and checksum. A model that
+    is unstable between two identical builds is compared by row count only, or not at all
+    if its row count moves too; the detail says how many."""
+    unstable = unstable or {}
+    compared = by_count = skipped = 0
     problems: list[str] = []
     for uid, before in sorted(base_stats.items()):
         if uid in in_lineage or before is None:
+            continue
+        if unstable.get(uid) == "rows":
+            skipped += 1
             continue
         compared += 1
         after = new_stats.get(uid)
@@ -289,6 +360,8 @@ def collateral(
             problems.append(f"{uid} could not be read after the fix")
         elif after[0] != before[0]:
             problems.append(f"{uid} rows {before[0]} -> {after[0]}")
+        elif unstable.get(uid) == "contents":
+            by_count += 1
         elif after[1] != before[1]:
             problems.append(f"{uid} same row count, different contents")
     if problems:
@@ -297,7 +370,13 @@ def collateral(
             False,
             "Models outside the fix's lineage changed: " + _listed(problems),
         )
-    return Check("collateral", True, f"{compared} model(s) outside the lineage unchanged")
+    detail = f"{compared} model(s) outside the lineage unchanged"
+    if by_count or skipped:
+        detail += (
+            f" ({by_count} compared by row count only and {skipped} not compared, because "
+            "they differ between two builds of the unchanged project)"
+        )
+    return Check("collateral", True, detail)
 
 
 # ---- When the base does not parse --------------------------------------------------

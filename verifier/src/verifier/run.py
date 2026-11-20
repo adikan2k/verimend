@@ -106,6 +106,17 @@ def snapshot(
         if manifest is not None
         else {}
     )
+    # Calibration (decision 0004, with Aditya): build the unchanged base a second time on a
+    # fresh copy. A model whose contents differ between two identical builds is unstable
+    # (timestamps, random values); collateral compares only its row count, or nothing if
+    # even that moves.
+    state["unstable"] = {}
+    if manifest is not None:
+        again, dbt_again = _build_copy(work, "base-build-2", state, dbt_exe, timeout)
+        dbt_again.run(again, "build")
+        second = table_stats(again.parent / "db" / state["db_name"], manifest, node_statuses(again))
+        state["unstable"] = checks.unstable_models(state["stats"], second)
+        shutil.rmtree(work / "base-build-2", ignore_errors=True)
     (work / "state.json").write_text(json.dumps(state, indent=1), "utf-8")
     failures = sorted(uid for uid, s in statuses.items() if s["status"] in FAILED_STATUSES)
     return {
@@ -113,6 +124,7 @@ def snapshot(
         "base_parsed": state["base_parsed"],
         "base_parse_error": None if manifest is not None else output.strip()[-600:],
         "base_failures": failures,
+        "unstable_models": len(state["unstable"]),
         "nodes": len(statuses),
         "duration_s": round(time.monotonic() - started, 1),
     }
@@ -207,7 +219,21 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
 
     code, output = dbt.run(project, "build")
     statuses = node_statuses(project)
-    found.append(checks.clean_rebuild(code, statuses, output, base_statuses, downstream))
+    rebuild = checks.clean_rebuild(code, statuses, output, base_statuses, downstream)
+    skipped = checks.skipped_behind_old_failures(statuses, base_statuses, downstream)
+    if not rebuild.passed and skipped:
+        # Nodes the fix must pass were skipped only because something upstream already
+        # failed before the change. Build them on their own, against the tables the full
+        # build left, and judge that (decision 0004, with Aditya).
+        names = checks.selectable_names(skipped, new_manifest)
+        code, output = dbt.run(project, "build", "--select", *names)
+        statuses = {**statuses, **node_statuses(project)}
+        rebuild = checks.clean_rebuild(code, statuses, output, base_statuses, downstream)
+        rebuild.detail = (
+            f"{rebuild.detail}; {len(skipped)} node(s) skipped behind an old failure "
+            "upstream were built on their own"
+        )[:1500]
+    found.append(rebuild)
     if not found[-1].passed:
         return _result(found, started)
 
@@ -218,5 +244,6 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
     changed = checks.changed_nodes(base_manifest, built_manifest, vars_changed)
     in_lineage = checks.lineage(changed, base_manifest, built_manifest)
     new_stats = table_stats(project.parent / "db" / state["db_name"], built_manifest, statuses)
-    found.append(checks.collateral(state["stats"], new_stats, in_lineage))
+    unstable = state.get("unstable") or {}
+    found.append(checks.collateral(state["stats"], new_stats, in_lineage, unstable))
     return _result(found, started)

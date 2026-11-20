@@ -263,3 +263,49 @@ def test_clean_rebuild_excuses_only_old_failures_outside_the_fix():
 def test_downstream_of_follows_children_only():
     manifest = lineage_manifest()
     assert checks.downstream_of({"model.p.stg"}, manifest) == {"model.p.stg", "model.p.totals"}
+
+
+def test_unstable_models_and_collateral_by_row_count():
+    first = {"model.p.a": [3, "h1"], "model.p.clock": [1, "t1"], "model.p.sample": [5, "s"]}
+    second = {"model.p.a": [3, "h1"], "model.p.clock": [1, "t2"], "model.p.sample": [4, "s2"]}
+    unstable = checks.unstable_models(first, second)
+    assert unstable == {"model.p.clock": "contents", "model.p.sample": "rows"}
+    after = {"model.p.a": [3, "h1"], "model.p.clock": [1, "t3"], "model.p.sample": [9, "x"]}
+    check = checks.collateral(first, after, set(), unstable)
+    assert check.passed and "1 compared by row count only and 1 not compared" in check.detail
+    # An unstable model still fails on a changed row count, and a stable one on contents.
+    assert not checks.collateral(
+        first, {**after, "model.p.clock": [0, "t"]}, set(), unstable
+    ).passed
+    assert not checks.collateral(first, {**after, "model.p.a": [3, "h9"]}, set(), unstable).passed
+
+
+def test_skipped_behind_old_failures_only_when_skips_are_all_that_fails():
+    base = {"test.p.old": status("fail"), "model.p.fixed": status("error")}
+    downstream = {"model.p.fixed", "test.p.fixed_unique"}
+    skipped = {"test.p.old": status("fail"), "model.p.fixed": status("skipped"),
+               "test.p.fixed_unique": status("skipped")}  # fmt: skip
+    assert checks.skipped_behind_old_failures(skipped, base, downstream) == [
+        "model.p.fixed",
+        "test.p.fixed_unique",
+    ]
+    really_failed = {**skipped, "model.p.fixed": status("error")}
+    assert checks.skipped_behind_old_failures(really_failed, base, downstream) == []
+    assert checks.skipped_behind_old_failures(skipped, None, downstream) == []
+
+
+def test_selectable_names_reach_tests_through_their_models():
+    manifest = {
+        "nodes": {
+            "model.p.fixed": {"resource_type": "model", "name": "fixed"},
+            "test.p.fixed_unique": {
+                "resource_type": "test",
+                "name": "fixed_unique",
+                "depends_on": {"nodes": ["model.p.fixed"]},
+            },
+            "test.p.other": {"resource_type": "test", "depends_on": {"nodes": ["model.p.b"]}},
+            "model.p.b": {"resource_type": "model", "name": "b"},
+        }
+    }
+    assert checks.selectable_names(["model.p.fixed", "test.p.fixed_unique"], manifest) == ["fixed"]
+    assert checks.selectable_names(["test.p.other"], manifest) == ["b"]

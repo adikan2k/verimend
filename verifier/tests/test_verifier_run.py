@@ -324,3 +324,50 @@ def test_without_a_base_manifest_tamper_and_masking_read_the_source(
     assert result["failed_check"] == failed_check, result
     failing = next(c for c in result["checks"] if not c["passed"])
     assert words in failing["detail"]
+
+
+# ---- projects that never build cleanly or never build the same way twice ---------------
+
+OLD_FAILING_TEST = """\
+      - name: customer_id
+        data_tests:
+          - accepted_values:
+              values: [10, 11]
+"""
+
+
+@pytest.fixture(scope="module")
+def messy_snap(tmp_path_factory: pytest.TempPathFactory) -> tuple[Path, dict]:
+    """The fixture plus a test on stg_orders that already fails (customer 12 exists), which
+    makes dbt skip customer_totals, and a model that differs on every build."""
+    root = tmp_path_factory.mktemp("messy")
+    project = root / "project"
+    shutil.copytree(FIXTURE, project)
+    schema = project / "models/schema.yml"
+    schema.write_text(schema.read_text() + OLD_FAILING_TEST)
+    (project / "models/marts/random_draw.sql").write_text(
+        "{{ config(materialized='table') }}\nselect random() as draw\n"
+    )
+    work = root / "work"
+    return work, snapshot(project, project / "shop.duckdb", work, dbt_exe=DBT)
+
+
+def test_calibration_finds_the_model_that_changes_on_every_build(messy_snap):
+    work, taken = messy_snap
+    assert taken["unstable_models"] == 1
+    state = json.loads((work / "state.json").read_text())
+    assert state["unstable"] == {"model.tiny_shop.random_draw": "contents"}
+
+
+def test_a_fix_skipped_behind_an_old_failure_is_built_on_its_own(messy_snap):
+    result = run(messy_snap[0], FIX)
+    assert result["passed"], result
+    rebuild, collateral = result["checks"][2], result["checks"][3]
+    assert "built on their own" in rebuild["detail"]
+    assert "accepted_values_stg_orders_customer_id" in rebuild["detail"]  # listed, excused
+    assert "compared by row count only" in collateral["detail"]
+
+
+def test_a_skipped_fix_that_still_fails_on_its_own_is_rejected(messy_snap):
+    result = run(messy_snap[0], STILL_BROKEN)
+    assert result["failed_check"] == "clean_rebuild", result
