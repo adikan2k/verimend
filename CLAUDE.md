@@ -19,6 +19,7 @@ Phase 1 creates these. If one changes, update this list in the same commit.
 - All checks (lint, types, tests, Python and site): `uv run python scripts/check.py`
 - Python tests: `uv run pytest` · one file: `uv run pytest verifier/tests/test_verifier_checks.py`
 - Python lint and types: `uv run ruff check .` and `uv run pyright`
+- Build the demo database from `demo/raw_data` (not committed; run before using `demo/jaffle_shop`): `uv run python scripts/build_demo.py`
 - Fix a failed dbt project in a sandbox copy (paid; writes `fix.diff` and `run.json` under `~/.verimend/sandboxes/`): `uv run verimend fix --project-dir demo/jaffle_shop --max-usd 0.25`
 - Verify any diff, no agent involved: `uv run verimend verify --project-dir demo/jaffle_shop --diff fix.diff`
 - Benchmark, development set only: `uv run python -m bench.run --agent verimend --set dev --limit 5 --max-usd 2`. Agents: `none`, `reference`, `baseline` (paid), `verimend` (paid). Add `--source data-eng-bench` for that benchmark, `--trials 3`, `--tasks a,b` or `--dry-run`. `--with-verifier` runs the verifier around `none` or `reference` (free; VeriMend always has it). Runs in the Linux runner (Docker Desktop).

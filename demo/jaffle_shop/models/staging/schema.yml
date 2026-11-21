@@ -1,0 +1,67 @@
+version: 2
+
+models:
+  - name: stg_customers
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: customer_id
+        data_type: integer
+        data_tests:
+          - unique
+          - not_null
+      - name: first_name
+        data_type: varchar
+      - name: last_name
+        data_type: varchar
+
+  - name: stg_orders
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: order_id
+        data_type: integer
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: order_date
+        data_type: date
+      - name: status
+        data_type: varchar
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['placed', 'shipped', 'completed', 'return_pending', 'returned']
+
+  - name: stg_payments
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: payment_id
+        data_type: integer
+        data_tests:
+          - unique
+          - not_null
+      - name: order_id
+        data_type: integer
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+      - name: payment_method
+        data_type: varchar
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['credit_card', 'coupon', 'bank_transfer', 'gift_card']
+      - name: amount
+        data_type: decimal(16, 2)
