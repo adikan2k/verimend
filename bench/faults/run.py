@@ -25,6 +25,9 @@ from verifier.project import read_profile, write_profiles
 
 from bench.agents import get_agent
 from bench.assemble import AgentRecord, write_batch
+from bench.claims import Claim, parse_category, parse_verdict
+from bench.claude_stream import parse_stream
+from bench.faults import container
 from bench.faults.grade import grade_fault
 from bench.faults.lib import FAULTS_DIR, Expected, materialize
 from bench.faults.reference import apply_reference
@@ -55,6 +58,7 @@ def run_trial(
     started = time.monotonic()
     agent = batch["agent"]
     report: dict[str, Any] | None = None
+    agent_seconds: float | None = None
     if agent == "verimend":
         from verimend.agent.run import run_agent_sync  # the SDK loads only for VeriMend
         from verimend.cli import DEFAULT_TASK
@@ -76,7 +80,7 @@ def run_trial(
             report = {**(run.report or {}), "verdict": run.final_verdict}
     else:
         verifier = None
-        if batch["with_verifier"]:  # snapshot before the free agent acts, check after
+        if batch["with_verifier"]:  # snapshot before the agent acts, check after
             verifier = WorkspaceVerifier(workspace, (root / "verify").as_posix())
             record.verifier = {"snapshot": None, "attempts": [], "error": None}
             try:
@@ -87,14 +91,33 @@ def run_trial(
         if agent == "reference":
             report = apply_reference(built, FAULTS_DIR / fault_id)
             record.report = report
-        # As in VeriMend's loop, an escalation is not a fix and skips the verifier.
-        escalated = bool(report and report.get("verdict") == "escalate")
+        elif agent == "baseline":
+            from verimend.cli import DEFAULT_TASK
+
+            # In a container that holds only the fault; the verifier stays on this side.
+            log, agent_seconds = container.run_baseline(
+                built.project,
+                built.db.parent,
+                root,
+                task=DEFAULT_TASK,
+                model=batch["model"],
+                run_cap_usd=cap,
+                max_turns=batch["max_steps"],
+                api_key=settings.require_api_key(),
+            )
+            record.stream_log = log
+            report = baseline_report(parse_stream(log).final_text)
+        # As in VeriMend's loop, the reference's escalation is not a fix and skips the
+        # verifier. The baseline is only watched, so what it left is always checked.
+        escalated = agent == "reference" and bool(report and report.get("verdict") == "escalate")
         if verifier is not None and record.verifier is not None and not escalated:
             try:
                 record.verifier["attempts"] = [{**asyncio.run(verifier.check()), "attempt": 1}]
             except Exception as error:
                 record.verifier["error"] = f"check failed: {type(error).__name__}: {error}"
     record.seconds = round(time.monotonic() - started, 1)
+    if agent == "baseline":  # the agent's own time, without the watching verifier
+        record.seconds = agent_seconds
     graded = grade_fault(
         built.expected,
         faulted=built.faulted,
@@ -107,8 +130,19 @@ def run_trial(
     return record, graded.as_grade(fault_id, trial)
 
 
+def baseline_report(final_text: str | None) -> dict[str, Any] | None:
+    """What the grader needs from the baseline's reply: its verdict line and its category
+    line. None when it gave no readable verdict."""
+    claim = parse_verdict(final_text)
+    if claim is Claim.NONE:
+        return None
+    return {"verdict": str(claim), "root_cause": {"category": parse_category(final_text)}}
+
+
 def run_batch(batch: dict[str, Any], settings: Settings) -> dict[str, Any]:
     spec = get_agent(batch["agent"])
+    if spec.name == "baseline":
+        container.ensure_image()
     budget = BatchBudget(max_usd=batch["max_usd"])
     records: list[AgentRecord] = []
     grades: list[Grade] = []
@@ -132,6 +166,8 @@ def run_batch(batch: dict[str, Any], settings: Settings) -> dict[str, Any]:
             grades.append(grade)
             if spec.model_calls:
                 cost = record.agent_run.cost_usd if record.agent_run else None
+                if record.stream_log is not None:
+                    cost = parse_stream(record.stream_log).cost_usd
                 budget.record(cost if cost is not None else cap)
     meta = {key: batch[key] for key in META_KEYS}
     meta["grader"] = "faults"

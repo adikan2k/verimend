@@ -70,8 +70,8 @@ SOURCES: dict[str, Source] = {
         tasks_subdir="bench/faults",
         task_file="expected.json",
         runner="local",
-        # The baseline needs a container adapter; not built yet (decision 0005).
-        agents=("none", "reference", "verimend"),
+        # The baseline runs in a container of its own (bench/faults/container.py).
+        agents=("none", "reference", "baseline", "verimend"),
     ),
 }
 
