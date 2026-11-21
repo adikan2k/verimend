@@ -9,13 +9,21 @@ import pytest
 import yaml
 from verifier.cli import main
 from verifier.project import (
+    Dbt,
     Profile,
     VerifierError,
     default_dbt,
     read_profile,
     write_profiles,
 )
-from verifier.run import RECHECK_BUILDS, diff_from_project, snapshot, verify
+from verifier.run import (
+    PARSE_TRIES,
+    RECHECK_BUILDS,
+    dbt_error,
+    diff_from_project,
+    snapshot,
+    verify,
+)
 
 FIXTURE = Path(__file__).parent / "fixtures" / "tiny_shop"
 DBT = default_dbt()
@@ -276,6 +284,16 @@ PARSE_FIX = """\
 +from {{ ref('stg_orders') }}
  group by customer_id
 """
+RETIRED = "{{ config(enabled=false) }}\nselect 1 as x\n"
+DISABLE_ORDER_COUNT = """\
+--- a/models/marts/order_count.sql
++++ b/models/marts/order_count.sql
+@@ -1,3 +1,3 @@
+ -- Outside customer_totals' lineage: the collateral-damage check compares it.
+-{{ config(materialized='table') }}
++{{ config(materialized='table', enabled=false) }}
+ select count(*) as orders from {{ ref('raw_orders') }}
+"""
 
 
 @pytest.fixture(scope="module")
@@ -284,19 +302,27 @@ def broken_snap(tmp_path_factory: pytest.TempPathFactory) -> tuple[Path, dict]:
     project = root / "project"
     shutil.copytree(FIXTURE, project)
     (project / "models/marts/customer_totals.sql").write_text(UNPARSEABLE)
+    # A model the base itself disables, as data-eng-bench's projects have many of: no
+    # manifest lists it, before the fix or after.
+    (project / "models/marts/retired_report.sql").write_text(RETIRED)
     work = root / "work"
     return work, snapshot(project, project / "shop.duckdb", work, dbt_exe=DBT)
 
 
 def test_a_base_that_does_not_parse_is_snapshotted_without_a_manifest(broken_snap):
     work, taken = broken_snap
-    assert taken["ok"] and taken["base_parsed"] is False and taken["base_parse_error"]
+    assert taken["ok"] and taken["base_parsed"] is False
+    assert taken["base_parse_tries"] == PARSE_TRIES  # a real compile error fails every try
+    error = taken["base_parse_error"]
+    assert "error" in error.splitlines()[0].lower() and "customer_totals" in error, error
     assert not (work / "base" / "manifest.json").exists()
 
 
 def test_the_fix_of_a_parse_error_passes_and_collateral_says_why_it_compared_nothing(
     broken_snap,
 ):
+    """retired_report is disabled in the base, so no manifest lists it; masking counts it
+    only if the fix removes its file or changes `enabled` settings."""
     result = run(broken_snap[0], PARSE_FIX)
     assert result["passed"], result
     collateral = result["checks"][-1]
@@ -313,7 +339,12 @@ def test_the_fix_of_a_parse_error_passes_and_collateral_says_why_it_compared_not
             "-{{ config(materialized='table') }}\n"
             "-select count(*) as orders from {{ ref('raw_orders') }}\n",
             "masking",
-            "model order_count was disabled or removed",
+            "model order_count was removed",
+        ),
+        (
+            DISABLE_ORDER_COUNT,
+            "masking",
+            "model order_count is not enabled after the fix",
         ),
     ],
 )
@@ -324,6 +355,62 @@ def test_without_a_base_manifest_tamper_and_masking_read_the_source(
     assert result["failed_check"] == failed_check, result
     failing = next(c for c in result["checks"] if not c["passed"])
     assert words in failing["detail"]
+
+
+# Shaped like what dbt printed when a data-eng-bench base failed to parse once
+# (dev6-verimend-data-eng-bench-2026-11-20): the error, then dbt's summary of
+# deprecations, which filled all 600 characters the snapshot kept of the end.
+FLAKY_PARSE_OUTPUT = (
+    "\x1b[0m02:00:20  Running with dbt\n"
+    "\x1b[0m02:00:26  Encountered an error:\n"
+    "Compilation Error in test dbt_utils_expression_is_true_fct_sales (models/marts/schema.yml)\n"
+    "  > in macro test_expression_is_true (macros/generic_tests/expression_is_true.sql)\n"
+    "\x1b[0m02:00:26  [\x1b[33mWARNING\x1b[0m][DeprecationsSummary]: Deprecated functionality\n"
+    "Summary of encountered deprecations:\n"
+    "- MissingArgumentsPropertyInGenericTestDeprecation: 8 occurrences\n"
+)
+
+
+def test_dbt_error_keeps_the_error_not_the_deprecation_summary():
+    error = dbt_error(FLAKY_PARSE_OUTPUT)
+    assert error.splitlines()[0] == "02:00:26  Encountered an error:"
+    assert "Compilation Error in test" in error and "\x1b" not in error
+    assert dbt_error("no error here\njust output") == "no error here\njust output"
+
+
+def failing_first(monkeypatch: pytest.MonkeyPatch, command: str) -> list[str]:
+    """Make the first dbt `command` fail before writing a manifest, as a parse that
+    fails does; every later call runs dbt for real. Returns the commands run."""
+    real_run = Dbt.run
+    calls: list[str] = []
+
+    def flaky(self: Dbt, project_dir: Path, *args: str) -> tuple[int, str]:
+        calls.append(args[0])
+        if args[0] == command and calls.count(command) == 1:
+            return 2, FLAKY_PARSE_OUTPUT
+        return real_run(self, project_dir, *args)
+
+    monkeypatch.setattr(Dbt, "run", flaky)
+    return calls
+
+
+def test_a_base_that_fails_to_parse_once_is_built_again(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    project = tmp_path / "project"
+    shutil.copytree(FIXTURE, project)
+    calls = failing_first(monkeypatch, "build")
+    taken = snapshot(project, project / "shop.duckdb", tmp_path / "work", dbt_exe=DBT)
+    assert taken["base_parsed"] and taken["base_parse_tries"] == 2, taken
+    assert taken["base_failures"] == ["model.tiny_shop.customer_totals"]
+    assert calls == ["build", "build", "build"]  # the failed try, the base build, calibration
+
+
+def test_a_fix_whose_parse_fails_once_is_parsed_again(snap, monkeypatch: pytest.MonkeyPatch):
+    calls = failing_first(monkeypatch, "parse")
+    result = run(snap[1], FIX)
+    assert result["passed"], result
+    assert calls[:2] == ["parse", "parse"]
 
 
 # ---- projects that never build cleanly or never build the same way twice ---------------

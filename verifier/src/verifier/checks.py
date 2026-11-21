@@ -502,18 +502,52 @@ def source_nodes(project: Path, paths: dict[str, list[str]]) -> set[tuple[str, s
     return nodes
 
 
+_ENABLED = re.compile(r"\benabled\b")
+
+
+def changes_enablement(patches: list[FilePatch]) -> bool:
+    """Whether the diff could turn a model off: it edits dbt_project.yml, or adds or
+    removes a line that mentions `enabled`."""
+    for patch in patches:
+        if patch.path == "dbt_project.yml":
+            return True
+        for hunk in patch.hunks:
+            if any(line[:1] in ("+", "-") and _ENABLED.search(line) for line in hunk.lines):
+                return True
+    return False
+
+
 def masking_from_source(
-    base: Path, new: dict[str, Any], patches: list[FilePatch], paths: dict[str, list[str]]
+    base: Path,
+    new_project: Path,
+    new: dict[str, Any],
+    patches: list[FilePatch],
+    paths: dict[str, list[str]],
 ) -> Check:
+    """Masking when the base did not parse, so there is no base manifest to compare.
+
+    The base's files list every model, including the ones the base itself disables, and
+    the fix's manifest does not list those either. So a model counts as removed when its
+    file is gone and no enabled node of that name replaces it. When the diff could change
+    which models are enabled (`changes_enablement`), every model of the base's files must
+    be enabled after the fix: without a base manifest the verifier cannot tell which ones
+    the base already disabled, so it rejects rather than guesses (decision 0004).
+    """
     enabled = {
         (node.get("resource_type"), node.get("name"))
         for node in new.get("nodes", {}).values()
         if node.get("resource_type") in BUILT_TYPES
     }
-    problems = [
-        f"{kind} {name} was disabled or removed"
-        for kind, name in sorted(source_nodes(base, paths) - enabled)
-    ]
+    before = source_nodes(base, paths)
+    if changes_enablement(patches):
+        problems = [
+            f"{kind} {name} is not enabled after the fix, which changes `enabled` settings "
+            "or dbt_project.yml"
+            for kind, name in sorted(before - enabled)
+        ]
+    else:
+        gone = before - source_nodes(new_project, paths)
+        problems = [f"{kind} {name} was removed" for kind, name in sorted(gone - enabled)]
     problems += _filtered_lines(patches)
     if problems:
         return Check("masking", False, "The fix hides the failure: " + _listed(problems))

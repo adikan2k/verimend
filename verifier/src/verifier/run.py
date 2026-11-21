@@ -12,6 +12,7 @@ Work folder layout:
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import time
 from pathlib import Path
@@ -49,6 +50,36 @@ def _build_copy(
     db = copy_database(work / "base" / "db" / state["db_name"], root / "db")
     profiles = write_profiles(Profile.from_dict(state["profile"]), db, root / "profiles")
     return project, Dbt(dbt_exe, profiles, state["profile"]["target"], timeout)
+
+
+PARSE_TRIES = 3
+_ANSI = re.compile(r"\x1b\[[0-9;]*m")
+_ERROR_LINE = re.compile(r"Encountered an error|\b[A-Z]\w+ Error\b")
+
+
+def _run_parsed(dbt: Dbt, project: Path, *args: str) -> tuple[int, str, dict | None, int]:
+    """Run dbt and read the manifest it wrote. When dbt could not even parse the project
+    (no manifest), run it again, up to PARSE_TRIES times: one data-eng-bench base failed
+    to parse in 1 of 71 snapshots and parsed in every other one (decision 0004). A real
+    compile error fails every try. Returns the exit code, output, manifest and tries."""
+    manifest_file = project / "target" / "manifest.json"
+    code, output = 1, ""
+    for tries in range(1, PARSE_TRIES + 1):
+        manifest_file.unlink(missing_ok=True)
+        code, output = dbt.run(project, *args)
+        manifest = read_json(manifest_file)
+        if manifest is not None:
+            return code, output, manifest, tries
+    return code, output, None, PARSE_TRIES
+
+
+def dbt_error(output: str, limit: int = 1200) -> str:
+    """What dbt said went wrong: the lines from its first error on, not the end of its
+    output, which is often only dbt's summary of deprecations."""
+    lines = [_ANSI.sub("", line).rstrip() for line in output.strip().splitlines()]
+    start = next((i for i, line in enumerate(lines) if _ERROR_LINE.search(line)), None)
+    picked = lines[start : start + 15] if start is not None else lines[-15:]
+    return "\n".join(picked)[:limit]
 
 
 def _needs_deps(project: Path) -> bool:
@@ -91,12 +122,11 @@ def snapshot(
         if code != 0:
             raise VerifierError(f"dbt deps failed on the base project: {output[-600:]}")
     project, dbt = _build_copy(work, "base-build", state, dbt_exe, timeout)
-    code, output = dbt.run(project, "build")
+    code, output, manifest, parse_tries = _run_parsed(dbt, project, "build")
     statuses = node_statuses(project)
-    manifest = read_json(project / "target" / "manifest.json")
-    # A project that does not even parse is a real failed run (a compile error can be the
-    # bug). Then there is no base manifest and no base build: the checks fall back to the
-    # base's source files, and collateral has nothing to compare against.
+    # A project that does not parse on any try is a real failed run (a compile error can
+    # be the bug). Then there is no base manifest and no base build: the checks fall back
+    # to the base's source files, and collateral has nothing to compare against.
     state["base_parsed"] = manifest is not None
     if manifest is not None:
         (work / "base" / "manifest.json").write_text(json.dumps(manifest), "utf-8")
@@ -113,7 +143,7 @@ def snapshot(
     state["unstable"] = {}
     if manifest is not None:
         again, dbt_again = _build_copy(work, "base-build-2", state, dbt_exe, timeout)
-        dbt_again.run(again, "build")
+        _run_parsed(dbt_again, again, "build")
         second = table_stats(again.parent / "db" / state["db_name"], manifest, node_statuses(again))
         state["unstable"] = checks.unstable_models(state["stats"], second)
         shutil.rmtree(work / "base-build-2", ignore_errors=True)
@@ -122,7 +152,8 @@ def snapshot(
     return {
         "ok": True,
         "base_parsed": state["base_parsed"],
-        "base_parse_error": None if manifest is not None else output.strip()[-600:],
+        "base_parse_error": None if manifest is not None else dbt_error(output),
+        "base_parse_tries": parse_tries,
         "base_failures": failures,
         "unstable_models": len(state["unstable"]),
         "nodes": len(statuses),
@@ -184,11 +215,9 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
             found.append(checks.Check("clean_rebuild", False, f"dbt deps failed: {output[-600:]}"))
             return _result(found, started)
 
-    code, output = dbt.run(project, "parse")
-    new_manifest = read_json(project / "target" / "manifest.json")
+    code, output, new_manifest, _ = _run_parsed(dbt, project, "parse")
     if code != 0 or new_manifest is None:
-        tail = "\n".join(output.strip().splitlines()[-15:])
-        found.append(checks.Check("clean_rebuild", False, f"dbt parse failed: {tail}"[:1500]))
+        found.append(checks.Check("clean_rebuild", False, f"dbt parse failed: {dbt_error(output)}"))
         return _result(found, started)
 
     # Tamper has two halves, the paths and the tests; report them as one check.
@@ -204,7 +233,7 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
         found.append(checks.masking(base_manifest, new_manifest, patches))
     else:
         found.append(
-            checks.masking_from_source(base_project, new_manifest, patches, state["paths"])
+            checks.masking_from_source(base_project, project, new_manifest, patches, state["paths"])
         )
     if not found[-1].passed:
         return _result(found, started)
@@ -299,7 +328,9 @@ def _recheck(
     try:
         while builds < RECHECK_BUILDS:
             builds += 1
-            dbt.run(project, "build", "--select", *selection, "--exclude", "resource_type:test")
+            _run_parsed(
+                dbt, project, "build", "--select", *selection, "--exclude", "resource_type:test"
+            )
             after = table_stats(db, subset, node_statuses(project))
             for uid, kind in checks.unstable_models(before, after).items():
                 if moved.get(uid) != "rows":
