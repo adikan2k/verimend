@@ -1,0 +1,176 @@
+name: VeriMend inspector
+description: >-
+  Checks a pull request to a dbt project on DuckDB, whoever or whatever wrote it: no test
+  removed or weakened, no failure hidden, a clean rebuild, nothing outside the change
+  altered, and no LEFT join silently dropping rows. Free: no API key, no model call.
+author: Aditya Kanbargi
+
+inputs:
+  project-dir:
+    description: The dbt project, relative to the repository root.
+    default: "."
+  setup-command:
+    description: >-
+      Builds the project's DuckDB warehouse for the base checkout before the snapshot, run
+      from the project folder (for example `python load_raw.py`). Empty when the project
+      builds from its own seeds.
+    default: ""
+  database:
+    description: The DuckDB file, relative to the project. Empty means the profile's path.
+    default: ""
+  profiles-dir:
+    description: Folder of profiles.yml, relative to the project. Empty means dbt's usual search.
+    default: ""
+  allow-label:
+    description: A pull request with this label may change or remove tests; they are still listed.
+    default: "verimend:tests-changed"
+  comment:
+    description: Post the result as one pull request comment, updated on every push.
+    default: "true"
+  dbt-version:
+    description: dbt-core version to install.
+    default: "1.10.23"
+  dbt-duckdb-version:
+    description: dbt-duckdb version to install.
+    default: "1.9.6"
+  github-token:
+    description: Token for the comment. Needs pull-requests write; a fork's token cannot.
+    default: ${{ github.token }}
+
+outputs:
+  result:
+    description: passed, failed, or error (the inspector could not run; not a verdict).
+    value: ${{ steps.verify.outputs.result }}
+  failed-check:
+    description: The first check that failed, empty if none.
+    value: ${{ steps.verify.outputs.failed-check }}
+
+runs:
+  using: composite
+  steps:
+    - name: Check this is a pull request
+      shell: bash
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+      run: |
+        if [[ "$EVENT_NAME" != pull_request ]]; then
+          echo "::error::The inspector checks pull requests: run it on the pull_request event."
+          exit 1
+        fi
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install the inspector
+      shell: bash
+      env:
+        DBT_VERSION: ${{ inputs.dbt-version }}
+        DBT_DUCKDB_VERSION: ${{ inputs.dbt-duckdb-version }}
+      run: |
+        python -m venv "$RUNNER_TEMP/inspector-venv"
+        "$RUNNER_TEMP/inspector-venv/bin/python" -m pip install --quiet \
+          "$GITHUB_ACTION_PATH/../../verifier" \
+          "dbt-core==$DBT_VERSION" "dbt-duckdb==$DBT_DUCKDB_VERSION"
+        echo "$RUNNER_TEMP/inspector-venv/bin" >> "$GITHUB_PATH"
+
+    - name: Check out the base
+      id: base
+      shell: bash
+      env:
+        BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      run: |
+        # The default checkout is the pull request merged into its base: its first parent
+        # is the base. Otherwise, find where the branch forked (needs fetch-depth: 0).
+        parents=$(git cat-file -p HEAD | awk '/^parent /{print $2}')
+        if [[ $(grep -c . <<<"$parents") -eq 2 ]]; then
+          base=$(head -n1 <<<"$parents")
+        else
+          git fetch --quiet --no-tags origin "$BASE_SHA" || true
+          if ! base=$(git merge-base "$BASE_SHA" HEAD 2>/dev/null); then
+            echo "::error::Cannot tell where this pull request starts. Use actions/checkout's default ref, or fetch-depth: 0."
+            exit 1
+          fi
+        fi
+        git cat-file -e "$base^{commit}" 2>/dev/null || git fetch --quiet --no-tags --depth=1 origin "$base"
+        git worktree add --quiet --detach "$RUNNER_TEMP/inspector-base" "$base"
+        echo "sha=$base" >> "$GITHUB_OUTPUT"
+
+    - name: Build the base's warehouse
+      if: inputs.setup-command != ''
+      shell: bash
+      working-directory: ${{ runner.temp }}/inspector-base/${{ inputs.project-dir }}
+      env:
+        SETUP_COMMAND: ${{ inputs.setup-command }}
+      run: bash -c "$SETUP_COMMAND"
+
+    - name: Inspect the pull request
+      id: verify
+      shell: bash
+      env:
+        BASE_SHA: ${{ steps.base.outputs.sha }}
+        PROJECT_DIR: ${{ inputs.project-dir }}
+        DATABASE: ${{ inputs.database }}
+        PROFILES_DIR: ${{ inputs.profiles-dir }}
+        ALLOWED: ${{ contains(github.event.pull_request.labels.*.name, inputs.allow-label) }}
+      run: |
+        out="$RUNNER_TEMP/inspector-out"
+        mkdir -p "$out"
+        base_project="$RUNNER_TEMP/inspector-base/$PROJECT_DIR"
+        snap=(snapshot --project-dir "$base_project" --work "$RUNNER_TEMP/inspector-work")
+        [[ -n "$DATABASE" ]] && snap+=(--db "$base_project/$DATABASE")
+        [[ -n "$PROFILES_DIR" ]] && snap+=(--profiles-dir "$base_project/$PROFILES_DIR")
+        code=0
+        python -m verifier "${snap[@]}" > "$out/snapshot.json" || code=$?
+        if [[ $code -ne 0 ]]; then
+          cp "$out/snapshot.json" "$out/result.json"
+        else
+          relative=()
+          [[ "$PROJECT_DIR" != "." && -n "$PROJECT_DIR" ]] && relative=(--relative="$PROJECT_DIR")
+          git diff --no-color --no-ext-diff "${relative[@]}" "$BASE_SHA" HEAD > "$out/pr.diff"
+          check=(verify --work "$RUNNER_TEMP/inspector-work" --diff "$out/pr.diff" --policy pr)
+          [[ "$ALLOWED" == "true" ]] && check+=(--allow-test-changes)
+          python -m verifier "${check[@]}" > "$out/result.json" || code=$?
+        fi
+        python -m verifier render --result "$out/result.json" > "$out/comment.md"
+        cat "$out/comment.md" >> "$GITHUB_STEP_SUMMARY"
+        case $code in
+          0) echo "result=passed" >> "$GITHUB_OUTPUT" ;;
+          1) echo "result=failed" >> "$GITHUB_OUTPUT" ;;
+          *) echo "result=error" >> "$GITHUB_OUTPUT" ;;
+        esac
+        failed=$(python -c "import json,sys; print(json.loads(open(sys.argv[1]).read().strip().splitlines()[-1]).get('failed_check') or '')" "$out/result.json" 2>/dev/null || true)
+        echo "failed-check=$failed" >> "$GITHUB_OUTPUT"
+
+    - name: Comment on the pull request
+      if: always() && inputs.comment == 'true' && steps.verify.outputs.result != ''
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        REPO: ${{ github.repository }}
+        NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        body="$RUNNER_TEMP/inspector-out/comment.md"
+        id=$(gh api "repos/$REPO/issues/$NUMBER/comments" --paginate \
+          --jq '.[] | select(.body | startswith("<!-- verimend-inspector -->")) | .id' 2>/dev/null | head -n1 || true)
+        if [[ -n "$id" ]]; then
+          gh api -X PATCH "repos/$REPO/issues/comments/$id" -F "body=@$body" > /dev/null \
+            || echo "::notice::Could not update the comment; the result is in the job summary."
+        else
+          gh api "repos/$REPO/issues/$NUMBER/comments" -F "body=@$body" > /dev/null \
+            || echo "::notice::Could not comment (a fork's token cannot); the result is in the job summary."
+        fi
+
+    - name: Pass or fail
+      if: always()
+      shell: bash
+      env:
+        RESULT: ${{ steps.verify.outputs.result }}
+        FAILED: ${{ steps.verify.outputs.failed-check }}
+      run: |
+        case "$RESULT" in
+          passed) echo "The inspector passed this pull request." ;;
+          failed) echo "::error::The inspector failed this pull request at $FAILED."; exit 1 ;;
+          *) echo "::error::The inspector could not run; see the job summary."; exit 1 ;;
+        esac
