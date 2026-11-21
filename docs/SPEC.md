@@ -302,6 +302,8 @@ Exit codes for `fix`: 0 fixed and verified, 2 escalated, 3 not fixed, 4 stopped 
 
 Static, built from recorded traces. No model calls, so it costs nothing to run and cannot be abused. Design rules are in `docs/DESIGN.md`.
 
+**Hosting: Vercel** (with Aditya). The Next.js app in `site/` is built as a static export and deployed from `main`; every pull request that touches `site/` gets a preview deploy. Aditya creates the Vercel project and connects the repository. The site holds no secrets and no API key, and nothing on it calls a model.
+
 - `/` the lineage graph replaying one featured run, then the results table.
 - `/runs/<id>` a full replay: the graph, the step log, the diff, the verifier's verdict.
 - `/results` every configuration and metric, each number linked to its trace folder.
