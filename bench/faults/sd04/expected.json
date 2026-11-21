@@ -1,0 +1,11 @@
+{
+ "kind": "schema_drift",
+ "outcome": "fix",
+ "categories": [
+  "schema_drift"
+ ],
+ "failing": [
+  "model.jaffle_shop.stg_customers"
+ ],
+ "description": "raw.customers.id changes from integer to text upstream."
+}

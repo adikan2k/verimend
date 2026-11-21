@@ -1,0 +1,13 @@
+diff --git a/models/staging/stg_orders.sql b/models/staging/stg_orders.sql
+index 6d20155..b109deb 100644
+--- a/models/staging/stg_orders.sql
++++ b/models/staging/stg_orders.sql
+@@ -8,7 +8,7 @@ renamed as (
+ 
+     select
+         id as order_id,
+-        user_id as customer_id,
++        customer_id,
+         order_date,
+         status
+ 
