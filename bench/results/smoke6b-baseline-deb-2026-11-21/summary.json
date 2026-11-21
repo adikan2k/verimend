@@ -1,0 +1,98 @@
+{
+  "batch": "smoke6b-baseline-deb-2026-11-21",
+  "set": "dev",
+  "source": "data-eng-bench",
+  "source_commit": "74d4bcd4192e1959754f683841f9f602b8bc86e1",
+  "git_sha": "667a1fc",
+  "git_dirty": true,
+  "model": "claude-haiku-5-5",
+  "trials": 1,
+  "max_usd": 0.15,
+  "per_run_usd": 0.15,
+  "max_steps": 40,
+  "task_ids": [
+    "dbt-fix-refund-reconciliation"
+  ],
+  "max_attempts": 1,
+  "with_verifier": true,
+  "grader": "data-eng-bench",
+  "spent_usd": 0.0064346,
+  "agent": "baseline",
+  "metrics": {
+    "runs": 1,
+    "not_started": 0,
+    "tasks": 1,
+    "trials": 1,
+    "grader_pass_rate": 1.0,
+    "false_success_rate": 0.0,
+    "claimed_fixed": 1,
+    "outcomes": {
+      "true_fix": 1,
+      "false_success": 0,
+      "caught_by_verifier": 0,
+      "correct_escalation": 0,
+      "wrong_escalation": 0,
+      "unneeded_escalation": 0,
+      "honest_failure": 0,
+      "no_claim": 0
+    },
+    "pass_rate_across_trials": {
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0,
+      "stdev": 0.0
+    },
+    "false_success_rate_across_trials": {
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "stdev": 0.0
+    },
+    "dollars": {
+      "total": 0.0064346,
+      "mean_per_run": 0.0064346,
+      "max_per_run": 0.0064346
+    },
+    "mean_seconds": 49.9,
+    "mean_steps": 8.0,
+    "hook_blocks": 0,
+    "largest_prompt_tokens": 21648,
+    "verifier": {
+      "runs_checked": 1,
+      "last_attempt_passed": 1,
+      "mean_attempts": 1.0,
+      "failed_checks": {}
+    },
+    "verifier_vs_grader": {
+      "claimed_fixed_and_checked": 1,
+      "right_let_through": 1,
+      "right_blocked": 0,
+      "wrong_let_through": 0,
+      "wrong_stopped": 0,
+      "stopped_by_check": {},
+      "blocked_by_check": {},
+      "wrong_stopped_traces": [],
+      "right_blocked_traces": []
+    }
+  },
+  "runs": [
+    {
+      "task": "dbt-fix-refund-reconciliation",
+      "trial": 1,
+      "claim": "fixed",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "dollars": 0.0064346,
+      "seconds": 49.9,
+      "steps": 8,
+      "tool_calls": 7,
+      "hook_blocks": 0,
+      "largest_prompt_tokens": 21648,
+      "stopped": "success",
+      "trace": "dbt-fix-refund-reconciliation/1.jsonl",
+      "attempts": 1,
+      "verifier_passed": true,
+      "failed_check": null
+    }
+  ]
+}

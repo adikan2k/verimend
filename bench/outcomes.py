@@ -141,6 +141,36 @@ def summarize(runs: list[RunResult]) -> dict[str, Any]:
             (r.largest_prompt_tokens for r in scored if r.largest_prompt_tokens), default=None
         ),
         "verifier": _verifier_metrics(scored),
+        "verifier_vs_grader": verifier_vs_grader(scored),
+    }
+
+
+def verifier_vs_grader(runs: list[RunResult]) -> dict[str, Any] | None:
+    """The verifier as a gate, against the grader, over runs that claimed "fixed" and that
+    the verifier checked. None when there are none.
+
+    It answers SPEC section 2's question for an agent the verifier only watched: of the
+    wrong fixes, how many would it have stopped, and of the right ones, how many would it
+    have blocked. For VeriMend every final "fixed" has passed the verifier already, so
+    there the stopped and blocked counts are zero by construction.
+    """
+    claimed = [r for r in runs if r.claim is Claim.FIXED and r.attempts > 0]
+    if not claimed:
+        return None
+    right = [r for r in claimed if r.grader_passed]
+    wrong = [r for r in claimed if not r.grader_passed]
+    stopped = [r for r in wrong if not r.verifier_passed]
+    blocked = [r for r in right if not r.verifier_passed]
+    return {
+        "claimed_fixed_and_checked": len(claimed),
+        "right_let_through": sum(bool(r.verifier_passed) for r in right),
+        "right_blocked": len(blocked),
+        "wrong_let_through": sum(bool(r.verifier_passed) for r in wrong),
+        "wrong_stopped": len(stopped),
+        "stopped_by_check": dict(Counter(r.failed_check or "unknown" for r in stopped)),
+        "blocked_by_check": dict(Counter(r.failed_check or "unknown" for r in blocked)),
+        "wrong_stopped_traces": [r.trace for r in stopped],
+        "right_blocked_traces": [r.trace for r in blocked],
     }
 
 

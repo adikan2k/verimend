@@ -28,6 +28,22 @@ _VERDICT_LINE = re.compile(
 )
 
 
+_CATEGORY_LINE = re.compile(
+    r"^[\s*_`>#-]*CATEGORY[\s*_`]*:[\s*_`]*"
+    r"(schema[ _-]drift|logic|bad[ _-]data|config|missing[ _-]source|unknown)\b",
+    re.IGNORECASE | re.MULTILINE,
+)
+
+
+def parse_category(text: str | None) -> str | None:
+    """The root-cause category on the last CATEGORY line of the text, or None. Asked of
+    the baseline on the fault suite only (bench/faults/container.py)."""
+    matches = _CATEGORY_LINE.findall(text or "")
+    if not matches:
+        return None
+    return re.sub(r"[ -]", "_", matches[-1].lower())
+
+
 def claim_from_report(report: dict[str, object] | None) -> Claim:
     """VeriMend's claim: the verdict of its validated report, or none without one."""
     verdict = (report or {}).get("verdict")

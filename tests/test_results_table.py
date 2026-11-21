@@ -39,3 +39,30 @@ def test_table_has_a_row_per_batch_and_a_combined_row(tmp_path: Path) -> None:
     assert "[v-ade](../bench/results/v-ade/summary.json)" in both
     assert "[v-deb](../bench/results/v-deb/summary.json)" in both
     assert "$0.0100 / $0.0100" in rows[1]
+
+
+def test_the_gate_table_shows_only_agents_the_verifier_watched(tmp_path: Path) -> None:
+    from scripts.results_table import build_gate_table
+
+    def watched_batch(name: str, agent: str) -> None:
+        records, grades = [], []
+        for i, (graded, verified) in enumerate([(True, True), (False, False), (False, True)]):
+            task = f"t{i}"
+            attempt = {"attempt": 1, "passed": verified,
+                       "failed_check": None if verified else "tamper", "checks": []}  # fmt: skip
+            log = '{"type":"result","subtype":"success","result":"VERDICT: fixed"}'
+            records.append(AgentRecord(task, 1, 0.0, 20.0, run_cap_usd=0.25,
+                                       stream_log=log if agent == "baseline" else None,
+                                       verifier={"snapshot": {}, "attempts": [attempt],
+                                                 "error": None}))  # fmt: skip
+            grades.append(Grade(task_id=task, trial=1, passed=graded, grader="g"))
+        meta = {"model": "m", "git_sha": "abc", "source": "ade-bench", "max_steps": 40}
+        write_batch(tmp_path / name, records, grades, get_agent(agent), meta)
+
+    watched_batch("b", "baseline")
+    watched_batch("r", "reference")
+    table = build_gate_table({n: load_batch(n, tmp_path) for n in ("b", "r")}, "x/")
+    assert table is not None
+    rows = table.splitlines()[2:]
+    assert len(rows) == 1  # the reference is not an agent whose claims are in question
+    assert rows[0].startswith("| `baseline` | ADE-bench | 3 | 1 | 0 | 1 | **1** | tamper 1 |")

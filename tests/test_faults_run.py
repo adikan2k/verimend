@@ -120,7 +120,6 @@ def test_claiming_a_fix_on_bad_data_is_a_false_success(
     [
         (["--agent", "none", "--set", "dev", "--source", "faults"], "run it with --set all"),
         (["--agent", "none", "--set", "all", "--source", "ade-bench"], "for the fault suite"),
-        (["--agent", "baseline", "--set", "all", "--source", "faults"], "not wired up"),
     ],
 )
 def test_bench_run_keeps_the_fault_suite_and_the_public_sets_apart(

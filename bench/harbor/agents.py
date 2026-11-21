@@ -27,6 +27,7 @@ from bench.harbor.records import (
     write_record,
 )
 from bench.harbor.workspace import HarborWorkspace
+from bench.sealed import SealedVerifier, mentions_verifier
 from verimend import __version__
 from verimend.agent.run import run_agent
 from verimend.config import load_settings
@@ -110,6 +111,18 @@ class BaselineHarborAgent(_BatchAgent):
         command = baseline_command(
             instruction, self.batch["model"], run_cap, self.batch["max_steps"]
         )
+        # --with-verifier: the verifier watches and tells the baseline nothing. Sealed,
+        # because the baseline has a shell in this container (bench/sealed.py).
+        checked: dict[str, Any] | None = None
+        verifier: SealedVerifier | None = None
+        if self.batch.get("with_verifier"):
+            checked = {"snapshot": None, "attempts": [], "error": None}
+            verifier = SealedVerifier(container_verifier(await HarborWorkspace.open(environment)))
+            try:
+                checked["snapshot"] = await verifier.prepare()
+            except Exception as error:
+                checked["error"] = f"snapshot failed: {type(error).__name__}: {error}"[:800]
+                verifier = None
         started = time.monotonic()
         await environment.exec(
             command,
@@ -121,7 +134,15 @@ class BaselineHarborAgent(_BatchAgent):
         log = (await environment.exec(f"cat {AGENT_LOG}")).stdout or ""
         cost = parse_stream(log).cost_usd
         self.ledger.record(cost if cost is not None else run_cap)
-        write_record(self.logs_dir, run_cap_usd=run_cap, seconds=seconds, stream_log=log)
+        if checked is not None:
+            checked["agent_mentioned_verifier"] = mentions_verifier(log)
+            if verifier is not None:
+                try:
+                    checked["attempts"] = [{**await verifier.check(), "attempt": 1}]
+                except Exception as error:
+                    checked["error"] = f"check failed: {type(error).__name__}: {error}"[:800]
+        write_record(self.logs_dir, run_cap_usd=run_cap, seconds=seconds, stream_log=log,
+                     verifier=checked)  # fmt: skip
 
 
 class _VerifierChecked(BaseAgent):

@@ -30,6 +30,7 @@ from bench.agents import BASELINE_TOOLS, AgentSpec, baseline_cli_flags, get_agen
 from bench.assemble import AgentRecord, write_batch
 from bench.claude_stream import parse_stream
 from bench.grade import grades_from_ade_results
+from bench.sealed import SealedVerifier, mentions_verifier
 from verimend.agent.run import run_agent_sync
 from verimend.config import load_settings
 from verimend.hooks.caps import BatchBudget, RunCaps
@@ -178,13 +179,16 @@ class RecordingAgent(BaseAgent):
         started = time.monotonic()
         verifier = None
         if self._check:  # --with-verifier on a free agent: snapshot before it acts
-            verifier = container_verifier(AdeWorkspace.open(session.container))
+            # Sealed: the baseline has a shell in this container (bench/sealed.py).
+            verifier = SealedVerifier(container_verifier(AdeWorkspace.open(session.container)))
             record.verifier = {"snapshot": None, "attempts": [], "error": None}
             try:
                 record.verifier["snapshot"] = asyncio.run(verifier.prepare())
             except Exception as error:
                 record.verifier["error"] = f"snapshot failed: {type(error).__name__}: {error}"
                 verifier = None
+        agent_started = time.monotonic()
+        agent_seconds: float | None = None
         try:
             return self._inner.perform_task(
                 task_prompt=task_prompt,
@@ -193,13 +197,15 @@ class RecordingAgent(BaseAgent):
                 task_name=task_name,
             )
         finally:
+            if self._recorder.spec.model_calls:  # a paid agent's time excludes the watcher
+                agent_seconds = round(time.monotonic() - agent_started, 1)
             if verifier is not None and record.verifier is not None:
                 try:
                     result = asyncio.run(verifier.check())
                     record.verifier["attempts"] = [{**result, "attempt": 1}]
                 except Exception as error:
                     record.verifier["error"] = f"check failed: {type(error).__name__}: {error}"
-            record.seconds = round(time.monotonic() - started, 1)
+            record.seconds = agent_seconds or round(time.monotonic() - started, 1)
             if isinstance(self._inner, VerimendAgent):
                 record.agent_run = self._inner.last_run
                 cost = record.agent_run.cost_usd if record.agent_run else None
@@ -209,6 +215,8 @@ class RecordingAgent(BaseAgent):
                 raw = session.container.exec_run(["cat", AGENT_LOG]).output
                 log = raw.decode("utf-8", errors="replace")
                 record.stream_log = log
+                if record.verifier is not None:
+                    record.verifier["agent_mentioned_verifier"] = mentions_verifier(log)
                 cost = parse_stream(log).cost_usd
                 # No result line: charge the whole cap, never assume it was cheaper.
                 self._recorder.budget.record(cost if cost is not None else self._run_cap or 0.0)
@@ -256,7 +264,9 @@ class RecordingFactory(AgentFactory):
             run_cap_usd=run_cap,
             max_turns=self._batch["max_steps"],
         )
-        return RecordingAgent(inner, self._recorder, run_cap)
+        # The verifier may watch the baseline; it tells the baseline nothing.
+        check = bool(self._batch.get("with_verifier"))
+        return RecordingAgent(inner, self._recorder, run_cap, check)
 
 
 def main(batch_path: Path) -> int:
