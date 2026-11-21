@@ -27,6 +27,7 @@ from bench.harbor.records import (
     write_record,
 )
 from bench.harbor.workspace import HarborWorkspace
+from bench.replay_task import load_replay_diffs, replay_task
 from bench.sealed import SealedVerifier, mentions_verifier
 from verimend import __version__
 from verimend.agent.run import run_agent
@@ -220,3 +221,32 @@ class CheckedOracle(_VerifierChecked):
         )
         await oracle.setup(environment)
         await oracle.run(instruction, environment, context)
+
+
+class ReplayHarborAgent(BaseAgent):
+    """Changes nothing. Snapshots the task's project, then re-verifies each recorded diff
+    of the task against that snapshot (bench/replay.py). No model calls."""
+
+    def __init__(self, logs_dir: Path, *args: Any, batch_file: str, **kwargs: Any) -> None:
+        super().__init__(logs_dir, *args, **kwargs)
+        self.batch = json.loads(Path(batch_file).read_text(encoding="utf-8"))
+
+    @staticmethod
+    def name() -> str:
+        return "verimend-replay"
+
+    def version(self) -> str:
+        return __version__
+
+    async def setup(self, environment: BaseEnvironment) -> None:
+        pass
+
+    async def run(
+        self, instruction: str, environment: BaseEnvironment, context: AgentContext
+    ) -> None:
+        started = time.monotonic()
+        task = self.logs_dir.parent.name.rsplit("__", 1)[0]
+        verifier = container_verifier(await HarborWorkspace.open(environment))
+        diffs = load_replay_diffs(self.batch).get(task, [])
+        await replay_task(verifier, task, diffs, Path(self.batch["results_dir"]) / "replay.jsonl")
+        write_record(self.logs_dir, run_cap_usd=None, seconds=round(time.monotonic() - started, 1))

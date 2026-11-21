@@ -53,6 +53,9 @@ HARBOR_VENV_PINS = (
 # Phase 4: the verifier's snapshot and up to three verifier builds come on top of the agent;
 # on data-eng-bench each full build takes about 2.5 minutes.
 AGENT_TIMEOUT_SEC = 2400
+# The replay agent (bench/replay.py) snapshots once, then verifies every recorded diff of
+# the task: on data-eng-bench about 2.5 minutes each, and a task can have twenty.
+REPLAY_TIMEOUT_SEC = 4 * 3600
 # The free agents the verifier can be run on, to measure its false rejections.
 # The verifier watches these agents without telling them anything (snapshot before,
 # check after). VeriMend runs its own verifier inside its loop.
@@ -77,6 +80,11 @@ def parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         "--with-verifier",
         action="store_true",
         help="also run the verifier on what none, reference or baseline leaves; it only watches",
+    )
+    parser.add_argument(
+        "--replay-diffs",
+        type=Path,
+        help="for --agent replay only: the recorded diffs to verify (bench/replay.py writes it)",
     )
     return parser.parse_args(argv)
 
@@ -268,6 +276,8 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
         limit, max_usd = require_batch_caps(args.limit, args.max_usd)
         if args.trials < 1:
             raise CapError("--trials must be at least 1")
+        if (spec.name == "replay") != (args.replay_diffs is not None):
+            raise TaskSetError("--replay-diffs goes with --agent replay, and only with it.")
         if args.with_verifier and spec.name not in VERIFIER_CHECKED_AGENTS:
             raise TaskSetError(
                 "--with-verifier is for none, reference and baseline, where the verifier only "
@@ -303,6 +313,7 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
     batch = args.batch or f"{spec.name}-{set_name}-{datetime.now():%Y-%m-%d-%H%M%S}"
     stage = home / "runs" / batch
     stage_tasks(root, task_ids, stage)
+    timeout = REPLAY_TIMEOUT_SEC if spec.name == "replay" else AGENT_TIMEOUT_SEC
     if spec.name == "baseline":
         (stage / "experiment_sets").mkdir()
         (stage / "experiment_sets" / "plugin-sets.yaml").write_text(plugin_sets_text(), "utf-8")
@@ -328,12 +339,16 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
         "max_steps": settings.max_steps,
         "max_attempts": settings.max_attempts if spec.name == "verimend" else 1,
         "with_verifier": spec.name == "verimend" or bool(args.with_verifier),
-        "agent_timeout_sec": AGENT_TIMEOUT_SEC,
+        "agent_timeout_sec": timeout,
         "task_ids": task_ids,
         "stage_dir": docker_path(stage),
         "results_dir": results_inside,
         "include_tests": in_repo,
     }
+    if args.replay_diffs is not None:
+        replay = stage / "replay-diffs.json"
+        replay.write_bytes(args.replay_diffs.read_bytes())
+        payload["replay_diffs"] = docker_path(replay)
     batch_file = stage / "batch.json"
     batch_file.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
@@ -347,7 +362,7 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
         repo=REPO_ROOT,
         checkout=checkout,
         batch_file=batch_file,
-        env={"DEFAULT_AGENT_TIMEOUT_SEC": str(AGENT_TIMEOUT_SEC)},
+        env={"DEFAULT_AGENT_TIMEOUT_SEC": str(timeout)},
         runner=source.runner,
     )
     code = subprocess.run(command).returncode

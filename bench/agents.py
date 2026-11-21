@@ -49,6 +49,14 @@ AGENTS: dict[str, AgentSpec] = {
         AgentSpec("none", "Does nothing.", False, 0.0, "none"),
         AgentSpec("reference", "Applies the task's reference solution.", False, 0.0, "fixed"),
         AgentSpec(
+            "replay",
+            "Changes nothing; re-verifies recorded diffs against a fresh snapshot "
+            "(bench/replay.py).",
+            False,
+            0.0,
+            "none",
+        ),
+        AgentSpec(
             "baseline",
             "ADE-bench's Claude Code agent: Bash, Edit, Write, Read, Glob, Grep.",
             True,

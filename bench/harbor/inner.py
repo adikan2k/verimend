@@ -28,6 +28,7 @@ HARBOR_AGENTS = {"none": "nop", "reference": "oracle"}  # Harbor's own
 IMPORTED_AGENTS = {  # ours, loaded by Harbor from bench/harbor/agents.py
     "verimend": "bench.harbor.agents:VerimendHarborAgent",
     "baseline": "bench.harbor.agents:BaselineHarborAgent",
+    "replay": "bench.harbor.agents:ReplayHarborAgent",
 }
 CHECKED_AGENTS = {  # nop and oracle with the verifier around them (--with-verifier)
     "none": "bench.harbor.agents:CheckedNop",

@@ -51,7 +51,7 @@ SOURCES: dict[str, Source] = {
         tasks_subdir="tasks",
         task_file="task.yaml",
         runner="ade",
-        agents=("none", "reference", "baseline", "verimend"),
+        agents=("none", "reference", "baseline", "verimend", "replay"),
     ),
     "data-eng-bench": Source(
         name="data-eng-bench",
@@ -60,8 +60,7 @@ SOURCES: dict[str, Source] = {
         tasks_subdir="tasks",
         task_file="task.toml",
         runner="harbor",
-        # The baseline and VeriMend on Harbor come in phase 3.
-        agents=("none", "reference", "baseline", "verimend"),
+        agents=("none", "reference", "baseline", "verimend", "replay"),
     ),
     "faults": Source(
         name="faults",
