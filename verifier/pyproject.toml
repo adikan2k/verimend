@@ -1,6 +1,8 @@
 [project]
 name = "verimend-verifier"
 version = "0.1.0"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 description = "Independent verifier for dbt fixes: tamper checks, masking checks and a clean rebuild. Knows nothing about the agent."
 requires-python = ">=3.12"
 # Keep this list free of verimend and of the Agent SDK (CLAUDE.md rule 5).
