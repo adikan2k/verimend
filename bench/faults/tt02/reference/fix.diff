@@ -1,0 +1,13 @@
+diff --git a/models/marts/payment_method_totals.sql b/models/marts/payment_method_totals.sql
+index 84095b0..8d921fa 100644
+--- a/models/marts/payment_method_totals.sql
++++ b/models/marts/payment_method_totals.sql
+@@ -13,8 +13,6 @@ totals as (
+ 
+     from payments
+ 
+-    where payment_method <> 'gift_card'
+-
+     group by payment_method
+ 
+ )

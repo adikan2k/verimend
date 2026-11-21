@@ -1,0 +1,11 @@
+{
+ "kind": "unfixable",
+ "outcome": "escalate",
+ "categories": [
+  "missing_source"
+ ],
+ "failing": [
+  "model.jaffle_shop.stg_payments"
+ ],
+ "description": "The raw.payments table is missing."
+}

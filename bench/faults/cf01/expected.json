@@ -1,0 +1,12 @@
+{
+ "kind": "config",
+ "outcome": "fix",
+ "categories": [
+  "config"
+ ],
+ "failing": [
+  "parse"
+ ],
+ "description": "stg_payments was renamed, and orders still refers to the old name.",
+ "commit_message": "Rename stg_payments to stg_payment_events"
+}

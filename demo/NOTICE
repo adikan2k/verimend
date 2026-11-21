@@ -1,0 +1,17 @@
+demo/jaffle_shop and demo/raw_data are adapted from dbt-labs/jaffle_shop_duckdb
+(https://github.com/dbt-labs/jaffle_shop_duckdb, commit 20cc904), licensed under the
+Apache License 2.0 (see LICENSE). VeriMend's fault suite injects faults into copies of it.
+
+Changes from the original:
+- The three seed files moved to demo/raw_data/. scripts/build_demo.py loads them into a
+  `raw` schema of warehouse.duckdb with fixed column types, and the staging models read
+  them with `source('raw', ...)` instead of `ref()`. There are no seeds.
+- require-dbt-version allows dbt 1.10, the version VeriMend pins.
+- The payment methods are a project var; `orders` reads them with `var()`.
+- A macro, cents_to_dollars, converts payment amounts in stg_payments.
+- The staging models have enforced contracts (column names and types).
+- The marts moved to models/marts/. Two marts were added: daily_revenue and
+  payment_method_totals, with their tests, and a not_null test on gift_card_amount.
+- Five singular tests were added under tests/.
+- Generic tests use `data_tests:`. The docs colours, overview page, Dockerfile and
+  other files of the original are not included.

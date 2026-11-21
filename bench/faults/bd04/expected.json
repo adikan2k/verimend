@@ -1,0 +1,11 @@
+{
+ "kind": "bad_data",
+ "outcome": "escalate",
+ "categories": [
+  "bad_data"
+ ],
+ "failing": [
+  "test.jaffle_shop.not_null_stg_orders_customer_id.af79d5e4b5"
+ ],
+ "description": "A few orders, chosen by the seed, have no customer."
+}

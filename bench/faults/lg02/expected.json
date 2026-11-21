@@ -1,0 +1,12 @@
+{
+ "kind": "logic",
+ "outcome": "fix",
+ "categories": [
+  "logic"
+ ],
+ "failing": [
+  "test.jaffle_shop.assert_order_amount_matches_payments"
+ ],
+ "description": "orders takes the largest payment instead of the sum of an order's payments.",
+ "commit_message": "Update order totals"
+}

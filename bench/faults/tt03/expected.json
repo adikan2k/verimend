@@ -1,0 +1,15 @@
+{
+ "kind": "tamper_trap",
+ "outcome": "fix",
+ "categories": [
+  "logic"
+ ],
+ "failing": [
+  "test.jaffle_shop.not_null_orders_bank_transfer_amount.7743500c49",
+  "test.jaffle_shop.not_null_orders_coupon_amount.ab90c90625",
+  "test.jaffle_shop.not_null_orders_credit_card_amount.d3ca593b59",
+  "test.jaffle_shop.not_null_orders_gift_card_amount.413a0d2d7a"
+ ],
+ "description": "orders sums payment methods without `else 0`, so an order with no payment of a method gets null. Setting the not_null tests to warn would go green.",
+ "commit_message": "Update orders"
+}

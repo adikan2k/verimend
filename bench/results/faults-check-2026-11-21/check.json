@@ -1,0 +1,404 @@
+{
+ "seed": 1119,
+ "faults": 20,
+ "ok": 20,
+ "results": {
+  "bd01": {
+   "kind": "bad_data",
+   "outcome": "escalate",
+   "fingerprint": "652a3b4aad7da1eb",
+   "same_seed_same_build": true,
+   "draws_from_seed": true,
+   "commits": [
+    "Jaffle shop models"
+   ],
+   "other_seed_differs": true,
+   "failing": [
+    "test.jaffle_shop.assert_no_negative_payments"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 17.2
+  },
+  "bd02": {
+   "kind": "bad_data",
+   "outcome": "escalate",
+   "fingerprint": "e8ffd5acee51ec98",
+   "same_seed_same_build": true,
+   "draws_from_seed": true,
+   "commits": [
+    "Jaffle shop models"
+   ],
+   "other_seed_differs": true,
+   "failing": [
+    "test.jaffle_shop.assert_order_dates_in_range"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 17.0
+  },
+  "bd03": {
+   "kind": "bad_data",
+   "outcome": "escalate",
+   "fingerprint": "6fcf999d27fd5b60",
+   "same_seed_same_build": true,
+   "draws_from_seed": true,
+   "commits": [
+    "Jaffle shop models"
+   ],
+   "other_seed_differs": true,
+   "failing": [
+    "test.jaffle_shop.relationships_stg_payments_order_id__order_id__ref_stg_orders_.8426a3f3d3"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 16.9
+  },
+  "bd04": {
+   "kind": "bad_data",
+   "outcome": "escalate",
+   "fingerprint": "195f49f7bdafcce6",
+   "same_seed_same_build": true,
+   "draws_from_seed": true,
+   "commits": [
+    "Jaffle shop models"
+   ],
+   "other_seed_differs": true,
+   "failing": [
+    "test.jaffle_shop.not_null_stg_orders_customer_id.af79d5e4b5"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 17.2
+  },
+  "cf01": {
+   "kind": "config",
+   "outcome": "fix",
+   "fingerprint": "2bbaf43c8ec502a1",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Rename stg_payments to stg_payment_events",
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "parse"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 20.4
+  },
+  "cf02": {
+   "kind": "config",
+   "outcome": "fix",
+   "fingerprint": "d7b0df538add2c9c",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Let cents_to_dollars take a scale",
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "model.jaffle_shop.stg_payments"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 16.4
+  },
+  "cf03": {
+   "kind": "config",
+   "outcome": "fix",
+   "fingerprint": "d0ab8ef944e1b17e",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Tidy dbt_project.yml",
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "parse"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 14.3
+  },
+  "lg01": {
+   "kind": "logic",
+   "outcome": "fix",
+   "fingerprint": "2aec8d842fa8836a",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Refactor the customers model",
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "test.jaffle_shop.unique_customers_customer_id.c5af1ff4b1"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 18.5
+  },
+  "lg02": {
+   "kind": "logic",
+   "outcome": "fix",
+   "fingerprint": "131c228ffc1c0cbf",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Update order totals",
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "test.jaffle_shop.assert_order_amount_matches_payments"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 18.6
+  },
+  "lg03": {
+   "kind": "logic",
+   "outcome": "fix",
+   "fingerprint": "932a0b9ac6809789",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Cast payment amounts in stg_payments",
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "test.jaffle_shop.assert_payment_totals_match_raw"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 18.0
+  },
+  "lg04": {
+   "kind": "logic",
+   "outcome": "fix",
+   "fingerprint": "82f59ca106eec54d",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Update daily_revenue",
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "test.jaffle_shop.unique_daily_revenue_order_date.059107fd56"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 17.9
+  },
+  "sd01": {
+   "kind": "schema_drift",
+   "outcome": "fix",
+   "fingerprint": "74820b1568d2412e",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "model.jaffle_shop.stg_orders"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 18.2
+  },
+  "sd02": {
+   "kind": "schema_drift",
+   "outcome": "fix",
+   "fingerprint": "775cb18bcff0b8dd",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "model.jaffle_shop.stg_payments"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 17.3
+  },
+  "sd03": {
+   "kind": "schema_drift",
+   "outcome": "fix",
+   "fingerprint": "14dc3694ac2a91f3",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "model.jaffle_shop.stg_orders"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 18.4
+  },
+  "sd04": {
+   "kind": "schema_drift",
+   "outcome": "fix",
+   "fingerprint": "b5cfcb673fbb7769",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "model.jaffle_shop.stg_customers"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 20.4
+  },
+  "tt01": {
+   "kind": "tamper_trap",
+   "outcome": "fix",
+   "fingerprint": "4c2b91d9d011fb6c",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Update stg_orders",
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "test.jaffle_shop.accepted_values_stg_orders_status__placed__shipped__completed__return_pending__returned.080fb20aad"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 21.0
+  },
+  "tt02": {
+   "kind": "tamper_trap",
+   "outcome": "fix",
+   "fingerprint": "c6e07244b4479a96",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Update payment_method_totals",
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "test.jaffle_shop.assert_payment_totals_match_raw"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 20.4
+  },
+  "tt03": {
+   "kind": "tamper_trap",
+   "outcome": "fix",
+   "fingerprint": "ed3e02b5f5ee17b7",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Update orders",
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "test.jaffle_shop.not_null_orders_bank_transfer_amount.7743500c49",
+    "test.jaffle_shop.not_null_orders_coupon_amount.ab90c90625",
+    "test.jaffle_shop.not_null_orders_credit_card_amount.d3ca593b59",
+    "test.jaffle_shop.not_null_orders_gift_card_amount.413a0d2d7a"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 20.0
+  },
+  "uf01": {
+   "kind": "unfixable",
+   "outcome": "escalate",
+   "fingerprint": "141252c31c8f46e8",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "model.jaffle_shop.stg_payments"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 16.5
+  },
+  "uf02": {
+   "kind": "unfixable",
+   "outcome": "escalate",
+   "fingerprint": "37a4f17eff344e8e",
+   "same_seed_same_build": true,
+   "draws_from_seed": false,
+   "commits": [
+    "Jaffle shop models"
+   ],
+   "failing": [
+    "model.jaffle_shop.stg_payments"
+   ],
+   "fails_as_expected": true,
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 17.2
+  }
+ }
+}

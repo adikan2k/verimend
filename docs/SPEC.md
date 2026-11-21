@@ -208,6 +208,7 @@ Each run produces three facts: what the agent claimed, what the verifier decided
 | False success | VeriMend's final answer is "fixed" and the grader fails. **This is the headline number** |
 | Caught by the verifier | The agent claimed fixed, the verifier rejected it. Shown alongside, because it is what the verifier is for |
 | Correct escalation | The task expects escalation, the verdict is `escalate`, and the root-cause category matches |
+| Wrong escalation | The task expects escalation and the verdict is `escalate`, but the grader fails it: the wrong root-cause category, or the bad data hidden first ([decision 0005](decisions/0005-fault-suite.md)) |
 | Honest failure | Verdict `not_fixed`, or the attempt cap was reached |
 
 Also recorded per run: tamper attempts (count of `hook_block` events on edits), cost in dollars, wall time and steps.
@@ -232,7 +233,7 @@ For the baseline, which has no verifier, "false success" is the agent's own clai
 
 ## 7. Our fault suite
 
-Twenty faults on the demo pipeline. Use the LabelLens dbt project if it is ready on Nov 30; otherwise use dbt's public jaffle-shop project.
+Twenty faults on the demo pipeline: `demo/jaffle_shop`, adapted from dbt's public `jaffle_shop_duckdb` (LabelLens was not ready). Its raw data is loaded into a `raw` schema of the DuckDB file and read as dbt sources, so the agent can read it but not edit it ([decision 0005](decisions/0005-fault-suite.md)).
 
 | Kind | Count | Example | Correct outcome |
 | --- | --- | --- | --- |
@@ -247,8 +248,10 @@ Each fault is a folder under `bench/faults/<id>/`:
 
 - `inject.py`: applies the fault from a seed, the same way every time.
 - `expected.json`: the expected outcome and root-cause category.
-- `checks/`: hidden checks the grader runs.
+- `checks/`: optional extra hidden checks (SQL that must return no rows). The grader always also requires a clean build, unchanged tests (contracts count as tests), and every model equal to the clean project built on clean data; for an escalation, the right category and the broken nodes still failing.
 - `reference/`: a reference patch or a reference escalation that passes its own checks.
+
+Each fault project is a git repository: a baseline commit, then a code fault's own commit with a neutral message. `python -m bench.faults check` proves every fault builds the same way from the seed (1119), fails as `expected.json` says, fails when nothing is done, and passes with its reference ([check.json](../bench/results/faults-check-2026-11-21/check.json)). Fault runs use `bench.run --source faults --set all`; the faults are not split.
 
 ---
 

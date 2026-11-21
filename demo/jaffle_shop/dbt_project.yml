@@ -1,0 +1,26 @@
+name: 'jaffle_shop'
+
+config-version: 2
+version: '0.1'
+
+profile: 'jaffle_shop'
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets:
+    - "target"
+    - "logs"
+
+require-dbt-version: [">=1.10.0", "<2.0.0"]
+
+vars:
+  payment_methods: ['credit_card', 'coupon', 'bank_transfer', 'gift_card']
+
+models:
+  jaffle_shop:
+    +materialized: table
+    staging:
+      +materialized: view

@@ -47,7 +47,7 @@ def test_vendor_set_is_refused_once_the_split_exists() -> None:
 
 def test_unknown_set_is_refused() -> None:
     with pytest.raises(TaskSetError):
-        require_set_allowed("all", env={}, split_exists=False)
+        require_set_allowed("everything", env={}, split_exists=False)
 
 
 def test_run_refuses_heldout_from_claude_code_before_reading_tasks(

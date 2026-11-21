@@ -1,0 +1,12 @@
+{
+ "kind": "config",
+ "outcome": "fix",
+ "categories": [
+  "config"
+ ],
+ "failing": [
+  "parse"
+ ],
+ "description": "The payment_methods var that orders needs is gone from dbt_project.yml.",
+ "commit_message": "Tidy dbt_project.yml"
+}

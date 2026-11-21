@@ -24,6 +24,7 @@ out/
 target/
 dbt_packages/
 logs/
+.user.yml
 
 # Editors and OS
 .vscode/

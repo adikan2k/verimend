@@ -1,0 +1,12 @@
+{
+ "kind": "config",
+ "outcome": "fix",
+ "categories": [
+  "config"
+ ],
+ "failing": [
+  "model.jaffle_shop.stg_payments"
+ ],
+ "description": "The cents_to_dollars macro gained a scale argument with no default; its caller does not pass one.",
+ "commit_message": "Let cents_to_dollars take a scale"
+}

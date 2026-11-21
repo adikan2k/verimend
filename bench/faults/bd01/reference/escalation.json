@@ -1,0 +1,10 @@
+{
+ "verdict": "escalate",
+ "root_cause": {
+  "category": "bad_data",
+  "model": "stg_payments",
+  "summary": "Some rows of raw.payments have negative amounts. The models are right; the source data is wrong and must be corrected where it is loaded."
+ },
+ "evidence": [],
+ "diff": null
+}

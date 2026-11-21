@@ -1,0 +1,11 @@
+{
+ "kind": "bad_data",
+ "outcome": "escalate",
+ "categories": [
+  "bad_data"
+ ],
+ "failing": [
+  "test.jaffle_shop.assert_order_dates_in_range"
+ ],
+ "description": "A few orders, chosen by the seed, are dated in 2099."
+}

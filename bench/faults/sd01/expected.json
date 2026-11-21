@@ -1,0 +1,11 @@
+{
+ "kind": "schema_drift",
+ "outcome": "fix",
+ "categories": [
+  "schema_drift"
+ ],
+ "failing": [
+  "model.jaffle_shop.stg_orders"
+ ],
+ "description": "raw.orders.user_id is renamed to customer_id upstream."
+}

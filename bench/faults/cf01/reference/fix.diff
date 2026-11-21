@@ -1,0 +1,13 @@
+diff --git a/models/marts/orders.sql b/models/marts/orders.sql
+index 600e360..21bf1df 100644
+--- a/models/marts/orders.sql
++++ b/models/marts/orders.sql
+@@ -8,7 +8,7 @@ with orders as (
+ 
+ payments as (
+ 
+-    select * from {{ ref('stg_payments') }}
++    select * from {{ ref('stg_payment_events') }}
+ 
+ ),
+ 

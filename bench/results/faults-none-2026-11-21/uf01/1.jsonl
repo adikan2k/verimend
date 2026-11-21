@@ -1,0 +1,4 @@
+{"event": "run_start", "t": 1795246205.916, "agent": "none", "model": null, "git_sha": "8982a1d", "source": "faults", "source_commit": "8982a1d", "task": "uf01", "trial": 1, "caps": {"max_usd": 0.0, "max_steps": 40, "max_attempts": 1}, "tools_offered": null, "verifier_snapshot": null}
+{"event": "report", "t": 1795246205.916, "claim": "none", "text": null, "verdict": null}
+{"event": "grade", "t": 1795246205.916, "grader": "faults", "passed": false, "failure_mode": "verdict", "tests": {"verdict": "fail", "category": "fail", "still_failing": "pass", "tests_unchanged": "pass"}, "expected_test_count": 4}
+{"event": "run_end", "t": 1795246205.916, "claim": "none", "grader_passed": false, "outcome": "no_claim", "dollars": 0.0, "cost_source": "no_model_calls", "seconds": 0.0, "steps": null, "tool_calls": null, "hook_blocks": 0, "largest_prompt_tokens": null, "stopped": null, "verifier_error": null, "model_usage": null}
