@@ -79,3 +79,13 @@ Caveats for the scored runs:
 - **Runner wiring**: `bench.run --source realworld` is not built. A case's dbt project is the git root (`<dest>/project`), its profile is `<dest>/profiles/profiles.yml` (profile `integration_tests`, target `dev`), and the grader needs `broken/`, `pristine/` and `key/`. `grade_case` returns rules in the fault suite's shape.
 - **Contamination**: the fixes merged between 2026-08-18 and 2026-11-04, which lowers the risk that a model has seen them. The packages themselves are public and older.
 - **Tag `realworld-v1`** before the first scored run.
+
+## A breach of rule 2, during this phase
+
+On 2026-11-21 the session that built these cases broke CLAUDE.md rule 2. Looking for references to this note's old number, it ran `git grep "0007"` over the whole repository and excluded `bench/results/` but not `bench/heldout/`. The output, about 40 lines, put rows of four held-out ADE-bench tasks' answer seeds (`solution__*.csv`) into that session's transcript. The session reported it itself.
+
+- **Exposed:** the IDs of four held-out tasks, which are no secret (rule 2 lets scripts print task IDs), and some of their answer-seed rows, which are.
+- **Not exposed elsewhere:** nothing from those lines went into a commit, a pull request or another session. The main session has not opened them.
+- **Why the held-out numbers are unaffected:** the agent has been frozen at `agent-v1` since before this session started. Its prompts, tools and hooks have not changed, and this session worked only on `bench/realworld/`. Row accounting's rules were committed before the breach. The inspector's `pr` policy does not change the `fix` policy the benchmarks use.
+- **What changed:** the session was archived and not given further work, and CLAUDE.md rule 2 now says every repository-wide search must exclude `bench/heldout/`.
+- **Not done:** a re-split. If Aditya wants a held-out set no Claude session has ever seen, the four tasks named in that transcript would be replaced before the phase 8 runs.
