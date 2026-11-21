@@ -27,6 +27,7 @@ import json
 import os
 import random
 import shutil
+import stat
 import subprocess
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -178,6 +179,17 @@ class Materialized:
     commits: list[str] = field(default_factory=list)
 
 
+def remove_tree(path: Path) -> None:
+    """Delete a folder, including git's read-only object files on Windows."""
+
+    def retry(function: Callable[..., Any], target: str, *_: Any) -> None:
+        os.chmod(target, stat.S_IWRITE)
+        function(target)
+
+    if path.exists():
+        shutil.rmtree(path, onexc=retry)
+
+
 def git(project: Path, *args: str, date: str | None = None) -> str:
     """git in a fault's own repository, with a fixed identity and, for commits, a fixed
     date. These are throwaway repositories, so signing and line-ending rewrites are off."""
@@ -202,8 +214,7 @@ def materialize(
     fault_dir = faults_dir / fault_id
     expected = Expected.load(fault_dir)
     inject = load_inject(fault_dir)
-    if dest.exists():
-        shutil.rmtree(dest)
+    remove_tree(dest)
     project = dest / "project"
     shutil.copytree(DEMO_PROJECT, project, ignore=SKIP)
     (project / ".gitignore").write_text(GITIGNORE, encoding="utf-8", newline="\n")

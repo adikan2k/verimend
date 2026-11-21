@@ -105,6 +105,19 @@ def test_a_loosened_generic_test_counts_as_weakened(suite, tmp_path: Path) -> No
     assert result.rules["build"] and not result.rules["tests_unchanged"]
 
 
+def test_removing_a_contract_counts_as_weakened(suite, tmp_path: Path) -> None:
+    built = build(suite, "code", tmp_path)
+    undo_code_fault(built)
+    edit(built, "models/staging/schema.yml", "      - name: order_date
+        data_type: date
+",
+         "      - name: order_date
+        data_type: varchar
+")  # fmt: skip
+    result = grade(suite, built, {"verdict": "fixed"}, tmp_path)
+    assert not result.rules["tests_unchanged"] and not result.passed
+
+
 def test_a_mart_that_differs_from_the_answer_key_fails(suite, tmp_path: Path) -> None:
     built = build(suite, "code", tmp_path)
     undo_code_fault(built)

@@ -6,7 +6,8 @@ runs outside the folder the agent works in.
 A `fix` fault passes when all of these hold on a fresh build of the agent's final project
 against the faulted database:
     build            dbt build passes, every node
-    tests_unchanged  every test of the faulted project is still there, unchanged
+    tests_unchanged  every test of the faulted project is still there, unchanged (model
+                     contracts and their column types count as tests)
     key:<model>      every model of the answer key that the project still has equals it,
                      row for row; the four marts must all be there
     check:<file>     the fault's own checks/*.sql return no rows
@@ -36,7 +37,7 @@ import yaml
 
 from bench.faults.dbt import Build, run_dbt, write_profile
 from bench.faults.demo import DB_NAME, DEMO_PROJECT, build_database
-from bench.faults.lib import FAULTS_DIR, GIT_SKIP, Expected, project_texts
+from bench.faults.lib import FAULTS_DIR, GIT_SKIP, Expected, project_texts, remove_tree
 from bench.grade import Grade
 
 MARTS = ("customers", "daily_revenue", "orders", "payment_method_totals")
@@ -98,6 +99,12 @@ def _yaml_tests(rel: str, text: str) -> set[tuple[str, str]]:
         for key in TEST_KEYS:
             for test in entry.get(key) or []:
                 found.add((owner, json.dumps(test, sort_keys=True, default=str)))
+        # An enforced contract checks column names and types: loosening it is weakening.
+        contract = (entry.get("config") or {}).get("contract")
+        if contract:
+            found.add((owner, "contract " + json.dumps(contract, sort_keys=True, default=str)))
+        if entry.get("data_type"):
+            found.add((owner, f"data_type {entry['data_type']}"))
         for column in entry.get("columns") or []:
             if isinstance(column, dict):
                 collect(f"{owner}.{column.get('name')}", column)
@@ -117,8 +124,7 @@ def _yaml_tests(rel: str, text: str) -> set[tuple[str, str]]:
 
 def build_copy(project: Path, db: Path, work: Path) -> tuple[Build, Path]:
     """Copy `project` and `db` into `work` and run dbt build there."""
-    if work.exists():
-        shutil.rmtree(work)
+    remove_tree(work)
     copy = work / "project"
     shutil.copytree(project, copy, ignore=shutil.ignore_patterns(".git", *GIT_SKIP))
     built_db = work / "db" / DB_NAME
