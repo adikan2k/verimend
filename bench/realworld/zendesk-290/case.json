@@ -1,0 +1,30 @@
+{
+ "kind": "bug_fix",
+ "repo": "fivetran/dbt_zendesk",
+ "pr": 290,
+ "parent_sha": "f546ce6a1f2061b0d75e9e2f7eaf60b1de616a56",
+ "fix_sha": "c5f2cfa03a1629a357a3ad2d06c8173f52eeff69",
+ "merged_at": "2026-11-04T00:30:47Z",
+ "versions": [
+  "1.10.0"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_zendesk (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "| `zendesk__ticket_field_history`<br>`zendesk__ticket_backlog`<br>`int_zendesk__field_history_pivot`<br>(Breaking) | Changed column | `status_status` | `status` | Fixes column naming conflicts when a custom field shares a title with a standard field. Also removes unintended `<field>_<custom_field_id>` columns. Only affects configurations with these conflicts. |",
+  "- Fixes `zendesk__ticket_backlog` failing when a custom ticket field shares a title with a standard field (for example, `Status`). Standard fields now retain their names; custom fields can be tracked separately by adding their numeric IDs to `ticket_field_history_columns` (for example, `status_<field_id>`).",
+  "- Fixes failures when custom ticket field titles contain no Latin letters or numbers (for example, `購入段階`). These fields can be tracked regardless of title using their numeric IDs, with a leading underscore (for example, `_<field_id>`)."
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "macros/resolve_ticket_field_history_columns.sql",
+  "models/ticket_history/int_zendesk__field_history_pivot.sql"
+ ],
+ "failing": [
+  "model.zendesk.int_zendesk__field_history_pivot"
+ ],
+ "commit_message": "Zendesk models",
+ "description": "A custom ticket field shares its title with a standard field (`Status`). The macro that resolves the tracked field-history columns then fails, so the field-history pivot does not compile.",
+ "parent_error": "Compilation Error in model int_zendesk__field_history_pivot: str object has no element 0 > in macro resolve_ticket_field_history_columns"
+}

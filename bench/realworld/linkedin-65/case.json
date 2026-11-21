@@ -1,0 +1,28 @@
+{
+ "kind": "duckdb_port",
+ "repo": "fivetran/dbt_linkedin",
+ "pr": 65,
+ "parent_sha": "32ae9638e669435dd56efb9e564a73880d7b2a47",
+ "fix_sha": "e23583bfadbc40d0ebb7329f776474fa72886975",
+ "merged_at": "2026-08-18T18:30:59Z",
+ "versions": [
+  "1.3.1"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_linkedin (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "- Adds DuckDB as a supported destination."
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "macros/staging/date_from_month_string.sql"
+ ],
+ "failing": [
+  "model.linkedin.stg_linkedin_ads__monthly_ad_analytics_by_country",
+  "model.linkedin.stg_linkedin_ads__monthly_ad_analytics_by_region"
+ ],
+ "commit_message": "Linkedin models",
+ "description": "The monthly country and region reports turn a month string into a date with `to_date`, which DuckDB does not have.",
+ "parent_error": "Catalog Error: Scalar Function with name to_date does not exist!"
+}

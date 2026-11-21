@@ -1,0 +1,30 @@
+{
+ "kind": "duckdb_port",
+ "repo": "fivetran/dbt_jira",
+ "pr": 195,
+ "parent_sha": "6b7d33392a306ae41a54b9a111c5d9f14a83dcb5",
+ "fix_sha": "0ed5dcf2e96b5ca138699825dcb605f61802406a",
+ "merged_at": "2026-08-18T18:29:07Z",
+ "versions": [
+  "1.10.2"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_jira (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "- Adds DuckDB as a supported destination."
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "macros/split_sprint_ids.sql",
+  "models/intermediate/field_history/int_jira__pivot_daily_field_history.sql",
+  "models/jira__daily_issue_field_history.sql",
+  "models/jira__daily_sprint_issue_history.sql"
+ ],
+ "failing": [
+  "model.jira.jira__daily_sprint_issue_history"
+ ],
+ "commit_message": "Jira models",
+ "description": "Splitting a sprint list falls through to a Spark-style `array<string>` cast, which DuckDB does not parse.",
+ "parent_error": "Parser Error: syntax error at or near \"array\""
+}

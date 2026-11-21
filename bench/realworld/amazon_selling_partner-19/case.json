@@ -1,0 +1,28 @@
+{
+ "kind": "duckdb_port",
+ "repo": "fivetran/dbt_amazon_selling_partner",
+ "pr": 19,
+ "parent_sha": "a9f5a9e62d387fa735a5eeeaab8ab6b3e41a8d1e",
+ "fix_sha": "6227cee2c295f0af756a35daa2872182def9a0c6",
+ "merged_at": "2026-08-18T17:48:13Z",
+ "versions": [
+  "0.5.1"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_amazon_selling_partner (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "- Adds DuckDB as a supported destination."
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "macros/convert_string_to_numeric.sql"
+ ],
+ "failing": [
+  "model.amazon_selling_partner.amazon_selling_partner__order_items",
+  "model.amazon_selling_partner.amazon_selling_partner__orders"
+ ],
+ "commit_message": "Amazon Selling Partner models",
+ "description": "Prices arrive as strings with stray characters. The package's string-to-number macro has no DuckDB branch, so the default cast fails on DuckDB.",
+ "parent_error": "Conversion Error: Could not convert string \"39.01a\" to DECIMAL(28,6)"
+}

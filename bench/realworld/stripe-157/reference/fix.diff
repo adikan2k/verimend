@@ -1,0 +1,27 @@
+diff --git a/macros/date_timezone.sql b/macros/date_timezone.sql
+index b35b8de..fbad07b 100644
+--- a/macros/date_timezone.sql
++++ b/macros/date_timezone.sql
+@@ -63,6 +63,22 @@ date(
+ 
+ {%- endmacro %}
+ 
++{% macro duckdb__date_timezone(column) -%}
++
++{% set converted_date %}
++
++{% if var('stripe_timezone', none) %}
++    timezone('{{ var("stripe_timezone") }}', {{ column }})
++{% else %}
++    {{ column }}
++{% endif %}
++
++{% endset %}
++
++{{ dbt.date_trunc('day',converted_date) }}
++
++{%- endmacro %}
++
+ {% macro spark__date_timezone(column) -%}
+ 
+ {% set converted_date %}

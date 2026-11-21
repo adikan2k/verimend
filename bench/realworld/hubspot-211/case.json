@@ -1,0 +1,45 @@
+{
+ "kind": "duckdb_port",
+ "repo": "fivetran/dbt_hubspot",
+ "pr": 211,
+ "parent_sha": "ce9993d550abff4d927c6799cdac52ddf6d8de9e",
+ "fix_sha": "439facd0cddafc1835ca7fe960e83c3a66e8f3f4",
+ "merged_at": "2026-08-18T18:25:45Z",
+ "versions": [
+  "1.9.2"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_hubspot (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "- Adds DuckDB as a supported destination."
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "macros/merge_contacts.sql",
+  "models/marketing/history/hubspot__daily_contact_history.sql",
+  "models/marketing/intermediate/int_hubspot__contact_calendar_spine.sql",
+  "models/marketing/intermediate/int_hubspot__daily_contact_history.sql",
+  "models/marketing/intermediate/int_hubspot__pivot_daily_contact_history.sql",
+  "models/sales/history/hubspot__daily_company_history.sql",
+  "models/sales/history/hubspot__daily_deal_history.sql",
+  "models/sales/intermediate/int_hubspot__company_calendar_spine.sql",
+  "models/sales/intermediate/int_hubspot__daily_company_history.sql",
+  "models/sales/intermediate/int_hubspot__daily_deal_history.sql",
+  "models/sales/intermediate/int_hubspot__deal_calendar_spine.sql",
+  "models/sales/intermediate/int_hubspot__pivot_daily_company_history.sql",
+  "models/sales/intermediate/int_hubspot__pivot_daily_deal_history.sql",
+  "models/service/hubspot__daily_ticket_history.sql",
+  "models/service/intermediate/int_hubspot__daily_ticket_history.sql",
+  "models/service/intermediate/int_hubspot__pivot_daily_ticket_history.sql",
+  "models/service/intermediate/int_hubspot__ticket_calendar_spine.sql",
+  "models/staging/stg_hubspot__submission_response.sql"
+ ],
+ "failing": [
+  "model.hubspot.int_hubspot__contact_merge_adjust",
+  "model.hubspot.stg_hubspot__submission_response"
+ ],
+ "commit_message": "Hubspot models",
+ "description": "Form submission timestamps in epoch milliseconds overflow a 32-bit cast, and the contact-merge model splits ids with a Spark-style `array<string>` cast that DuckDB does not parse.",
+ "parent_error": "Invalid Input Error: Type INT64 with value 1698832800000 can't be cast because the value is out of range for the destination type INT32; Parser Error: syntax error at or near \"array\""
+}

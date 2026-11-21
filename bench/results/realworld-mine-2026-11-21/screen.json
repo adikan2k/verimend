@@ -1,0 +1,3924 @@
+{
+ "note": "Upstream layout (integration_tests, dbt deps from dbt Hub), dbt-duckdb 1.9, harness and seeds from the fix commit for both commits; every CI scenario in the fix commit's ci/test_scenarios.yml. Script: screen.py next to this file.",
+ "screened": 78,
+ "qualify": [
+  "dbt_amazon_selling_partner-19",
+  "dbt_facebook_ads-72",
+  "dbt_fivetran_log-203",
+  "dbt_google_play-36",
+  "dbt_greenhouse-47",
+  "dbt_hubspot-211",
+  "dbt_hubspot-215",
+  "dbt_iterable-83",
+  "dbt_jira-195",
+  "dbt_linkedin-65",
+  "dbt_marketo-59",
+  "dbt_netsuite-208",
+  "dbt_quickbooks-225",
+  "dbt_quickbooks-227",
+  "dbt_recurly-49",
+  "dbt_shopify-167",
+  "dbt_stripe-157",
+  "dbt_tiktok_ads-48",
+  "dbt_zendesk-290"
+ ],
+ "results": {
+  "dbt_ad_reporting-187": {
+   "kind": "bug_fix",
+   "merged_at": "2026-09-30T16:35:43Z",
+   "parent_sha": "f84aef71d577f834a1ba63ba9f88b3feac8099c7",
+   "fix_sha": "0f6fc72cde6c6d11c52e43dc83de2b92755b1d49",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_ad_reporting-189": {
+   "kind": "bug_fix",
+   "merged_at": "2026-09-30T23:38:45Z",
+   "parent_sha": "0f6fc72cde6c6d11c52e43dc83de2b92755b1d49",
+   "fix_sha": "03880ed236d90f709de1738552017b596c2569d6",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_ad_reporting-190": {
+   "kind": "bug_fix",
+   "merged_at": "2026-10-15T18:15:42Z",
+   "parent_sha": "03880ed236d90f709de1738552017b596c2569d6",
+   "fix_sha": "fb57bcc38747dc5efef2cde9bc9818c3208f7fb7",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_amazon_selling_partner-19": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T17:48:13Z",
+   "parent_sha": "a9f5a9e62d387fa735a5eeeaab8ab6b3e41a8d1e",
+   "fix_sha": "6227cee2c295f0af756a35daa2872182def9a0c6",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.amazon_selling_partner.amazon_selling_partner__order_items",
+      "model.amazon_selling_partner.amazon_selling_partner__orders"
+     ]
+    },
+    "orders and fba disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "catalog disabled": {
+     "exit": 1,
+     "failing": [
+      "model.amazon_selling_partner.amazon_selling_partner__order_items",
+      "model.amazon_selling_partner.amazon_selling_partner__orders"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.amazon_selling_partner.amazon_selling_partner__order_items",
+      "model.amazon_selling_partner.amazon_selling_partner__orders"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "orders and fba disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "catalog disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_amplitude-44": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T17:46:09Z",
+   "parent_sha": "bc1c729920bf49439cdfbb88cd9abb6ce74e679e",
+   "fix_sha": "772528317399f90944f374ace10baa3f3396ecd7",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_asana-69": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-12T19:11:08Z",
+   "parent_sha": "965748a76a5cc70d0937919119f8ac67c38cad03",
+   "fix_sha": "d3303fb57c5cff65d0857efd028de09ec5c29239",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "tags disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "tags disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_aws_cloud_cost-20": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:03:37Z",
+   "parent_sha": "3362e52f824c6991deac40dce846d843f075cb68",
+   "fix_sha": "436fb4ffe174a7ca2c29f3df01edd1c423bb86fe",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_dynamics_365_crm-27": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-20T04:30:26Z",
+   "parent_sha": "0ffd86173c4be2b25dc35fa267dbfb7392ba0daf",
+   "fix_sha": "c68f9fa2d20401ded6a8563cbcb7d81cb6016a21",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "APPOINTMENT with no string-mappable columns": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "APPOINTMENT with no string-mappable columns": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_facebook_ads-72": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:04:55Z",
+   "parent_sha": "27180ace3c72d43f14292cd79b6d3d1134a9a42b",
+   "fix_sha": "7a879e95387de83d95d21ba42342344751a54590",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.facebook_ads.facebook_ads__url_tags"
+     ]
+    },
+    "creative history json": {
+     "exit": 1,
+     "failing": [
+      "model.facebook_ads.facebook_ads__url_tags"
+     ]
+    },
+    "demographics and url filter": {
+     "exit": 1,
+     "failing": [
+      "model.facebook_ads.facebook_ads__url_tags"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.facebook_ads.facebook_ads__url_tags"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "creative history json": {
+     "exit": 0,
+     "failing": []
+    },
+    "demographics and url filter": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_facebook_pages-36": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-20T16:12:28Z",
+   "parent_sha": "be14024a55813919a67aeea6d651dcad2a014e53",
+   "fix_sha": "91a1b739d15e834b3c8f0485365df9f548db485c",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_fivetran_log-194": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-03T21:58:56Z",
+   "parent_sha": "d5905b556877bf1e25ba262bc384578f6b0ab06a",
+   "fix_sha": "273b5535450c0c723a5cdf5bbc348ccc21956ebf",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "log json data": {
+     "exit": 1,
+     "failing": [
+      "model.fivetran_log.stg_fivetran_platform__log_tmp"
+     ]
+    },
+    "usage pricing enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "usage pricing with transformations": {
+     "exit": 0,
+     "failing": []
+    },
+    "minimal features": {
+     "exit": 0,
+     "failing": []
+    },
+    "audit trail enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "connector sdk log enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "audit table with log start date": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "log json data": {
+     "exit": 1,
+     "failing": [
+      "model.fivetran_log.stg_fivetran_platform__log_tmp"
+     ]
+    },
+    "usage pricing enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "usage pricing with transformations": {
+     "exit": 0,
+     "failing": []
+    },
+    "minimal features": {
+     "exit": 0,
+     "failing": []
+    },
+    "audit trail enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "connector sdk log enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "audit table with log start date": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_fivetran_log-203": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T23:05:51Z",
+   "parent_sha": "0da7ac69669322de4b4c9ea88b5a0071b60b23e7",
+   "fix_sha": "113a36b4b327b913ed576e115546ee5104b9130c",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.fivetran_log.fivetran_platform__audit_user_activity",
+      "model.fivetran_log.fivetran_platform__connection_status"
+     ]
+    },
+    "log json data": {
+     "exit": 1,
+     "failing": [
+      "model.fivetran_log.stg_fivetran_platform__log_tmp"
+     ]
+    },
+    "usage pricing enabled": {
+     "exit": 1,
+     "failing": [
+      "model.fivetran_log.fivetran_platform__audit_user_activity",
+      "model.fivetran_log.fivetran_platform__connection_status"
+     ]
+    },
+    "usage pricing with transformations": {
+     "exit": 1,
+     "failing": [
+      "model.fivetran_log.fivetran_platform__audit_user_activity",
+      "model.fivetran_log.fivetran_platform__connection_status"
+     ]
+    },
+    "minimal features": {
+     "exit": 1,
+     "failing": [
+      "model.fivetran_log.fivetran_platform__audit_user_activity",
+      "model.fivetran_log.fivetran_platform__connection_status"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "log json data": {
+     "exit": 1,
+     "failing": [
+      "model.fivetran_log.stg_fivetran_platform__log_tmp"
+     ]
+    },
+    "usage pricing enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "usage pricing with transformations": {
+     "exit": 0,
+     "failing": []
+    },
+    "minimal features": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_ga4_export-25": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:16:49Z",
+   "parent_sha": "365bc6cd252ee787968e43a230a731acc1455382",
+   "fix_sha": "b94827407990c5faffb68c8ea9a8afb8478b8e0c",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "key events enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "key events enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_ga4_export-30": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-21T08:15:47Z",
+   "parent_sha": "d03366472bfd63a964263015bae272b31b432b50",
+   "fix_sha": "6f912fe1ea59e27a323eb5cba51d82105afc45a5",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "key events enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "key events enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_google_play-36": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:23:26Z",
+   "parent_sha": "c24193ace6ddc96adc14cd318b8240aeb4446adf",
+   "fix_sha": "74274422b4d1db71177d11b5422a7cb8b278013c",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "earnings and subscriptions enabled": {
+     "exit": 1,
+     "failing": [
+      "model.google_play.stg_google_play__earnings"
+     ]
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "earnings and subscriptions enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "earnings and subscriptions enabled"
+  },
+  "dbt_greenhouse-47": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:24:14Z",
+   "parent_sha": "96b2814be124d3ed037c446f84b6d9c7426de207",
+   "fix_sha": "d3109e97ac653c4e03db66a8ed0b8babd5bfbce8",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.greenhouse.stg_greenhouse__scheduled_interview"
+     ]
+    },
+    "optional features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.greenhouse.stg_greenhouse__scheduled_interview"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.greenhouse.stg_greenhouse__scheduled_interview"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "optional features disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_greenhouse-51": {
+   "kind": "bug_fix",
+   "merged_at": "2026-10-22T22:37:06Z",
+   "parent_sha": "3fb918bb1f46f0ee3e0febde90e247b5687c6362",
+   "fix_sha": "854fac5e1f13365097c40e1758f837df55ad00a2",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "optional features disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "interview enabled, interviewer disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "prospect_detail enabled; prospect, job_candidate_attribute and scorecard_question disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "interview enabled, interview_kit disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "rejection_detail enabled, rejection_reason disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "optional features disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "interview enabled, interviewer disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "prospect_detail enabled; prospect, job_candidate_attribute and scorecard_question disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "interview enabled, interview_kit disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "rejection_detail enabled, rejection_reason disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_hubspot-211": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:25:45Z",
+   "parent_sha": "ce9993d550abff4d927c6799cdac52ddf6d8de9e",
+   "fix_sha": "439facd0cddafc1835ca7fe960e83c3a66e8f3f4",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.hubspot.int_hubspot__contact_merge_adjust",
+      "model.hubspot.stg_hubspot__submission_response"
+     ]
+    },
+    "marketing and communication enabled": {
+     "exit": 1,
+     "failing": [
+      "model.hubspot.int_hubspot__contact_merge_adjust",
+      "model.hubspot.stg_hubspot__submission_response"
+     ]
+    },
+    "marketing with merged deals + no email events or conversations": {
+     "exit": 1,
+     "failing": [
+      "model.hubspot.int_hubspot__contact_merge_adjust"
+     ]
+    },
+    "marketing and sales with contact merge audit and no engagements or email sent": {
+     "exit": 1,
+     "failing": [
+      "model.hubspot.stg_hubspot__submission_response"
+     ]
+    },
+    "sales only with all features + no company list members": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.hubspot.int_hubspot__contact_merge_adjust",
+      "model.hubspot.stg_hubspot__submission_response"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and communication enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing with merged deals + no email events or conversations": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and sales with contact merge audit and no engagements or email sent": {
+     "exit": 0,
+     "failing": []
+    },
+    "sales only with all features + no company list members": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_hubspot-213": {
+   "kind": "bug_fix",
+   "merged_at": "2026-09-17T17:59:47Z",
+   "parent_sha": "439facd0cddafc1835ca7fe960e83c3a66e8f3f4",
+   "fix_sha": "38f294ef9f514aa0d37e540ebf4891810f2fe2a5",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and communication enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing with merged deals + no email events or conversations": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and sales with contact merge audit and no engagements or email sent": {
+     "exit": 0,
+     "failing": []
+    },
+    "sales only with all features + no company list members": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and communication enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing with merged deals + no email events or conversations": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and sales with contact merge audit and no engagements or email sent": {
+     "exit": 0,
+     "failing": []
+    },
+    "sales only with all features + no company list members": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_hubspot-214": {
+   "kind": "bug_fix",
+   "merged_at": "2026-09-24T21:25:09Z",
+   "parent_sha": "8c09171614041caea1e3617ce3e52af1ce8b86d6",
+   "fix_sha": "0e3fea29a53594953c6e13ff1fd3705c04d1e6af",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and communication enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing with merged deals + no email events or conversations": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and sales with contact merge audit and no engagements or email sent": {
+     "exit": 0,
+     "failing": []
+    },
+    "sales only with all features + no company list members": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and communication enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing with merged deals + no email events or conversations": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and sales with contact merge audit and no engagements or email sent": {
+     "exit": 0,
+     "failing": []
+    },
+    "sales only with all features + no company list members": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_hubspot-215": {
+   "kind": "bug_fix",
+   "merged_at": "2026-09-22T20:36:07Z",
+   "parent_sha": "439facd0cddafc1835ca7fe960e83c3a66e8f3f4",
+   "fix_sha": "8c09171614041caea1e3617ce3e52af1ce8b86d6",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.hubspot.stg_hubspot__conversation_thread"
+     ]
+    },
+    "marketing and communication enabled": {
+     "exit": 1,
+     "failing": [
+      "model.hubspot.stg_hubspot__conversation_thread"
+     ]
+    },
+    "marketing with merged deals + no email events or conversations": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and sales with contact merge audit and no engagements or email sent": {
+     "exit": 1,
+     "failing": [
+      "model.hubspot.stg_hubspot__conversation_thread"
+     ]
+    },
+    "sales only with all features + no company list members": {
+     "exit": 1,
+     "failing": [
+      "model.hubspot.stg_hubspot__conversation_thread"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.hubspot.stg_hubspot__conversation_thread"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and communication enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing with merged deals + no email events or conversations": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and sales with contact merge audit and no engagements or email sent": {
+     "exit": 0,
+     "failing": []
+    },
+    "sales only with all features + no company list members": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_hubspot-220": {
+   "kind": "bug_fix",
+   "merged_at": "2026-10-17T02:13:56Z",
+   "parent_sha": "5ce2581f8581075055217c024761908c26620ea8",
+   "fix_sha": "a39a8fdcf9a3ab861a74465bf8c62fc162d977ca",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and communication enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing with merged deals + no email events or conversations": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and sales with contact merge audit and no engagements or email sent": {
+     "exit": 0,
+     "failing": []
+    },
+    "sales only with all features + no company list members": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and communication enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing with merged deals + no email events or conversations": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and sales with contact merge audit and no engagements or email sent": {
+     "exit": 0,
+     "failing": []
+    },
+    "sales only with all features + no company list members": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_hubspot-221": {
+   "kind": "bug_fix",
+   "merged_at": "2026-10-17T02:02:32Z",
+   "parent_sha": "bf6831099e35148594fca717a1145319b8ee7f08",
+   "fix_sha": "5ce2581f8581075055217c024761908c26620ea8",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and communication enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing with merged deals + no email events or conversations": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and sales with contact merge audit and no engagements or email sent": {
+     "exit": 0,
+     "failing": []
+    },
+    "sales only with all features + no company list members": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and communication enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing with merged deals + no email events or conversations": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and sales with contact merge audit and no engagements or email sent": {
+     "exit": 0,
+     "failing": []
+    },
+    "sales only with all features + no company list members": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_hubspot-224": {
+   "kind": "bug_fix",
+   "merged_at": "2026-10-23T22:47:05Z",
+   "parent_sha": "0e3fea29a53594953c6e13ff1fd3705c04d1e6af",
+   "fix_sha": "a5200357e9c9d049267347fbd705f3bb4e2b42cf",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and communication enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing with merged deals + no email events or conversations": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and sales with contact merge audit and no engagements or email sent": {
+     "exit": 0,
+     "failing": []
+    },
+    "sales only with all features + no company list members": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and communication enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing with merged deals + no email events or conversations": {
+     "exit": 0,
+     "failing": []
+    },
+    "marketing and sales with contact merge audit and no engagements or email sent": {
+     "exit": 0,
+     "failing": []
+    },
+    "sales only with all features + no company list members": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_instagram_business-35": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-20T16:18:06Z",
+   "parent_sha": "c21d3f2fbc6173e5495e10ba5b5aef195868392d",
+   "fix_sha": "1ee8e62ce77f42554f70645bb9546dfbd5d20ce2",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_intercom-87": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:26:55Z",
+   "parent_sha": "067394cd42e7f9cdc52e6708dc91b6f820ba6074",
+   "fix_sha": "a64952bf560f801597f3e5c22a6660ef9bb416d2",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "optional features disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "collection history disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "help center history disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "optional features disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "collection history disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "help center history disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_intercom-91": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-03T23:32:58Z",
+   "parent_sha": "1a8ca30fd051a21c102e37c597d4b66635952aa9",
+   "fix_sha": "e8fd82324c33e0a3ea343a4ca27564fbe4052531",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "optional features disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "collection history disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "help center history disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "optional features disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "collection history disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "help center history disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_iterable-83": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:27:23Z",
+   "parent_sha": "0b65c481a984f8f0e63829366dae317bae955e63",
+   "fix_sha": "ad835b838cbddf1836eee0b425a821829ea14663",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.iterable.int_iterable__list_user_unnest"
+     ]
+    },
+    "bigquery json data": {
+     "exit": 1,
+     "failing": [
+      "model.iterable.int_iterable__list_user_unnest"
+     ]
+    },
+    "passthrough columns": {
+     "exit": 1,
+     "failing": [
+      "model.iterable.stg_iterable__event_extension",
+      "model.iterable.stg_iterable__user_history"
+     ]
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.iterable.int_iterable__list_user_unnest",
+      "model.iterable.iterable__events"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.iterable.int_iterable__list_user_unnest"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "bigquery json data": {
+     "exit": 1,
+     "failing": [
+      "model.iterable.int_iterable__list_user_unnest"
+     ]
+    },
+    "passthrough columns": {
+     "exit": 1,
+     "failing": [
+      "model.iterable.stg_iterable__event_extension",
+      "model.iterable.stg_iterable__user_history"
+     ]
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.iterable.iterable__events"
+     ]
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_jira-195": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:29:07Z",
+   "parent_sha": "6b7d33392a306ae41a54b9a111c5d9f14a83dcb5",
+   "fix_sha": "0ed5dcf2e96b5ca138699825dcb605f61802406a",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.jira.jira__daily_sprint_issue_history"
+     ]
+    },
+    "features disabled field grain": {
+     "exit": 0,
+     "failing": []
+    },
+    "conversations disabled": {
+     "exit": 1,
+     "failing": [
+      "model.jira.jira__daily_sprint_issue_history"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.jira.jira__daily_sprint_issue_history"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled field grain": {
+     "exit": 0,
+     "failing": []
+    },
+    "conversations disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_linkedin-65": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:30:59Z",
+   "parent_sha": "32ae9638e669435dd56efb9e564a73880d7b2a47",
+   "fix_sha": "e23583bfadbc40d0ebb7329f776474fa72886975",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.linkedin.stg_linkedin_ads__monthly_ad_analytics_by_country",
+      "model.linkedin.stg_linkedin_ads__monthly_ad_analytics_by_region"
+     ]
+    },
+    "toggle vars": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.linkedin.stg_linkedin_ads__monthly_ad_analytics_by_country",
+      "model.linkedin.stg_linkedin_ads__monthly_ad_analytics_by_region"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "toggle vars": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_linkedin-67": {
+   "kind": "bug_fix",
+   "merged_at": "2026-10-19T20:10:37Z",
+   "parent_sha": "e23583bfadbc40d0ebb7329f776474fa72886975",
+   "fix_sha": "d67e86d30f8f9c77449b322bb3ac3cc69b5e85a8",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "toggle vars": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "toggle vars": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_linkedin-68": {
+   "kind": "bug_fix",
+   "merged_at": "2026-10-19T22:09:35Z",
+   "parent_sha": "e23583bfadbc40d0ebb7329f776474fa72886975",
+   "fix_sha": "f0d76e270333de36540a3358919115d19b38b567",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "toggle vars": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "toggle vars": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_linkedin_pages-36": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-20T18:08:34Z",
+   "parent_sha": "8f8d4f6d5f0e3a20433c522863210bda2cee9ffa",
+   "fix_sha": "65ae1ee3248ed0c37a7a1eea77772cc9b798addf",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_marketo-59": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:36:26Z",
+   "parent_sha": "d1c5853aa73195457713988d6d0b285bb6977b34",
+   "fix_sha": "4473d382e34feb23bb37808a2366c965fb07131d",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.marketo.marketo__calendar_spine"
+     ]
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.marketo.marketo__calendar_spine",
+      "model.marketo.marketo__change_data_details",
+      "model.marketo.marketo__change_data_pivot"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.marketo.marketo__calendar_spine",
+      "model.marketo.marketo__change_data_details",
+      "model.marketo.marketo__change_data_pivot"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.marketo.marketo__change_data_details",
+      "model.marketo.marketo__change_data_pivot",
+      "model.marketo.marketo__lead_calendar_spine"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.marketo.marketo__change_data_details",
+      "model.marketo.marketo__change_data_pivot",
+      "model.marketo.marketo__lead_calendar_spine"
+     ]
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_marketo-68": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-12T19:41:15Z",
+   "parent_sha": "9f51e90c8c3bd49976e1407b8af82bf3d0cdd90d",
+   "fix_sha": "3a57caead3a0d1b51e1d3735f81b5c0c37d4705d",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.marketo.marketo__change_data_details",
+      "model.marketo.marketo__change_data_pivot",
+      "model.marketo.marketo__lead_calendar_spine"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.marketo.marketo__change_data_details",
+      "model.marketo.marketo__change_data_pivot",
+      "model.marketo.marketo__lead_calendar_spine"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.marketo.marketo__change_data_details",
+      "model.marketo.marketo__change_data_pivot",
+      "model.marketo.marketo__lead_calendar_spine"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.marketo.marketo__change_data_details",
+      "model.marketo.marketo__change_data_pivot",
+      "model.marketo.marketo__lead_calendar_spine"
+     ]
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_mixpanel-70": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:37:06Z",
+   "parent_sha": "3db9a302a7e7598e97a0ea001805c62f1a3652fc",
+   "fix_sha": "3762f7a475f0354f3f0c1be94bd68a867eb8a505",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_netsuite-208": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:37:37Z",
+   "parent_sha": "986fb90aab6ea658bf15c532a094e4f9d8ada1be",
+   "fix_sha": "5cd03022085ee85e57724153bf735405b8c57986",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.stg_netsuite2__account_types"
+     ]
+    },
+    "aggregated statements": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.stg_netsuite2__account_types"
+     ]
+    },
+    "subsidiary multibook fiscal": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.stg_netsuite2__account_types"
+     ]
+    },
+    "exchange rate enabled": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.stg_netsuite2__account_types"
+     ]
+    },
+    "subsidiary relationships disabled": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.stg_netsuite2__account_types"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.stg_netsuite2__account_types"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "aggregated statements": {
+     "exit": 0,
+     "failing": []
+    },
+    "subsidiary multibook fiscal": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.netsuite2__balance_sheet",
+      "model.netsuite.netsuite2__income_statement",
+      "model.netsuite.netsuite2__transaction_details"
+     ]
+    },
+    "exchange rate enabled": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.netsuite2__balance_sheet",
+      "model.netsuite.netsuite2__income_statement"
+     ]
+    },
+    "subsidiary relationships disabled": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.netsuite2__balance_sheet",
+      "model.netsuite.netsuite2__income_statement"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.netsuite2__balance_sheet",
+      "model.netsuite.netsuite2__income_statement"
+     ]
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_netsuite-210": {
+   "kind": "bug_fix",
+   "merged_at": "2026-08-31T16:02:51Z",
+   "parent_sha": "5cd03022085ee85e57724153bf735405b8c57986",
+   "fix_sha": "84bfa8ab446434e30df5cf3a06035abf10d2c343",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "aggregated statements": {
+     "exit": 0,
+     "failing": []
+    },
+    "subsidiary multibook fiscal": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.netsuite2__balance_sheet",
+      "model.netsuite.netsuite2__income_statement",
+      "model.netsuite.netsuite2__transaction_details"
+     ]
+    },
+    "exchange rate enabled": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.netsuite2__balance_sheet",
+      "model.netsuite.netsuite2__income_statement"
+     ]
+    },
+    "subsidiary relationships disabled": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.netsuite2__balance_sheet",
+      "model.netsuite.netsuite2__income_statement"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.netsuite2__balance_sheet",
+      "model.netsuite.netsuite2__income_statement"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "aggregated statements": {
+     "exit": 0,
+     "failing": []
+    },
+    "subsidiary multibook fiscal": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.netsuite2__balance_sheet",
+      "model.netsuite.netsuite2__income_statement",
+      "model.netsuite.netsuite2__transaction_details"
+     ]
+    },
+    "exchange rate enabled": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.netsuite2__balance_sheet",
+      "model.netsuite.netsuite2__income_statement"
+     ]
+    },
+    "subsidiary relationships disabled": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.netsuite2__balance_sheet",
+      "model.netsuite.netsuite2__income_statement"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.netsuite.netsuite2__balance_sheet",
+      "model.netsuite.netsuite2__income_statement"
+     ]
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_pendo-46": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:38:17Z",
+   "parent_sha": "5fee4275e4e8ecdf75187f656b66dea7731b67c2",
+   "fix_sha": "9eed1cf81e9bc65734a1562350e8bbda0d1cf9aa",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.pendo.int_pendo__calendar_spine"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.pendo.int_pendo__calendar_spine"
+     ]
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_pendo-52": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-12T20:25:02Z",
+   "parent_sha": "52e80a2b274a1810fd24fd25f96459bdbdab7953",
+   "fix_sha": "baddd4e13399a23c0315eb01e341ff47475bdd89",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.pendo.int_pendo__calendar_spine"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.pendo.int_pendo__calendar_spine"
+     ]
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_pinterest-61": {
+   "kind": "bug_fix",
+   "merged_at": "2026-10-14T22:45:28Z",
+   "parent_sha": "ae8f9473cefca3f7c0d10904894ea7e3b0dd44a6",
+   "fix_sha": "10db5dddd45858bcd8e1d50891990d8f5bb1b376",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "pin promotion targeting disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "targeting geo disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "pin promotion targeting disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "targeting geo disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_qualtrics-31": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:38:56Z",
+   "parent_sha": "bcce17989addd271498a33087a824da12c22bfb6",
+   "fix_sha": "b8297714cc75936796742fff9d2c93583704f9a4",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "core features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "directory contacts disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "contact mailing list memberships disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "core features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "directory contacts disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "contact mailing list memberships disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_qualtrics-32": {
+   "kind": "bug_fix",
+   "merged_at": "2026-10-28T19:46:35Z",
+   "parent_sha": "2ba50217f65f9e05065f59d30ba30de79612b609",
+   "fix_sha": "f732e0f576838d6612fbda1442c2a4fd4daac9de",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "core features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "directory contacts disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "contact mailing list memberships disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "core features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "directory contacts disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "contact mailing list memberships disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_qualtrics-36": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-12T19:31:04Z",
+   "parent_sha": "f732e0f576838d6612fbda1442c2a4fd4daac9de",
+   "fix_sha": "47f93587d1284d051226694f6d7fb45a27b9dac8",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "core features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "directory contacts disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "contact mailing list memberships disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "core features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "directory contacts disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "contact mailing list memberships disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_qualtrics-37": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-21T08:35:03Z",
+   "parent_sha": "47f93587d1284d051226694f6d7fb45a27b9dac8",
+   "fix_sha": "86a06214f496b4f23e5e586ad296332ff46d6ec8",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "core features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "directory contacts disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "contact mailing list memberships disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "core features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "directory contacts disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "contact mailing list memberships disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_quickbooks-216": {
+   "kind": "bug_fix",
+   "merged_at": "2026-08-05T22:20:59Z",
+   "parent_sha": "cf1867c4bd77d88931ff624d5e8cbd2f75c9843d",
+   "fix_sha": "ed5df58865a4394999bfbe54493f67d2d2605bcb",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "Credit Card Payment enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Exchange Gain/Loss enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Partial Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "Credit Card Payment enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Exchange Gain/Loss enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Partial Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_quickbooks-220": {
+   "kind": "bug_fix",
+   "merged_at": "2026-09-01T23:09:22Z",
+   "parent_sha": "e499957a887111652b7c30876dbe3a81c459a2ef",
+   "fix_sha": "b83f44a42a7e1166b1c0cf6088f234558de237c4",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "Credit Card Payment enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Exchange Gain/Loss enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Partial Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "Credit Card Payment enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Exchange Gain/Loss enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Partial Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_quickbooks-223": {
+   "kind": "bug_fix",
+   "merged_at": "2026-09-16T21:49:16Z",
+   "parent_sha": "b83f44a42a7e1166b1c0cf6088f234558de237c4",
+   "fix_sha": "6b44f490cf6ae274756f5baf883df20a002895b4",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "Credit Card Payment enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Exchange Gain/Loss enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Exchange Rate disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Report-Date FX Conversion enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Partial Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "Credit Card Payment enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Exchange Gain/Loss enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Exchange Rate disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Report-Date FX Conversion enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Partial Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_quickbooks-225": {
+   "kind": "bug_fix",
+   "merged_at": "2026-10-15T18:04:31Z",
+   "parent_sha": "6b44f490cf6ae274756f5baf883df20a002895b4",
+   "fix_sha": "aa95e895ef56da2431834e1c24258c5c0f44f575",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+     ]
+    },
+    "Credit Card Payment enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Exchange Gain/Loss enabled": {
+     "exit": 1,
+     "failing": [
+      "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+     ]
+    },
+    "Exchange Rate disabled": {
+     "exit": 1,
+     "failing": [
+      "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+     ]
+    },
+    "Report-Date FX Conversion enabled": {
+     "exit": 1,
+     "failing": [
+      "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+     ]
+    },
+    "Tax Lines enabled": {
+     "exit": 1,
+     "failing": [
+      "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+     ]
+    },
+    "Partial Tax Lines enabled": {
+     "exit": 1,
+     "failing": [
+      "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "Credit Card Payment enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Exchange Gain/Loss enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Exchange Rate disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Report-Date FX Conversion enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Partial Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_quickbooks-227": {
+   "kind": "bug_fix",
+   "merged_at": "2026-10-19T17:17:29Z",
+   "parent_sha": "6b44f490cf6ae274756f5baf883df20a002895b4",
+   "fix_sha": "3a48f703cc42283e0601b9ceab8c6ef7e4daf59b",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+     ]
+    },
+    "Credit Card Payment enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Exchange Gain/Loss enabled": {
+     "exit": 1,
+     "failing": [
+      "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+     ]
+    },
+    "Exchange Rate disabled": {
+     "exit": 1,
+     "failing": [
+      "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+     ]
+    },
+    "Report-Date FX Conversion enabled": {
+     "exit": 1,
+     "failing": [
+      "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+     ]
+    },
+    "Tax Lines enabled": {
+     "exit": 1,
+     "failing": [
+      "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+     ]
+    },
+    "Partial Tax Lines enabled": {
+     "exit": 1,
+     "failing": [
+      "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "Credit Card Payment enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Exchange Gain/Loss enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Exchange Rate disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Report-Date FX Conversion enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "Partial Tax Lines enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_recurly-49": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:39:56Z",
+   "parent_sha": "b8b545c7fe0e2078a6c946b20c0ed01d5905e332",
+   "fix_sha": "994b33a3459a83c84622b8d660fe536459ebf1d6",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.recurly.int_recurly__transactions_date_spine"
+     ]
+    },
+    "standardized billing disabled": {
+     "exit": 1,
+     "failing": [
+      "model.recurly.int_recurly__transactions_date_spine"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.recurly.int_recurly__transactions_date_spine"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "standardized billing disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_sage_intacct-46": {
+   "kind": "bug_fix",
+   "merged_at": "2026-08-24T21:21:23Z",
+   "parent_sha": "c35a265ba5f416f66e5e0a6de7c68ea595997aeb",
+   "fix_sha": "fb2c9884f1badaf3c9fddb43395eb3fc410aa1bc",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "invoices disabled bills disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "invoices disabled bills enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "invoices enabled bills disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "invoices disabled bills disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "invoices disabled bills enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "invoices enabled bills disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_salesforce-88": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:41:19Z",
+   "parent_sha": "a9d2b20457eb57d3a1cc02fc4f2f99d9d7f4a7f8",
+   "fix_sha": "2e99cce10766c16c08aaf5c1fef8e6d17b857171",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "history enabled": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "history enabled": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_salesforce_formula_utils-138": {
+   "kind": "bug_fix",
+   "merged_at": "2026-09-01T13:56:58Z",
+   "parent_sha": "270d22829a46aa1f8054c54bda5e08a94415fb9c",
+   "fix_sha": "72e65aa09bde265ee0f151aacc11d92d15453470",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.salesforce_formula_integration_tests.account_view",
+      "model.salesforce_formula_integration_tests.opportunity_view",
+      "model.salesforce_formula_integration_tests.user_role_view",
+      "model.salesforce_formula_integration_tests.user_view"
+     ]
+    },
+    "quoted identifiers": {
+     "exit": 1,
+     "failing": [
+      "model.salesforce_formula_integration_tests.account_view",
+      "model.salesforce_formula_integration_tests.opportunity_view",
+      "model.salesforce_formula_integration_tests.user_role_view",
+      "model.salesforce_formula_integration_tests.user_view"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.salesforce_formula_integration_tests.account_view",
+      "model.salesforce_formula_integration_tests.opportunity_view",
+      "model.salesforce_formula_integration_tests.user_role_view",
+      "model.salesforce_formula_integration_tests.user_view",
+      "seed.salesforce_formula_integration_tests.fivetran_formula_model_mdls"
+     ]
+    },
+    "MDLS quoted identifiers": {
+     "exit": 1,
+     "failing": [
+      "model.salesforce_formula_integration_tests.account_view",
+      "model.salesforce_formula_integration_tests.opportunity_view",
+      "model.salesforce_formula_integration_tests.user_role_view",
+      "model.salesforce_formula_integration_tests.user_view",
+      "seed.salesforce_formula_integration_tests.fivetran_formula_model_mdls"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.salesforce_formula_integration_tests.account_view",
+      "model.salesforce_formula_integration_tests.opportunity_view",
+      "model.salesforce_formula_integration_tests.user_role_view",
+      "model.salesforce_formula_integration_tests.user_view"
+     ]
+    },
+    "quoted identifiers": {
+     "exit": 1,
+     "failing": [
+      "model.salesforce_formula_integration_tests.account_view",
+      "model.salesforce_formula_integration_tests.opportunity_view",
+      "model.salesforce_formula_integration_tests.user_role_view",
+      "model.salesforce_formula_integration_tests.user_view"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.salesforce_formula_integration_tests.account_view",
+      "model.salesforce_formula_integration_tests.opportunity_view",
+      "model.salesforce_formula_integration_tests.user_role_view",
+      "model.salesforce_formula_integration_tests.user_view",
+      "seed.salesforce_formula_integration_tests.fivetran_formula_model_mdls"
+     ]
+    },
+    "MDLS quoted identifiers": {
+     "exit": 1,
+     "failing": [
+      "model.salesforce_formula_integration_tests.account_view",
+      "model.salesforce_formula_integration_tests.opportunity_view",
+      "model.salesforce_formula_integration_tests.user_role_view",
+      "model.salesforce_formula_integration_tests.user_view",
+      "seed.salesforce_formula_integration_tests.fivetran_formula_model_mdls"
+     ]
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_salesforce_marketing_cloud-21": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:41:50Z",
+   "parent_sha": "9f55a8560206cd360dcd50e0a64bd45896b8d85e",
+   "fix_sha": "c965332f46eeee317c1966d947a8cb6119662b8f",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "link and list disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "link and list disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_sap-54": {
+   "kind": "bug_fix",
+   "merged_at": "2026-09-24T16:41:12Z",
+   "parent_sha": "23d76d658e1919f64d9bb1f47229602e2abf61b6",
+   "fix_sha": "acdd907a1d370ed85b1d266f4ab57d30a75b65d5",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "purchasing disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "sales disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "materials disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "reference tables disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "finance disabled": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "purchasing disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "sales disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "materials disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "reference tables disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "finance disabled": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_servicenow-32": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:43:07Z",
+   "parent_sha": "472785a61215a92b6d90ec45ab82cca50d8f1811",
+   "fix_sha": "975c8487fcf50ae9645f7588429737da1e83cc81",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "roles disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "roles disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_shopify-164": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:43:31Z",
+   "parent_sha": "1a4b7d18dd793c55ac6ce9841a5b1d7e38c1f5fe",
+   "fix_sha": "0573606e1b7c37d4828a133103cf3c9bc04e67eb",
+   "parent": {
+    "Default": {
+     "exit": 2,
+     "failing": []
+    },
+    "features enabled": {
+     "exit": 2,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 2,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_shopify-167": {
+   "kind": "bug_fix",
+   "merged_at": "2026-08-24T19:40:10Z",
+   "parent_sha": "8646eb9b5e7449a23b49bc6d1f0f1d9889ac9bd1",
+   "fix_sha": "2cf454cd69b0e411eef4a02782a65d1b7f8c267c",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "test.shopify.unique_stg_shopify_gql__metafield_unique_key.23fe28f679"
+     ]
+    },
+    "features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "test.shopify.unique_stg_shopify_gql__metafield_unique_key.23fe28f679"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_shopify-172": {
+   "kind": "bug_fix",
+   "merged_at": "2026-08-24T19:44:51Z",
+   "parent_sha": "6e9bb86a7ad0bbc2e3cae1903400057bbc3315c3",
+   "fix_sha": "9df2a8be300dbddc63ef91be2ad648a7706d989e",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_shopify-187": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-12T20:14:24Z",
+   "parent_sha": "a033782ef90f0a009b534220bb0253fb2e3d3cb2",
+   "fix_sha": "d194e15533522658cc696eff8c77733517869e46",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_shopify-190": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-12T22:55:36Z",
+   "parent_sha": "d194e15533522658cc696eff8c77733517869e46",
+   "fix_sha": "c87deb7953d018a6183b15cdc3624aa11562baff",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_social_media_reporting-42": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-19T15:28:32Z",
+   "parent_sha": "347603dee8e33e6682e6ae486b05dca8e0ba8135",
+   "fix_sha": "bf62be70aaef23f8f2c6aaa2450b20d961bc927d",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_stackadapt-3": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:44:48Z",
+   "parent_sha": "24d4de430798f3fe2324add8d8f72aa904f619c5",
+   "fix_sha": "c229e7454e499da7bfc00c7f879468d1a4a00099",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_stripe-157": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:45:20Z",
+   "parent_sha": "3b8df885a61b1b0f53f05e564652c1060bdf3859",
+   "fix_sha": "42687a212832b7a2f735e0d4cf0ddf0aa00b6211",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.stripe.int_stripe__account_daily",
+      "model.stripe.stripe__customer_overview"
+     ]
+    },
+    "standardized billing enabled": {
+     "exit": 1,
+     "failing": [
+      "model.stripe.int_stripe__account_daily",
+      "model.stripe.stripe__customer_overview"
+     ]
+    },
+    "subscriptions without invoices": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "standardized billing enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "subscriptions without invoices": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "features disabled"
+  },
+  "dbt_tiktok_ads-48": {
+   "kind": "bug_fix",
+   "merged_at": "2026-09-29T22:16:13Z",
+   "parent_sha": "a34fb6f40f00175eecf4f14f5116cbe20886c375",
+   "fix_sha": "0f19dad35a4f7316a2958fe30eeda006e92bf6ea",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "test.tiktok_ads.not_null_tiktok_ads__advertiser_report_advertiser_id.f956c568ce"
+     ]
+    },
+    "url filter disabled": {
+     "exit": 1,
+     "failing": [
+      "test.tiktok_ads.not_null_tiktok_ads__advertiser_report_advertiser_id.f956c568ce"
+     ]
+    },
+    "campaign country disabled": {
+     "exit": 1,
+     "failing": [
+      "test.tiktok_ads.not_null_tiktok_ads__advertiser_report_advertiser_id.f956c568ce"
+     ]
+    },
+    "creative history disabled": {
+     "exit": 1,
+     "failing": [
+      "test.tiktok_ads.not_null_tiktok_ads__advertiser_report_advertiser_id.f956c568ce"
+     ]
+    },
+    "smart plus ad history disabled": {
+     "exit": 1,
+     "failing": [
+      "test.tiktok_ads.not_null_tiktok_ads__advertiser_report_advertiser_id.f956c568ce"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "test.tiktok_ads.not_null_tiktok_ads__advertiser_report_advertiser_id.f956c568ce"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "url filter disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "campaign country disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "creative history disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "smart plus ad history disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_twitter_organic-32": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-20T18:53:06Z",
+   "parent_sha": "a894aaca1a9bb13ab7c2955dfd473b8d5d72856e",
+   "fix_sha": "7cfc4a4c2dca280a4bf2b42f0691ddb36d4d7f47",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_unified_rag-42": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:47:38Z",
+   "parent_sha": "6c57681ca8e41a275e261cba5d0cb2f1c5f90b51",
+   "fix_sha": "1a3502be3dc2f10f0b0e69da9f57ee4b3741b30b",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_workday-38": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:49:09Z",
+   "parent_sha": "47e3a619cd9a722171f07812d180cd938c7119d7",
+   "fix_sha": "731afae6cad62de8044b756bb33044833590f055",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "employee history enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "employee history enabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_xero-86": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-12T19:32:51Z",
+   "parent_sha": "13646d23b6a3a908e0d839a9a40a1062bf38aa58",
+   "fix_sha": "c3b823fccc822a42f3d85fbb36644e39f3c708b7",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_youtube_analytics-40": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-12T19:44:20Z",
+   "parent_sha": "b61d04bbccd30932c7c5a835254ba5a676371e68",
+   "fix_sha": "b415426104eb7cd17d8399fcdb340f805e8ec6d3",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "channel demographics disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "channel demographics disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_youtube_analytics-41": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-21T06:15:03Z",
+   "parent_sha": "b415426104eb7cd17d8399fcdb340f805e8ec6d3",
+   "fix_sha": "7542990d4b1c5b3095d16a8149d811c60c0d45b4",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "channel demographics disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "channel demographics disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_zendesk-268": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:51:11Z",
+   "parent_sha": "d4a8aa378862c51f0c6136eb16f87bef8c34e908",
+   "fix_sha": "bd58d112641e6d059cbef084b60a3aa7914011ac",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom user criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "holidays enabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom user criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "holidays enabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_zendesk-270": {
+   "kind": "bug_fix",
+   "merged_at": "2026-09-01T21:34:24Z",
+   "parent_sha": "bd58d112641e6d059cbef084b60a3aa7914011ac",
+   "fix_sha": "0246c8cae7bd3a7494e91a4801583ff70c1dc141",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom user criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "holidays enabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom field history columns": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom user criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "holidays enabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom field history columns": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_zendesk-278": {
+   "kind": "bug_fix",
+   "merged_at": "2026-10-09T17:39:39Z",
+   "parent_sha": "0246c8cae7bd3a7494e91a4801583ff70c1dc141",
+   "fix_sha": "a9300572dc5d0370b1408c395913d330178c1031",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom user criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "holidays enabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "sla pause criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom field history columns": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom user criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "holidays enabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "sla pause criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom field history columns": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_zendesk-288": {
+   "kind": "bug_fix",
+   "merged_at": "2026-10-28T12:27:39Z",
+   "parent_sha": "bb4021c5c2b5d3e1e3b9a25e0c52e73f532df61b",
+   "fix_sha": "f546ce6a1f2061b0d75e9e2f7eaf60b1de616a56",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom user criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "holidays enabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "sla pause criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom field history columns": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom user criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "holidays enabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "sla pause criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom field history columns": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    }
+   },
+   "qualifies_in": null
+  },
+  "dbt_zendesk-290": {
+   "kind": "bug_fix",
+   "merged_at": "2026-11-04T00:30:47Z",
+   "parent_sha": "f546ce6a1f2061b0d75e9e2f7eaf60b1de616a56",
+   "fix_sha": "c5f2cfa03a1629a357a3ad2d06c8173f52eeff69",
+   "parent": {
+    "Default": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine"
+     ]
+    },
+    "custom user criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "holidays enabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "sla pause criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom field history columns": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom user criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "holidays enabled": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "sla pause criteria": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "custom field history columns": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    },
+    "MDLS": {
+     "exit": 1,
+     "failing": [
+      "model.zendesk.int_zendesk__field_calendar_spine",
+      "model.zendesk.int_zendesk__field_history_pivot"
+     ]
+    }
+   },
+   "qualifies_in": "Default"
+  },
+  "dbt_zuora-44": {
+   "kind": "duckdb_port",
+   "merged_at": "2026-08-18T18:51:29Z",
+   "parent_sha": "9cb02445c70c1cbb0143b73d75b23a70e27163f2",
+   "fix_sha": "dd3bbc7774f43f2906ad3bb213b9b6e86817e49d",
+   "parent": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "fix": {
+    "Default": {
+     "exit": 0,
+     "failing": []
+    },
+    "features disabled": {
+     "exit": 0,
+     "failing": []
+    },
+    "MDLS": {
+     "exit": 0,
+     "failing": []
+    }
+   },
+   "qualifies_in": null
+  }
+ }
+}

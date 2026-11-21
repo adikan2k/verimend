@@ -307,7 +307,9 @@
   },
   "dbt_salesforce": {
    "duckdb_since": "2.4.1",
-   "releases_since": []
+   "releases_since": [
+    "2.5.0"
+   ]
   },
   "dbt_salesforce_formula_udfs": {
    "duckdb_since": null,
@@ -549,9 +551,7 @@
     "integration_tests/seeds/twitter_campaign_report_data.csv",
     "packages.yml"
    ],
-   "code_files": [
-    "packages.yml"
-   ],
+   "code_files": [],
    "fix_lines": [
     "| `ad_reporting__ad_report`, `ad_reporting__advertiser_report`, `ad_reporting__url_report` | Bug Fix | For TikTok Smart+ ads, `ad_id`, `ad_name`, `account_id`, `account_name`, and URL fields resolved to `null`. | These fields now resolve correctly for TikTok Smart+ ads. | Requires `tiktok_ads` [v1.5.0](https://github.com/fivetran/dbt_tiktok_ads/blob/main/CHANGELOG.md#dbt_tiktok_ads-v150), which resolves TikTok Smart+ ads through `creative_history.creative_id` instead of `smart_plus_ad_history.smart_plus_ad_id`. See the [`tiktok_ads` changelog](https://github.com/fivetran/dbt_tiktok_ads/blob/main/CHANGELOG.md#dbt_tiktok_ads-v150) for details. |",
     "| `stg_tiktok_ads__creative_history`<br>`stg_tiktok_ads__creative_history_tmp` | New Staging Models | | | Adds `advertiser_id`, `adgroup_id`, `campaign_id`, and `creative_name` for TikTok Smart+ ads, resolved through `creative_id`. |"
@@ -576,9 +576,7 @@
     "docs/manifest.json",
     "packages.yml"
    ],
-   "code_files": [
-    "packages.yml"
-   ],
+   "code_files": [],
    "fix_lines": [
     "| `ad_reporting__ad_report`, `ad_reporting__advertiser_report`, `ad_reporting__url_report` | Bug Fix | For TikTok Smart+ ads, `ad_id`, `ad_name`, `account_id`, `account_name`, and URL fields resolved to `null`. | These fields now resolve correctly for TikTok Smart+ ads. | Requires `tiktok_ads` [v1.5.0](https://github.com/fivetran/dbt_tiktok_ads/blob/main/CHANGELOG.md#dbt_tiktok_ads-v150), which resolves TikTok Smart+ ads through `creative_history.creative_id` instead of `smart_plus_ad_history.smart_plus_ad_id`. See the [`tiktok_ads` changelog](https://github.com/fivetran/dbt_tiktok_ads/blob/main/CHANGELOG.md#dbt_tiktok_ads-v150) for details. |",
     "| `stg_tiktok_ads__creative_history`<br>`stg_tiktok_ads__creative_history_tmp` | New Staging Models | | | Adds `advertiser_id`, `adgroup_id`, `campaign_id`, and `creative_name` for TikTok Smart+ ads, resolved through `creative_id`. |"
@@ -628,8 +626,7 @@
     "models/intermediate/int_ad_reporting__ad_group_report.sql",
     "models/intermediate/int_ad_reporting__ad_report.sql",
     "models/intermediate/int_ad_reporting__campaign_report.sql",
-    "models/intermediate/int_ad_reporting__url_report.sql",
-    "packages.yml"
+    "models/intermediate/int_ad_reporting__url_report.sql"
    ],
    "fix_lines": [
     "- Adds DuckDB as a supported destination."
@@ -690,8 +687,7 @@
     "packages.yml"
    ],
    "code_files": [
-    "macros/convert_string_to_numeric.sql",
-    "packages.yml"
+    "macros/convert_string_to_numeric.sql"
    ],
    "fix_lines": [
     "- Adds DuckDB as a supported destination."
@@ -909,8 +905,7 @@
    "code_files": [
     "models/aws_cloud_cost__daily_instance_report.sql",
     "models/aws_cloud_cost__daily_overview.sql",
-    "models/aws_cloud_cost__daily_product_report.sql",
-    "packages.yml"
+    "models/aws_cloud_cost__daily_product_report.sql"
    ],
    "fix_lines": [
     "- Adds DuckDB as a supported destination."
@@ -1274,8 +1269,7 @@
     "models/ga4_export__sessions_enhanced.sql",
     "models/ga4_export__traffic_acquisition_session_source_medium_report.sql",
     "models/ga4_export__user_acquisition_first_user_source_medium_report.sql",
-    "models/intermediate/int_ga4_export__derived_event_fields.sql",
-    "packages.yml"
+    "models/intermediate/int_ga4_export__derived_event_fields.sql"
    ],
    "fix_lines": [
     "- Adds DuckDB as a supported destination."
@@ -2628,8 +2622,7 @@
     "models/mixpanel__event.sql",
     "models/mixpanel__monthly_events.sql",
     "models/mixpanel__sessions.sql",
-    "models/staging/stg_mixpanel__user_event_date_spine.sql",
-    "packages.yml"
+    "models/staging/stg_mixpanel__user_event_date_spine.sql"
    ],
    "fix_lines": [
     "- Adds DuckDB as a supported destination."
@@ -3535,8 +3528,7 @@
     "packages.yml"
    ],
    "code_files": [
-    "models/salesforce_marketing_cloud__events_enhanced.sql",
-    "packages.yml"
+    "models/salesforce_marketing_cloud__events_enhanced.sql"
    ],
    "fix_lines": [
     "- Adds DuckDB as a supported destination."
@@ -3624,9 +3616,7 @@
     "integration_tests/requirements.txt",
     "packages.yml"
    ],
-   "code_files": [
-    "packages.yml"
-   ],
+   "code_files": [],
    "fix_lines": [
     "- Adds DuckDB as a supported destination."
    ],
@@ -3893,8 +3883,7 @@
     "packages.yml"
    ],
    "code_files": [
-    ".changes/1.5.0.yml",
-    "packages.yml"
+    ".changes/1.5.0.yml"
    ],
    "fix_lines": [
     "| `shopify__customer_cohorts`<br>`shopify__customer_email_cohorts`<br>`shopify_gql__customer_cohorts`<br>`shopify_gql__customer_email_cohorts`<br>(Breaking) | Materialization | file_format `parquet` on Databricks all-purpose clusters, `delta` on SQL warehouses | file_format `delta` everywhere on Databricks | Fixes incremental run errors on newer Databricks versions. Requires a `--full-refresh` after upgrading to convert existing tables to Delta format. |"
@@ -3924,8 +3913,7 @@
     "packages.yml"
    ],
    "code_files": [
-    "models/intermediate/int__daily_klaviyo_user_metrics.sql",
-    "packages.yml"
+    "models/intermediate/int__daily_klaviyo_user_metrics.sql"
    ],
    "fix_lines": [
     "| `int__daily_klaviyo_user_metrics` | Fixed value | `sum_revenue_*` columns return `0` for decimal revenue values on Redshift/Postgres, or round them to whole numbers on Snowflake/Databricks | `sum_revenue_*` columns return the correct decimal amount on all supported destinations | Re-run (`dbt run`) required to refresh existing data with correct revenue totals |",
@@ -3940,11 +3928,25 @@
     "1.3.1"
    ],
    "pr": 44,
-   "title": "not found: gh api repos/fivetran/dbt_shopify_holistic_reporting/pulls/44 failed: Get \"https://api.github.com/repos/fivetran/dbt_shopify_holistic_reporting/pulls/44\": net/http: TLS handshake timeout",
-   "merged_at": null,
-   "fix_sha": null,
-   "parent_sha": null,
-   "files": [],
+   "title": "DuckDB support",
+   "merged_at": "2026-08-19T15:31:10Z",
+   "fix_sha": "1848fa6697ae52d9f19dffb6898bd11c6eefac29",
+   "parent_sha": "b90b7c39b0e1ac83a0ba930004059df40dc1c61c",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "integration_tests/seeds/klaviyo_event.csv",
+    "integration_tests/seeds/klaviyo_event_norename.csv",
+    "integration_tests/seeds/shopify_gql_order_data.csv",
+    "packages.yml"
+   ],
    "code_files": [],
    "fix_lines": [
     "- Adds DuckDB as a supported destination."
@@ -4003,9 +4005,7 @@
     "integration_tests/requirements.txt",
     "packages.yml"
    ],
-   "code_files": [
-    "packages.yml"
-   ],
+   "code_files": [],
    "fix_lines": [
     "- Adds DuckDB as a supported destination."
    ],
@@ -4035,9 +4035,7 @@
     "integration_tests/requirements.txt",
     "packages.yml"
    ],
-   "code_files": [
-    "packages.yml"
-   ],
+   "code_files": [],
    "fix_lines": [
     "- Adds DuckDB as a supported destination."
    ],
@@ -4360,8 +4358,7 @@
     "packages.yml"
    ],
    "code_files": [
-    "models/rag__unified_document.sql",
-    "packages.yml"
+    "models/rag__unified_document.sql"
    ],
    "fix_lines": [
     "- Adds DuckDB as a supported destination."
@@ -4391,9 +4388,7 @@
     "integration_tests/requirements.txt",
     "packages.yml"
    ],
-   "code_files": [
-    "packages.yml"
-   ],
+   "code_files": [],
    "fix_lines": [
     "- Adds DuckDB as a supported destination."
    ],
@@ -4871,9 +4866,7 @@
     "integration_tests/requirements.txt",
     "packages.yml"
    ],
-   "code_files": [
-    "packages.yml"
-   ],
+   "code_files": [],
    "fix_lines": [
     "- Adds DuckDB as a supported destination."
    ],

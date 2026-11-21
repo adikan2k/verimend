@@ -1,0 +1,67 @@
+diff --git a/macros/split_sprint_ids.sql b/macros/split_sprint_ids.sql
+index 5558c49..896952d 100644
+--- a/macros/split_sprint_ids.sql
++++ b/macros/split_sprint_ids.sql
+@@ -127,3 +127,23 @@
+     lateral view explode(split(sprint, ', ')) sprints_view as sprints
+ 
+ {% endmacro %}
++
++{% macro duckdb__split_sprint_ids(using_teams, include_story_points=false, include_story_point_estimate=false) %}
++    select
++        daily_issue_field_history.issue_id,
++        daily_issue_field_history.source_relation,
++        daily_issue_field_history.date_day,
++        daily_issue_field_history.date_week,
++        daily_issue_field_history.status,
++        {{ "daily_issue_field_history.team," if using_teams }}
++        {% if include_story_points %}
++        {{ jira.convert_string_to_numeric('daily_issue_field_history.story_points') }} as story_points,
++        {% endif %}
++        {% if include_story_point_estimate %}
++        {{ jira.convert_string_to_numeric('daily_issue_field_history.story_point_estimate') }} as story_point_estimate,
++        {% endif %}
++        unnest(string_split(sprint, ', ')) as sprint_id
++
++    from daily_issue_field_history
++
++{% endmacro %}
+diff --git a/models/intermediate/field_history/int_jira__pivot_daily_field_history.sql b/models/intermediate/field_history/int_jira__pivot_daily_field_history.sql
+index d685c97..5d3d72f 100644
+--- a/models/intermediate/field_history/int_jira__pivot_daily_field_history.sql
++++ b/models/intermediate/field_history/int_jira__pivot_daily_field_history.sql
+@@ -2,7 +2,7 @@
+     config(
+         materialized='incremental' if jira_is_incremental_compatible() else 'table',
+         partition_by = {'field': 'valid_starting_at_week', 'data_type': 'date'}
+-            if target.type not in ['spark','databricks'] else ['valid_starting_at_week'],
++            if target.type not in ('spark', 'databricks', 'duckdb') else ['valid_starting_at_week'],
+         cluster_by = ['valid_starting_at_week'],
+         unique_key='issue_day_id',
+         incremental_strategy = 'insert_overwrite' if target.type in ('bigquery', 'databricks', 'spark') else 'delete+insert',
+diff --git a/models/jira__daily_issue_field_history.sql b/models/jira__daily_issue_field_history.sql
+index 3c61114..9d845e8 100644
+--- a/models/jira__daily_issue_field_history.sql
++++ b/models/jira__daily_issue_field_history.sql
+@@ -2,7 +2,7 @@
+     config(
+         materialized='incremental' if jira_is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_week', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_week'],
++            if target.type not in ('spark', 'databricks', 'duckdb') else ['date_week'],
+         cluster_by = ['date_week'],
+         unique_key='issue_day_id',
+         incremental_strategy = 'insert_overwrite' if target.type in ('bigquery', 'databricks', 'spark') else 'delete+insert',
+diff --git a/models/jira__daily_sprint_issue_history.sql b/models/jira__daily_sprint_issue_history.sql
+index bdcdf9e..85686e0 100644
+--- a/models/jira__daily_sprint_issue_history.sql
++++ b/models/jira__daily_sprint_issue_history.sql
+@@ -3,7 +3,7 @@
+         enabled=var('jira_using_sprints', True),
+         materialized='table',
+         partition_by={'field': 'date_week', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_week']
++            if target.type not in ('spark', 'databricks', 'duckdb') else ['date_week']
+     )
+ }}
+ 

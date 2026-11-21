@@ -1,0 +1,30 @@
+{
+ "kind": "bug_fix",
+ "repo": "fivetran/dbt_shopify",
+ "pr": 167,
+ "parent_sha": "8646eb9b5e7449a23b49bc6d1f0f1d9889ac9bd1",
+ "fix_sha": "2cf454cd69b0e411eef4a02782a65d1b7f8c267c",
+ "merged_at": "2026-08-24T19:40:10Z",
+ "versions": [
+  "1.10.0"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_shopify (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "| [`shopify_gql__orders`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__orders), [`shopify_gql__daily_shop`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__daily_shop) | Column value | `gross_sales` / `net_sales` = `Σ quantity² × unit_price` | `gross_sales` / `net_sales` = `Σ quantity × unit_price` | Fixes a bug where GraphQL orders with any line `quantity > 1` had sales figures inflated quadratically. Orders where every line has `quantity = 1` are unaffected. |",
+  "| [`shopify_gql__line_item_enhanced`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__line_item_enhanced) | Column value | `total_amount = quantity² × unit_price`; `unit_amount` = line total, then a quantity-derived unit price | `total_amount = quantity × unit_price`; `unit_amount` = Shopify's own reported unit price | The quantity double-count is fixed as before. `unit_amount` now reads the real per-unit price directly from the source instead of back-deriving it by dividing the line total by quantity, avoiding rounding/edge-case drift (e.g. `quantity = 0`). |",
+  "| [`stg_shopify_gql__metafield`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.stg_shopify_gql__metafield) | Deduplication logic and `unique_key` value | Deduplicated on `id` only; `unique_key` hashed on `metafield_id` and `source_relation` | Deduplicated on `id`, `owner_id`, and `owner_resource`; `unique_key` hashed on `metafield_id`, `owner_resource_id`, `owner_resource`, and `source_relation` | Shopify changed the underlying `METAFIELD` table's primary key to a composite of `owner_id` and `owner_resource` to fix cross-entity ID collisions. This change does not affect any downstream `shopify_gql__*_metafields` models, since `unique_key` is never selected from `stg_shopify_gql__metafield` into those outputs. |"
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "models/graphql/staging/stg_shopify_gql__metafield.sql",
+  "models/graphql/staging/stg_shopify_graphql.yml"
+ ],
+ "failing": [
+  "test.shopify.unique_stg_shopify_gql__metafield_unique_key.23fe28f679"
+ ],
+ "commit_message": "Shopify models",
+ "description": "Shopify made metafield ids unique only per owner. The GraphQL metafield staging model still deduplicates and keys on `id` alone, so its `unique_key` test fails.",
+ "parent_error": "unique_stg_shopify_gql__metafield_unique_key: Got 1 result, configured to fail if != 0"
+}

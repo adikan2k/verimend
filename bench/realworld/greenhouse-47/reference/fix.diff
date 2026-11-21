@@ -1,0 +1,13 @@
+diff --git a/models/staging/stg_greenhouse__scheduled_interview.sql b/models/staging/stg_greenhouse__scheduled_interview.sql
+index e092874..03719fc 100644
+--- a/models/staging/stg_greenhouse__scheduled_interview.sql
++++ b/models/staging/stg_greenhouse__scheduled_interview.sql
+@@ -30,7 +30,7 @@ final as (
+         cast(coalesce(ends,
+         {%- if target.type == 'bigquery' %}
+         `end`
+-        {% elif target.type in ('redshift','postgres') %}
++        {% elif target.type in ('redshift','postgres','duckdb') %}
+         "end"
+         {% else %}
+         end
