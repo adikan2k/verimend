@@ -125,6 +125,43 @@ def build_table(batches: dict[str, dict[str, Any]], link_prefix: str) -> str:
     return "\n".join(lines)
 
 
+WATCHED_AGENTS = ("baseline",)  # agents the verifier only watched: its gate is measurable
+GATE_HEADER = [
+    "| Agent | Benchmark | Claimed fixed, checked | Right fix, let through "
+    "| Right fix, blocked | Wrong fix, let through | Wrong fix, stopped | Stopped by | Data |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+]
+
+
+def gate_row(agent: str, source: str, gate: dict[str, Any], link: str) -> str:
+    by = ", ".join(f"{check} {n}" for check, n in sorted(gate["stopped_by_check"].items()))
+    cells = [
+        f"`{agent}`",
+        source,
+        str(gate["claimed_fixed_and_checked"]),
+        str(gate["right_let_through"]),
+        str(gate["right_blocked"]),
+        str(gate["wrong_let_through"]),
+        f"**{gate['wrong_stopped']}**",
+        by or "n/a",
+        link,
+    ]
+    return "| " + " | ".join(cells) + " |"
+
+
+def build_gate_table(batches: dict[str, dict[str, Any]], link_prefix: str) -> str | None:
+    """The verifier as a gate on an agent it only watched, one row per batch."""
+    rows = []
+    for name, summary in sorted(batches.items(), key=lambda e: str(e[1].get("source"))):
+        gate = summary["metrics"].get("verifier_vs_grader")
+        if summary["agent"] not in WATCHED_AGENTS or not gate:
+            continue
+        raw = str(summary.get("source") or "?")
+        link = f"[{name}]({link_prefix}{name}/summary.json)"
+        rows.append(gate_row(summary["agent"], SOURCE_NAMES.get(raw, raw), gate, link))
+    return "\n".join([*GATE_HEADER, *rows]) if rows else None
+
+
 def banner(batches: dict[str, dict[str, Any]]) -> str:
     """What the numbers are: the development set, or our own fault suite."""
     if batches and all(s.get("source") == "faults" for s in batches.values()):
@@ -186,6 +223,19 @@ def main(argv: list[str] | None = None) -> int:
         *[f"- {note}" for note in args.note],
         "",
     ]
+    gate = build_gate_table(batches, prefix)
+    if gate:
+        body += [
+            "## The verifier as a gate on the plain agent",
+            "",
+            "The verifier watched the baseline: it took its snapshot before the agent and "
+            "checked after, and told the agent nothing. Counted over runs where the baseline "
+            "claimed `fixed` and the verifier could check. A wrong fix is one the grader "
+            "failed.",
+            "",
+            gate,
+            "",
+        ]
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("\n".join(body), encoding="utf-8")
     print(f"Wrote {out.relative_to(REPO)} from {len(batches)} batches.")

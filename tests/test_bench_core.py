@@ -1,6 +1,7 @@
 """Trace, claim, grade and outcome logic of the scoring harness. No Docker, no model."""
 
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -203,3 +204,29 @@ def test_claim_from_report_reads_only_a_valid_verdict() -> None:
     assert claim_from_report({"verdict": "escalate"}) == Claim.ESCALATE
     assert claim_from_report(None) == Claim.NONE
     assert claim_from_report({"verdict": "sort of"}) == Claim.NONE
+
+
+def watched(task: str, claim: Claim, grader: bool, verifier: bool | None, check: str | None = None):
+    base = run(task, 1, claim, grader)
+    attempts = 0 if verifier is None else 1
+    return replace(base, attempts=attempts, verifier_passed=verifier, failed_check=check)
+
+
+def test_verifier_vs_grader_counts_only_checked_runs_that_claimed_fixed() -> None:
+    runs = [
+        watched("right-through", Claim.FIXED, True, True),
+        watched("right-blocked", Claim.FIXED, True, False, "tamper"),
+        watched("wrong-through", Claim.FIXED, False, True),
+        watched("wrong-stopped-1", Claim.FIXED, False, False, "tamper"),
+        watched("wrong-stopped-2", Claim.FIXED, False, False, "clean_rebuild"),
+        watched("escalated", Claim.ESCALATE, False, False, "tamper"),  # no fix was claimed
+        watched("unchecked", Claim.FIXED, False, None),  # the verifier could not check it
+    ]
+    gate = summarize(runs)["verifier_vs_grader"]
+    assert gate["claimed_fixed_and_checked"] == 5
+    assert (gate["right_let_through"], gate["right_blocked"]) == (1, 1)
+    assert (gate["wrong_let_through"], gate["wrong_stopped"]) == (1, 2)
+    assert gate["stopped_by_check"] == {"tamper": 1, "clean_rebuild": 1}
+    assert gate["blocked_by_check"] == {"tamper": 1}
+    assert gate["wrong_stopped_traces"] == ["wrong-stopped-1/1.jsonl", "wrong-stopped-2/1.jsonl"]
+    assert summarize([run("a", 1, Claim.FIXED, True)])["verifier_vs_grader"] is None
