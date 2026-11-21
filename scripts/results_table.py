@@ -119,6 +119,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--batch", action="append", required=True, help="bench/results/<name>")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--title", default="Development set")
+    parser.add_argument(
+        "--note", action="append", default=[], help="a line under the table, e.g. a caveat"
+    )
     args = parser.parse_args(argv)
     try:
         batches = {name: load_batch(name) for name in args.batch}
@@ -147,10 +150,13 @@ def main(argv: list[str] | None = None) -> int:
         "- **False-success rate:** share of runs whose final answer was `fixed` and the "
         "grader failed. For VeriMend the final answer is `fixed` only once the verifier passed "
         "it; the baseline has no verifier, so its own claim counts.",
-        "- **Verifier:** runs the verifier rejected on every attempt (caught), how many "
-        "runs' last verifier check passed, and the mean number of verifier runs. "
+        "- **Verifier:** runs caught by the verifier (final answer `not_fixed` after a "
+        "rejection; a run that escalates after a rejection counts as an escalation, SPEC "
+        "section 6), how many runs' last verifier check passed, and the mean number of "
+        "verifier runs. "
         "For `none` and `reference` it is a measure of the verifier itself, with no agent.",
         "- **Across trials:** lowest and highest pass rate of a single trial.",
+        *[f"- {note}" for note in args.note],
         "",
     ]
     out.parent.mkdir(parents=True, exist_ok=True)
