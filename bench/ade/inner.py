@@ -10,6 +10,7 @@ its share of the batch budget and keep the baseline's output; everything after t
 harness returns is bench/assemble.py.
 """
 
+import asyncio
 import json
 import logging
 import sys
@@ -33,6 +34,13 @@ from verimend.agent.run import run_agent_sync
 from verimend.config import load_settings
 from verimend.hooks.caps import BatchBudget, RunCaps
 from verimend.runrecord import AgentRun
+from verimend.tools.verify import CONTAINER_SOURCE, CONTAINER_WORK, WorkspaceVerifier
+
+
+def container_verifier(workspace: AdeWorkspace) -> WorkspaceVerifier:
+    """The verifier, uploaded into the task container and run there as its own process."""
+    return WorkspaceVerifier(workspace, CONTAINER_WORK, source_dir=CONTAINER_SOURCE)
+
 
 SETUP_SCRIPT = Path(__file__).with_name("claude-code-setup.sh")
 AGENT_LOG = "/tmp/agent_output.log"  # where ADE-bench's installed agents tee their output
@@ -72,7 +80,7 @@ class BaselineAgent(ClaudeCodeAgent):
 
 class VerimendAgent(BaseAgent):
     """VeriMend in an ADE-bench task container: our tools act on /app through `docker exec`,
-    the model loop runs here in the runner. One attempt, no verifier (phase 3)."""
+    the model loop runs here in the runner, the verifier runs in the container."""
 
     NAME = AgentName.NONE  # a label only; staging and grading are ADE-bench's, unchanged
 
@@ -102,6 +110,7 @@ class VerimendAgent(BaseAgent):
             caps=self._caps,
             cwd=self._cwd,
             output_chars=self._output_chars,
+            verifier=container_verifier(workspace),
         )
         self.last_run = run
         return AgentResult(
@@ -131,11 +140,18 @@ class Recorder:
 class RecordingAgent(BaseAgent):
     NAME = AgentName.NONE
 
-    def __init__(self, inner: BaseAgent | None, recorder: Recorder, run_cap: float | None):
+    def __init__(
+        self,
+        inner: BaseAgent | None,
+        recorder: Recorder,
+        run_cap: float | None,
+        check_with_verifier: bool = False,
+    ):
         super().__init__()
         self._inner = inner
         self._recorder = recorder
         self._run_cap = run_cap
+        self._check = check_with_verifier
         if inner is not None:
             self.NAME = inner.NAME
 
@@ -160,6 +176,15 @@ class RecordingAgent(BaseAgent):
             return AgentResult(input_tokens=0, output_tokens=0, failure_mode=FailureMode.NONE)
 
         started = time.monotonic()
+        verifier = None
+        if self._check:  # --with-verifier on a free agent: snapshot before it acts
+            verifier = container_verifier(AdeWorkspace.open(session.container))
+            record.verifier = {"snapshot": None, "attempts": [], "error": None}
+            try:
+                record.verifier["snapshot"] = asyncio.run(verifier.prepare())
+            except Exception as error:
+                record.verifier["error"] = f"snapshot failed: {type(error).__name__}: {error}"
+                verifier = None
         try:
             return self._inner.perform_task(
                 task_prompt=task_prompt,
@@ -168,6 +193,12 @@ class RecordingAgent(BaseAgent):
                 task_name=task_name,
             )
         finally:
+            if verifier is not None and record.verifier is not None:
+                try:
+                    result = asyncio.run(verifier.check())
+                    record.verifier["attempts"] = [{**result, "attempt": 1}]
+                except Exception as error:
+                    record.verifier["error"] = f"check failed: {type(error).__name__}: {error}"
             record.seconds = round(time.monotonic() - started, 1)
             if isinstance(self._inner, VerimendAgent):
                 record.agent_run = self._inner.last_run
@@ -203,12 +234,14 @@ class RecordingFactory(AgentFactory):
 
     def get_agent(self, **kwargs: Any) -> BaseAgent:
         if self._named is not None:
-            return RecordingAgent(self._named.get_agent(**kwargs), self._recorder, None)
+            check = bool(self._batch.get("with_verifier"))
+            return RecordingAgent(self._named.get_agent(**kwargs), self._recorder, None, check)
         run_cap = self._recorder.budget.next_run_cap(self._recorder.per_run_usd)
         if run_cap is None:
             return RecordingAgent(None, self._recorder, None)
         if self._spec.name == "verimend":
-            caps = RunCaps(max_usd=run_cap, max_steps=self._batch["max_steps"], max_attempts=1)
+            caps = RunCaps(max_usd=run_cap, max_steps=self._batch["max_steps"],
+                           max_attempts=self._batch.get("max_attempts", 1))  # fmt: skip
             agent = VerimendAgent(
                 api_key=self._api_key,
                 model=self._batch["model"],
@@ -267,6 +300,8 @@ def main(batch_path: Path) -> int:
             "task_ids",
         )
     }
+    meta["max_attempts"] = batch.get("max_attempts", 1)
+    meta["with_verifier"] = batch.get("with_verifier", False)
     meta["grader"] = "ade-bench"
     meta["spent_usd"] = recorder.budget.spent_usd
     summary = write_batch(
@@ -282,7 +317,12 @@ def main(batch_path: Path) -> int:
         grader = "pass" if run["grader_passed"] else "fail"
         print(
             f"{run['task']:28} trial {run['trial']}  grader={grader}"
-            f"  claim={run['claim']}  ${run['dollars']:.4f}",
+            f"  claim={run['claim']}  ${run['dollars']:.4f}"
+            + (
+                f"  verifier={run['failed_check'] or 'pass'} x{run['attempts']}"
+                if run["attempts"]
+                else ""
+            ),
             flush=True,
         )
     m = summary["metrics"]

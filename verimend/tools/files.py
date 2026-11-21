@@ -3,8 +3,9 @@
 import difflib
 from typing import Any
 
-from verimend.hooks.guards import edit_refusal
+from verimend.hooks.guards import content_refusal, edit_refusal
 from verimend.tools.base import ToolContext, ToolResult
+from verimend.tools.edits import planned_content
 from verimend.tools.workspace import safe_relative
 
 LIST_DEPTH = 3
@@ -42,22 +43,12 @@ async def edit_model(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
     relative = safe_relative(path, ws.project_dir)
     assert relative is not None  # edit_refusal has checked it
     before = await ws.read_text(relative)
-    content = args.get("content")
-    old, new = args.get("old_text"), args.get("new_text")
-    if content is not None and old is None:
-        after = str(content)
-    elif old is not None and new is not None and content is None:
-        if before is None:
-            return ctx.result(f"{relative} does not exist; pass the whole content instead.", True)
-        found = before.count(str(old))
-        if found != 1:
-            return ctx.result(
-                f"old_text must appear exactly once in {relative}; it appears {found} times.",
-                True,
-            )
-        after = before.replace(str(old), str(new), 1)
-    else:
-        return ctx.result("Pass either content, or old_text and new_text.", True)
+    after, problem = planned_content(before, args)
+    if after is None:
+        return ctx.result(f"{relative}: {problem}", True)
+    refusal = content_refusal(relative, before, after)
+    if refusal:
+        return ctx.result(refusal, True)
     before = before or ""
     if after == before:
         return ctx.result("No change: the new content equals the old content.")

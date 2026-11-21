@@ -32,6 +32,23 @@ class AgentRecord:
     stopped: str | None = None  # "batch_cap" when the batch had no money left for it
     stream_log: str | None = None  # the baseline's Claude Code output
     agent_run: AgentRun | None = None  # VeriMend's own record of the run
+    # The verifier run on a free agent's work (--with-verifier): snapshot, attempts, error.
+    verifier: dict[str, Any] | None = None
+
+
+def add_attempts(trace: Trace, t: float, attempts: list[dict[str, Any]]) -> None:
+    """One attempt_end event per verifier run (SPEC section 8)."""
+    for attempt in attempts:
+        trace.add(
+            "attempt_end",
+            t=t,
+            attempt=attempt.get("attempt"),
+            passed=bool(attempt.get("passed")),
+            failed_check=attempt.get("failed_check"),
+            checks=attempt.get("checks", []),
+            duration_s=attempt.get("duration_s"),
+            diff=attempt.get("diff"),
+        )
 
 
 def assemble_run(
@@ -46,6 +63,7 @@ def assemble_run(
         return _assemble_verimend(record, record.agent_run, grade, spec, meta, include_tests)
     trace = Trace(record.task, record.trial)
     stream = parse_stream(record.stream_log) if record.stream_log is not None else None
+    checked = record.verifier or {}
     t = record.started
     trace.add(
         "run_start",
@@ -59,6 +77,7 @@ def assemble_run(
         trial=record.trial,
         caps={"max_usd": record.run_cap_usd, "max_steps": meta.get("max_steps"), "max_attempts": 1},
         tools_offered=stream.tools_offered if stream else None,
+        verifier_snapshot=checked.get("snapshot"),
     )
 
     if stream is not None:
@@ -84,6 +103,8 @@ def assemble_run(
         claim = parse_verdict(stream.final_text if stream else None)
     text = stream.final_text[-REPORT_TEXT_CHARS:] if stream else None
     trace.add("report", t=t, claim=str(claim), text=text)
+    attempts = list(checked.get("attempts") or [])
+    add_attempts(trace, t, attempts)
 
     passed = bool(grade and grade.passed)
     if grade is not None:
@@ -94,6 +115,8 @@ def assemble_run(
     dollars, cost_source = _cost(spec, record, stream)
     outcome = classify(claim, passed)
     stopped = record.stopped or (stream.stop_subtype if stream else None)
+    if checked.get("error"):
+        stopped = stopped or "verifier_error"
     tool_calls = len(stream.tool_calls) if stream else None
     largest = stream.largest_prompt_tokens if stream else None
     end = t + (record.seconds or 0.0)
@@ -111,6 +134,7 @@ def assemble_run(
         hook_blocks=0,
         largest_prompt_tokens=largest,
         stopped=stopped,
+        verifier_error=checked.get("error"),
         model_usage=stream.result.get("modelUsage") if stream and stream.result else None,
     )
     result = RunResult(
@@ -127,8 +151,20 @@ def assemble_run(
         largest_prompt_tokens=largest,
         stopped=stopped,
         trace=f"{record.task}/{record.trial}.jsonl",
+        **_verifier_fields(attempts),
     )
     return trace, result
+
+
+def _verifier_fields(attempts: list[dict[str, Any]]) -> dict[str, Any]:
+    if not attempts:
+        return {"attempts": 0, "verifier_passed": None, "failed_check": None}
+    last = attempts[-1]
+    return {
+        "attempts": len(attempts),
+        "verifier_passed": bool(last.get("passed")),
+        "failed_check": last.get("failed_check"),
+    }
 
 
 def _assemble_verimend(
@@ -152,9 +188,14 @@ def _assemble_verimend(
         source_commit=meta.get("source_commit"),
         task=record.task,
         trial=record.trial,
-        caps={"max_usd": record.run_cap_usd, "max_steps": meta.get("max_steps"), "max_attempts": 1},
+        caps={
+            "max_usd": record.run_cap_usd,
+            "max_steps": meta.get("max_steps"),
+            "max_attempts": meta.get("max_attempts", 1),
+        },
         prompt_sha=run.prompt_sha,
         tools_offered=run.tools_offered,
+        verifier_snapshot=run.snapshot,
     )
     for event in sorted(run.events, key=lambda e: e.get("t", 0.0)):
         data = {k: v for k, v in event.items() if k not in {"event", "t"}}
@@ -162,7 +203,10 @@ def _assemble_verimend(
     for message_id, prompt_tokens in run.prompt_tokens.items():
         trace.add("model_usage", t=t, message_id=message_id, prompt_tokens=prompt_tokens)
 
-    claim = claim_from_report(run.report)
+    # The claim is the run's final answer: "fixed" only once the verifier passed it,
+    # "not_fixed" after the verifier rejected every attempt (SPEC section 4).
+    claim = claim_from_report({"verdict": run.final_verdict} if run.final_verdict else None)
+    add_attempts(trace, t + (run.seconds or 0.0), run.attempts)
     trace.add(
         "report",
         t=t + (run.seconds or 0.0),
@@ -181,8 +225,10 @@ def _assemble_verimend(
         dollars, cost_source = run.cost_usd, "result_line"
     else:  # no result: charge the whole cap, never assume it was cheaper
         dollars, cost_source = float(record.run_cap_usd or 0.0), "run_cap_assumed"
-    outcome = classify(claim, passed)
+    outcome = classify(claim, passed, verifier_rejections=run.verifier_rejections)
     stopped = record.stopped or (run.subtype if run.subtype != "success" else None)
+    if run.verifier_error:
+        stopped = stopped or "verifier_error"
     if run.error:
         stopped = stopped or "agent_error"
     seconds = record.seconds if record.seconds is not None else run.seconds
@@ -201,6 +247,7 @@ def _assemble_verimend(
         largest_prompt_tokens=run.largest_prompt_tokens,
         stopped=stopped,
         error=run.error,
+        verifier_error=run.verifier_error,
         model_usage=run.model_usage,
     )
     result = RunResult(
@@ -217,6 +264,7 @@ def _assemble_verimend(
         largest_prompt_tokens=run.largest_prompt_tokens,
         stopped=stopped,
         trace=f"{record.task}/{record.trial}.jsonl",
+        **_verifier_fields(run.attempts),
     )
     return trace, result
 

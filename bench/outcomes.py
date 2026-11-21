@@ -67,6 +67,9 @@ class RunResult:
     largest_prompt_tokens: int | None
     stopped: str | None
     trace: str
+    attempts: int = 0  # verifier runs; 0 when no verifier ran
+    verifier_passed: bool | None = None  # the last verifier run's decision
+    failed_check: str | None = None  # the check the last verifier run failed
 
     def as_dict(self) -> dict[str, Any]:
         data = asdict(self)
@@ -130,5 +133,21 @@ def summarize(runs: list[RunResult]) -> dict[str, Any]:
         "hook_blocks": sum(r.hook_blocks for r in scored),
         "largest_prompt_tokens": max(
             (r.largest_prompt_tokens for r in scored if r.largest_prompt_tokens), default=None
+        ),
+        "verifier": _verifier_metrics(scored),
+    }
+
+
+def _verifier_metrics(runs: list[RunResult]) -> dict[str, Any] | None:
+    """How the verifier decided, over the runs it checked. None when it ran on none."""
+    checked = [r for r in runs if r.attempts > 0]
+    if not checked:
+        return None
+    return {
+        "runs_checked": len(checked),
+        "last_attempt_passed": sum(bool(r.verifier_passed) for r in checked),
+        "mean_attempts": _mean([float(r.attempts) for r in checked]),
+        "failed_checks": dict(
+            Counter(r.failed_check for r in checked if not r.verifier_passed and r.failed_check)
         ),
     }

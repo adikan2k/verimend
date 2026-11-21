@@ -4,6 +4,7 @@ import pytest
 
 from verimend.hooks.guards import (
     after_report_refusal,
+    content_refusal,
     edit_refusal,
     query_refusal,
     refusal_for,
@@ -24,6 +25,9 @@ ROOT = "/app"
         "/etc/passwd",
         "/app/../bench/grade.py",
         ".github/workflows/ci.yml",  # CI
+        ".gitlab-ci.yml",
+        "verifier/src/verifier/checks.py",  # the verifier and the benchmark, even inside
+        "bench/grade.py",
         "models/../tests/x.sql",
         "models/helper.py",  # not a model, macro, seed or YAML file
         "",
@@ -99,3 +103,98 @@ def test_refusal_for_routes_by_tool() -> None:
     assert refusal_for("query_data", {"sql": "drop table x"}, project_dir=ROOT, reported=False)
     assert not refusal_for("read_file", {"path": "tests/x.sql"}, project_dir=ROOT, reported=False)
     assert not refusal_for("run_dbt", {"selector": "a+"}, project_dir=ROOT, reported=False)
+
+
+# ---- content: tests in YAML files and generic test macros (SPEC section 4) ----------
+
+SCHEMA = """\
+version: 2
+models:
+  - name: orders
+    data_tests:
+      - dbt_utils.expression_is_true:
+          expression: "amount >= 0"
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - unique
+      - name: status
+        tests:
+          - accepted_values:
+              values: ["placed", "shipped"]
+sources:
+  - name: raw
+    tables:
+      - name: payments
+        columns:
+          - name: id
+            data_tests: [not_null]
+"""
+
+
+@pytest.mark.parametrize(
+    ("old", "new"),
+    [
+        ("          - unique\n", ""),  # remove a column test
+        (
+            "          - unique\n",
+            "          - unique:\n              config:\n                severity: warn\n",
+        ),
+        ('values: ["placed", "shipped"]', 'values: ["placed", "shipped", "lost"]'),  # loosen
+        ('expression: "amount >= 0"', 'expression: "amount >= -100"'),  # model-level test
+        ("data_tests: [not_null]", "data_tests: []"),  # source table column
+        ("    data_tests:\n      - dbt_utils", "    tests_disabled:\n      - dbt_utils"),
+        ("- name: order_id", "- name: order_key"),  # moving a test to another column
+    ],
+)
+def test_content_guard_blocks_weakened_yaml_tests(old: str, new: str) -> None:
+    assert old in SCHEMA
+    after = SCHEMA.replace(old, new)
+    assert content_refusal("models/schema.yml", SCHEMA, after) is not None
+
+
+def test_content_guard_allows_yaml_edits_that_keep_every_test() -> None:
+    added = SCHEMA.replace("          - unique\n", "          - unique\n          - positive\n")
+    described = SCHEMA.replace("  - name: orders\n", "  - name: orders\n    description: Orders.\n")
+    for after in (added, described, SCHEMA + "\n# a comment\n"):
+        assert content_refusal("models/schema.yml", SCHEMA, after) is None
+    assert content_refusal("models/new.yml", None, SCHEMA) is None  # a new file
+    assert content_refusal("models/schema.yml", SCHEMA, "not: [valid") is not None
+
+
+PROJECT = "name: p\nprofile: p\ndata_tests:\n  +severity: error\nmodels:\n  +materialized: view\n"
+
+
+def test_content_guard_blocks_project_wide_test_settings() -> None:
+    warn = PROJECT.replace("+severity: error", "+severity: warn")
+    assert content_refusal("dbt_project.yml", PROJECT, warn) is not None
+    added = PROJECT.replace("models:\n", "tests:\n  +enabled: false\nmodels:\n")
+    assert content_refusal("dbt_project.yml", PROJECT, added) is not None
+    table = PROJECT.replace("+materialized: view", "+materialized: table")
+    assert content_refusal("dbt_project.yml", PROJECT, table) is None
+
+
+@pytest.mark.parametrize(
+    ("before", "after"),
+    [
+        (
+            "{% test positive(model, column_name) %}\nselect 1\n{% endtest %}",
+            "{% test positive(model, column_name) %}\nselect 1 where false\n{% endtest %}",
+        ),
+        (
+            None,
+            "{% macro default__test_not_null(model, column_name) %}"
+            "select 1 where false{% endmacro %}",
+        ),
+        (None, "{%- macro test_unique(model) -%}select 1{%- endmacro -%}"),
+    ],
+)
+def test_content_guard_blocks_generic_test_macros(before: str | None, after: str) -> None:
+    assert content_refusal("macros/tests.sql", before, after) is not None
+
+
+def test_content_guard_allows_ordinary_macros_and_models() -> None:
+    macro = "{% macro cents(col) %}{{ col }} / 100{% endmacro %}"
+    assert content_refusal("macros/cents.sql", None, macro) is None
+    assert content_refusal("models/latest_tests.sql", None, "select * from test_results") is None

@@ -168,6 +168,12 @@ def test_edit_model_replaces_text_once_and_refuses_tests(ctx: ToolContext) -> No
     assert ctx.diffs and ctx.diffs[0]["path"] == path
     blocked = call(ctx, "edit_model", path="tests/assert_positive_amount.sql", content="select 1")
     assert blocked.is_error
+    # The tool re-checks the content guard, so a YAML test survives even without the hook.
+    schema = Path(ctx.workspace.project_dir) / "models/schema.yml"
+    yaml_before = schema.read_text(encoding="utf-8")
+    loosened = call(ctx, "edit_model", path="models/schema.yml", old_text="- unique", new_text="")
+    assert loosened.is_error and "may not remove or change tests" in loosened.text
+    assert schema.read_text(encoding="utf-8") == yaml_before
     assert (
         (Path(ctx.workspace.project_dir) / "tests/assert_positive_amount.sql")
         .read_text(encoding="utf-8")

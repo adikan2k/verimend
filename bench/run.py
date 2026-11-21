@@ -41,13 +41,19 @@ from verimend.hooks.caps import CapError, estimate_batch_usd, require_batch_caps
 RUNNER_IMAGE = "verimend-bench-runner"
 VENV_VOLUME = "verimend-bench-venv"
 HARBOR_VERSION = "0.26.0"  # data-eng-bench's runner; see docs/spikes.md, phase 2 addendum
-# What the Harbor venv holds. Same versions as uv.lock for the two verimend needs.
+# What the Harbor venv holds. Same versions as uv.lock for what verimend needs there:
+# the SDK, settings, and PyYAML for the edit guard on YAML test blocks.
 HARBOR_VENV_PINS = (
     f"harbor=={HARBOR_VERSION}",
     "claude-agent-sdk==0.2.185",
     "pydantic-settings==2.16.3",
+    "pyyaml==6.0.3",
 )
-AGENT_TIMEOUT_SEC = 1200
+# Phase 4: the verifier's snapshot and up to three verifier builds come on top of the agent;
+# on data-eng-bench each full build takes about 2.5 minutes.
+AGENT_TIMEOUT_SEC = 2400
+# The free agents the verifier can be run on, to measure its false rejections.
+VERIFIER_CHECKED_AGENTS = ("none", "reference")
 REPO_INSIDE = "/verimend"
 
 
@@ -64,6 +70,11 @@ def parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument("--max-usd", type=float, help="dollar cap for the batch (required)")
     parser.add_argument("--batch", help="batch name; default: <agent>-<set>-<timestamp>")
     parser.add_argument("--dry-run", action="store_true", help="print the plan, run nothing")
+    parser.add_argument(
+        "--with-verifier",
+        action="store_true",
+        help="also run the verifier on what none or reference leaves (no model calls)",
+    )
     return parser.parse_args(argv)
 
 
@@ -126,17 +137,21 @@ def runner_command(
     # the pinned version without verimend's own dependencies: it cannot share a venv with
     # dbt-core 1.10 (pathspec). bench/ and verimend/ come from PYTHONPATH; the agents need
     # only the Agent SDK and pydantic-settings on top of Harbor (approved for phase 3).
+    # The verifier's source is uploaded into task containers from verifier/src, so on
+    # Harbor it comes from PYTHONPATH too.
     if runner == "ade":
         install = f"-e . -e {REPO_INSIDE}/verifier -e {REPO_INSIDE}"
+        pythonpath = REPO_INSIDE
     else:
         install = " ".join(f"'{pin}'" for pin in HARBOR_VENV_PINS)
+        pythonpath = f"{REPO_INSIDE}:{REPO_INSIDE}/verifier/src"
     script = "\n".join(
         [
             "set -e",
             f"cd '{docker_path(checkout)}'",
             "uv venv /opt/venv --allow-existing -q",
             f"uv pip install -q {install}",
-            f"PYTHONPATH={REPO_INSIDE} python -m bench.{runner}.inner '{docker_path(batch_file)}'",
+            f"PYTHONPATH={pythonpath} python -m bench.{runner}.inner '{docker_path(batch_file)}'",
         ]
     )
     volume = VENV_VOLUME if runner == "ade" else f"{VENV_VOLUME}-{runner}"
@@ -188,6 +203,11 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
         limit, max_usd = require_batch_caps(args.limit, args.max_usd)
         if args.trials < 1:
             raise CapError("--trials must be at least 1")
+        if args.with_verifier and spec.name not in VERIFIER_CHECKED_AGENTS:
+            raise TaskSetError(
+                "--with-verifier is for none and reference; VeriMend always runs its verifier "
+                "and the baseline never does."
+            )
         settings = load_settings()
         if spec.model_calls:
             settings.require_api_key()
@@ -238,6 +258,8 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
         "max_usd": max_usd,
         "per_run_usd": min(settings.max_usd_per_run, max_usd),
         "max_steps": settings.max_steps,
+        "max_attempts": settings.max_attempts if spec.name == "verimend" else 1,
+        "with_verifier": spec.name == "verimend" or bool(args.with_verifier),
         "agent_timeout_sec": AGENT_TIMEOUT_SEC,
         "task_ids": task_ids,
         "stage_dir": docker_path(stage),

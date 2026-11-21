@@ -17,12 +17,12 @@ The name is "VeriMend" in prose and `verimend` in code, package names and comman
 Phase 1 creates these. If one changes, update this list in the same commit.
 
 - All checks (lint, types, tests, Python and site): `uv run python scripts/check.py`
-- Python tests: `uv run pytest` · one file: `uv run pytest verifier/tests/test_tamper.py`
+- Python tests: `uv run pytest` · one file: `uv run pytest verifier/tests/test_verifier_checks.py`
 - Python lint and types: `uv run ruff check .` and `uv run pyright`
-- Fix a failed dbt project: `uv run verimend fix --project-dir demo/jaffle_shop --max-usd 0.25`
+- Fix a failed dbt project in a sandbox copy (paid; writes `fix.diff` and `run.json` under `~/.verimend/sandboxes/`): `uv run verimend fix --project-dir demo/jaffle_shop --max-usd 0.25`
 - Verify any diff, no agent involved: `uv run verimend verify --project-dir demo/jaffle_shop --diff fix.diff`
-- Benchmark, development set only: `uv run python -m bench.run --agent verimend --set dev --limit 5 --max-usd 2`. Agents: `none`, `reference`, `baseline` (paid), `verimend` (paid). Add `--source data-eng-bench` for that benchmark, `--trials 3`, `--tasks a,b` or `--dry-run`. Runs in the Linux runner (Docker Desktop).
-- Results table from batch summaries: `uv run python scripts/results_table.py --out docs/results-dev.md --batch <name> --batch <name> ...`
+- Benchmark, development set only: `uv run python -m bench.run --agent verimend --set dev --limit 5 --max-usd 2`. Agents: `none`, `reference`, `baseline` (paid), `verimend` (paid). Add `--source data-eng-bench` for that benchmark, `--trials 3`, `--tasks a,b` or `--dry-run`. `--with-verifier` runs the verifier around `none` or `reference` (free; VeriMend always has it). Runs in the Linux runner (Docker Desktop).
+- Results table from batch summaries: `uv run python scripts/results_table.py --out docs/results-dev.md --batch <name> --batch <name> ...` (`--note "<text>"` adds a line under the table)
 - Pre-split task check, no model calls: `uv run python scripts/validate_tasks.py --source ade-bench --limit 30 --max-usd 0.01` (or `--source data-eng-bench`)
 - The split, run by Aditya only: `uv run python scripts/split_bench.py --seed 1119 --validation bench/results/validate-2026-11-19/validation.json`
 - Site: `pnpm -C site dev`, `pnpm -C site lint`, `pnpm -C site typecheck`, `pnpm -C site test`

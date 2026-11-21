@@ -77,13 +77,14 @@ def test_runner_command_for_harbor_installs_the_pinned_harbor(tmp_path: Path) ->
     assert f"{run.VENV_VOLUME}-harbor:/opt/venv" in command
 
 
-HARBOR_VENV = {"harbor", "claude_agent_sdk", "pydantic", "pydantic_settings"}
+HARBOR_VENV = {"harbor", "claude_agent_sdk", "pydantic", "pydantic_settings", "yaml"}
 
 
 def harbor_side_imports(*roots: str) -> dict[str, set[str]]:
     """Third-party packages imported anywhere reachable from `roots`, by importing module.
 
-    bench/ and verimend/ come from PYTHONPATH in the Harbor venv; everything else must be
+    bench/, verimend/ and verifier/src come from PYTHONPATH in the Harbor venv; everything
+    else must be
     installed there, and dbt-core cannot be (its pathspec pin conflicts with Harbor's).
     """
     import ast
@@ -97,9 +98,10 @@ def harbor_side_imports(*roots: str) -> dict[str, set[str]]:
         if module in seen:
             continue
         seen.add(module)
-        path = repo / (module.replace(".", "/") + ".py")
+        root = repo / "verifier" / "src" if module.split(".")[0] == "verifier" else repo
+        path = root / (module.replace(".", "/") + ".py")
         if not path.exists():
-            path = repo / module.replace(".", "/") / "__init__.py"
+            path = root / module.replace(".", "/") / "__init__.py"
         for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
             names: list[str] = []
             if isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
@@ -108,7 +110,7 @@ def harbor_side_imports(*roots: str) -> dict[str, set[str]]:
                 names = [alias.name for alias in node.names]
             for name in names:
                 top = name.split(".")[0]
-                if top in {"bench", "verimend"}:
+                if top in {"bench", "verimend", "verifier"}:
                     todo.append(name)
                 elif top not in sys.stdlib_module_names:
                     found.setdefault(top, set()).add(module)
@@ -237,3 +239,25 @@ def test_harbor_workspace_runs_commands_in_the_project() -> None:
     assert command == "timeout 60 dbt build --select 'a b'"
     assert kwargs["cwd"] == "/app/dbt_models_duckdb"
     assert result.code == 0 and result.output == "ok"
+
+
+def test_harbor_config_wraps_nop_and_oracle_with_the_verifier() -> None:
+    batch = {"batch": "b", "trials": 1, "agent": "reference", "with_verifier": True}
+    (entry,) = harbor_config(batch, "/stage/batch.json")["agents"]
+    assert entry["import_path"] == "bench.harbor.agents:CheckedOracle"
+    (nop,) = harbor_config({**batch, "agent": "none"}, "x")["agents"]
+    assert nop["import_path"] == "bench.harbor.agents:CheckedNop"
+    (plain,) = harbor_config({**batch, "with_verifier": False}, "x")["agents"]
+    assert plain == {"name": "oracle"}
+
+
+def test_records_from_trials_carry_the_verifier(tmp_path: Path) -> None:
+    from bench.harbor.inner import TRIAL_DIR
+    from bench.harbor.records import write_record
+
+    trial_dir = tmp_path / "job" / "a__1"
+    checked = {"snapshot": {"ok": True}, "attempts": [{"passed": True}], "error": None}
+    write_record(trial_dir / "agent", run_cap_usd=None, seconds=3.0, verifier=checked)
+    with_dir = {**trial("a", "2026-11-19T10:01:00Z", 1.0), TRIAL_DIR: str(trial_dir)}
+    (record,) = records_from_trials([with_dir])
+    assert record.verifier == checked
