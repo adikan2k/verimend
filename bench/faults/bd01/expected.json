@@ -1,0 +1,11 @@
+{
+ "kind": "bad_data",
+ "outcome": "escalate",
+ "categories": [
+  "bad_data"
+ ],
+ "failing": [
+  "test.jaffle_shop.assert_no_negative_payments"
+ ],
+ "description": "A few payments, chosen by the seed, have negative amounts."
+}

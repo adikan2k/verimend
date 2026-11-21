@@ -1,0 +1,10 @@
+{
+ "verdict": "escalate",
+ "root_cause": {
+  "category": "bad_data",
+  "model": "stg_payments",
+  "summary": "Some rows of raw.payments refer to order IDs that are not in raw.orders. The models are right; the source data is incomplete or wrong."
+ },
+ "evidence": [],
+ "diff": null
+}

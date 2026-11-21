@@ -1,0 +1,11 @@
+{
+ "kind": "bad_data",
+ "outcome": "escalate",
+ "categories": [
+  "bad_data"
+ ],
+ "failing": [
+  "test.jaffle_shop.relationships_stg_payments_order_id__order_id__ref_stg_orders_.8426a3f3d3"
+ ],
+ "description": "A few new payments, made up by the seed, point at orders that do not exist."
+}
