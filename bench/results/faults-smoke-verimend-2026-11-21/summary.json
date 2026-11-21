@@ -1,0 +1,88 @@
+{
+  "batch": "faults-smoke-verimend-2026-11-21",
+  "set": "all",
+  "source": "faults",
+  "source_commit": "333d304",
+  "git_sha": "333d304",
+  "git_dirty": true,
+  "model": "claude-haiku-5-5",
+  "trials": 1,
+  "max_usd": 0.1,
+  "per_run_usd": 0.1,
+  "max_steps": 40,
+  "task_ids": [
+    "tt01"
+  ],
+  "max_attempts": 3,
+  "with_verifier": true,
+  "seed": 1119,
+  "grader": "faults",
+  "spent_usd": 0.0029144900000000005,
+  "agent": "verimend",
+  "metrics": {
+    "runs": 1,
+    "not_started": 0,
+    "tasks": 1,
+    "trials": 1,
+    "grader_pass_rate": 1.0,
+    "false_success_rate": 0.0,
+    "claimed_fixed": 1,
+    "outcomes": {
+      "true_fix": 1,
+      "false_success": 0,
+      "caught_by_verifier": 0,
+      "correct_escalation": 0,
+      "wrong_escalation": 0,
+      "unneeded_escalation": 0,
+      "honest_failure": 0,
+      "no_claim": 0
+    },
+    "pass_rate_across_trials": {
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0,
+      "stdev": 0.0
+    },
+    "false_success_rate_across_trials": {
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "stdev": 0.0
+    },
+    "dollars": {
+      "total": 0.0029144900000000005,
+      "mean_per_run": 0.0029144900000000005,
+      "max_per_run": 0.0029144900000000005
+    },
+    "mean_seconds": 63.7,
+    "mean_steps": 14.0,
+    "hook_blocks": 0,
+    "largest_prompt_tokens": 8970,
+    "verifier": {
+      "runs_checked": 1,
+      "last_attempt_passed": 1,
+      "mean_attempts": 1.0,
+      "failed_checks": {}
+    }
+  },
+  "runs": [
+    {
+      "task": "tt01",
+      "trial": 1,
+      "claim": "fixed",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "dollars": 0.0029144900000000005,
+      "seconds": 63.7,
+      "steps": 14,
+      "tool_calls": 11,
+      "hook_blocks": 0,
+      "largest_prompt_tokens": 8970,
+      "stopped": null,
+      "trace": "tt01/1.jsonl",
+      "attempts": 1,
+      "verifier_passed": true,
+      "failed_check": null
+    }
+  ]
+}
