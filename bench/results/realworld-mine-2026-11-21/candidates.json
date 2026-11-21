@@ -1,0 +1,4883 @@
+{
+ "packages": {
+  "dbt_ad_reporting": {
+   "duckdb_since": "2.7.3",
+   "releases_since": [
+    "2.8.1",
+    "2.8.0",
+    "2.8.0-a2",
+    "2.8.0-a1"
+   ]
+  },
+  "dbt_ai_reporting": {
+   "duckdb_since": null,
+   "releases_since": []
+  },
+  "dbt_amazon_ads": {
+   "duckdb_since": "1.3.1",
+   "releases_since": []
+  },
+  "dbt_amazon_selling_partner": {
+   "duckdb_since": "0.5.1",
+   "releases_since": [
+    "0.6.0"
+   ]
+  },
+  "dbt_amplitude": {
+   "duckdb_since": "1.4.1",
+   "releases_since": []
+  },
+  "dbt_app_reporting": {
+   "duckdb_since": "1.3.2",
+   "releases_since": []
+  },
+  "dbt_apple_search_ads": {
+   "duckdb_since": "1.3.1",
+   "releases_since": []
+  },
+  "dbt_apple_store": {
+   "duckdb_since": "1.3.2",
+   "releases_since": [
+    "1.3.3"
+   ]
+  },
+  "dbt_asana": {
+   "duckdb_since": "1.4.1",
+   "releases_since": [
+    "1.4.2"
+   ]
+  },
+  "dbt_aws_cloud_cost": {
+   "duckdb_since": "0.4.1",
+   "releases_since": []
+  },
+  "dbt_claude": {
+   "duckdb_since": null,
+   "releases_since": []
+  },
+  "dbt_customer360": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_demo_justin_small": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_dynamics_365_crm": {
+   "duckdb_since": "0.4.1",
+   "releases_since": [
+    "0.5.0"
+   ]
+  },
+  "dbt_facebook_ads": {
+   "duckdb_since": "1.5.1",
+   "releases_since": [
+    "1.6.0"
+   ]
+  },
+  "dbt_facebook_ads_creative_history": {
+   "duckdb_since": null,
+   "releases_since": []
+  },
+  "dbt_facebook_pages": {
+   "duckdb_since": "1.3.1",
+   "releases_since": [
+    "1.4.0"
+   ]
+  },
+  "dbt_fivetran_log": {
+   "duckdb_since": "2.5.3",
+   "releases_since": [
+    "2.6.1",
+    "2.6.0"
+   ]
+  },
+  "dbt_fivetran_utils": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_ga4_export": {
+   "duckdb_since": "0.7.2",
+   "releases_since": [
+    "0.8.0"
+   ]
+  },
+  "dbt_github": {
+   "duckdb_since": "1.4.1",
+   "releases_since": [
+    "1.5.0"
+   ]
+  },
+  "dbt_google_ads": {
+   "duckdb_since": "1.4.1",
+   "releases_since": []
+  },
+  "dbt_google_play": {
+   "duckdb_since": "1.3.1",
+   "releases_since": []
+  },
+  "dbt_greenhouse": {
+   "duckdb_since": "1.4.1",
+   "releases_since": [
+    "1.6.0",
+    "1.6.0-a3",
+    "1.6.0-a2",
+    "1.6.0-a1",
+    "1.5.0"
+   ]
+  },
+  "dbt_hubspot": {
+   "duckdb_since": "1.9.2",
+   "releases_since": [
+    "1.10.1",
+    "1.10.0",
+    "1.9.3"
+   ]
+  },
+  "dbt_instagram_business": {
+   "duckdb_since": "1.2.1",
+   "releases_since": [
+    "1.3.0"
+   ]
+  },
+  "dbt_intercom": {
+   "duckdb_since": "1.7.1",
+   "releases_since": [
+    "1.8.1",
+    "1.8.0"
+   ]
+  },
+  "dbt_iterable": {
+   "duckdb_since": "1.5.1",
+   "releases_since": [
+    "1.6.2",
+    "1.6.1",
+    "1.6.0"
+   ]
+  },
+  "dbt_jaffleverse": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_jira": {
+   "duckdb_since": "1.10.2",
+   "releases_since": [
+    "1.10.3"
+   ]
+  },
+  "dbt_justin": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_klaviyo": {
+   "duckdb_since": "1.4.1",
+   "releases_since": [
+    "1.5.0"
+   ]
+  },
+  "dbt_lever": {
+   "duckdb_since": "1.3.1",
+   "releases_since": []
+  },
+  "dbt_linkedin": {
+   "duckdb_since": "1.3.1",
+   "releases_since": [
+    "1.3.2"
+   ]
+  },
+  "dbt_linkedin_pages": {
+   "duckdb_since": "1.5.1",
+   "releases_since": [
+    "1.6.0"
+   ]
+  },
+  "dbt_mailchimp": {
+   "duckdb_since": "1.3.2",
+   "releases_since": []
+  },
+  "dbt_marketo": {
+   "duckdb_since": "1.4.1",
+   "releases_since": [
+    "1.4.3",
+    "1.4.2"
+   ]
+  },
+  "dbt_microsoft_ads": {
+   "duckdb_since": "1.3.1",
+   "releases_since": []
+  },
+  "dbt_mixpanel": {
+   "duckdb_since": "0.17.1",
+   "releases_since": [
+    "0.17.2"
+   ]
+  },
+  "dbt_mntn": {
+   "duckdb_since": null,
+   "releases_since": []
+  },
+  "dbt_netsuite": {
+   "duckdb_since": "1.7.1",
+   "releases_since": [
+    "1.8.0",
+    "1.8.0-a1"
+   ]
+  },
+  "dbt_openai": {
+   "duckdb_since": null,
+   "releases_since": []
+  },
+  "dbt_oracle_fusion_hcm": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_outreach": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_outreach_source": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_package_automations": {
+   "duckdb_since": null,
+   "releases_since": []
+  },
+  "dbt_pardot": {
+   "duckdb_since": "1.4.1",
+   "releases_since": [
+    "1.4.2"
+   ]
+  },
+  "dbt_pendo": {
+   "duckdb_since": "1.4.1",
+   "releases_since": [
+    "1.4.2"
+   ]
+  },
+  "dbt_pinterest": {
+   "duckdb_since": "1.3.1",
+   "releases_since": [
+    "1.3.2"
+   ]
+  },
+  "dbt_qualtrics": {
+   "duckdb_since": "1.3.1",
+   "releases_since": [
+    "1.4.0",
+    "1.3.3",
+    "1.3.2"
+   ]
+  },
+  "dbt_quickbooks": {
+   "duckdb_since": "1.9.1",
+   "releases_since": [
+    "1.11.0",
+    "1.10.0",
+    "1.9.2"
+   ]
+  },
+  "dbt_recharge": {
+   "duckdb_since": "1.5.2",
+   "releases_since": []
+  },
+  "dbt_recurly": {
+   "duckdb_since": "1.5.1",
+   "releases_since": [
+    "1.6.1",
+    "1.6.0"
+   ]
+  },
+  "dbt_reddit_ads": {
+   "duckdb_since": "1.5.1",
+   "releases_since": [
+    "1.6.1",
+    "1.6.0"
+   ]
+  },
+  "dbt_reddit_ads_source_old": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_sage_intacct": {
+   "duckdb_since": "1.4.1",
+   "releases_since": [
+    "1.4.2"
+   ]
+  },
+  "dbt_salesforce": {
+   "duckdb_since": "2.4.1",
+   "releases_since": []
+  },
+  "dbt_salesforce_formula_udfs": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_salesforce_formula_utils": {
+   "duckdb_since": "0.12.1",
+   "releases_since": [
+    "0.14.0",
+    "0.13.1",
+    "0.13.0",
+    "0.13.0-a1"
+   ]
+  },
+  "dbt_salesforce_marketing_cloud": {
+   "duckdb_since": "0.6.1",
+   "releases_since": []
+  },
+  "dbt_sap": {
+   "duckdb_since": "0.8.1",
+   "releases_since": [
+    "0.10.0",
+    "0.9.1",
+    "0.9.0",
+    "0.8.3",
+    "0.8.2"
+   ]
+  },
+  "dbt_servicenow": {
+   "duckdb_since": "1.0.2",
+   "releases_since": []
+  },
+  "dbt_shopify": {
+   "duckdb_since": "1.9.2",
+   "releases_since": [
+    "1.11.1",
+    "1.11.0",
+    "1.10.1",
+    "1.10.0"
+   ]
+  },
+  "dbt_shopify_holistic_reporting": {
+   "duckdb_since": "1.3.1",
+   "releases_since": [
+    "1.5.0",
+    "1.4.0"
+   ]
+  },
+  "dbt_smart_run": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_snapchat_ads": {
+   "duckdb_since": "1.3.1",
+   "releases_since": []
+  },
+  "dbt_social_media_reporting": {
+   "duckdb_since": "1.6.2",
+   "releases_since": []
+  },
+  "dbt_stackadapt": {
+   "duckdb_since": "0.2.1",
+   "releases_since": []
+  },
+  "dbt_starter_project": {
+   "duckdb_since": null,
+   "releases_since": []
+  },
+  "dbt_stripe": {
+   "duckdb_since": "1.10.1",
+   "releases_since": [
+    "1.10.2"
+   ]
+  },
+  "dbt_style_guide": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_survey_monkey": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_survey_monkey_source": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_test_20240610": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_tiktok_ads": {
+   "duckdb_since": "1.4.1",
+   "releases_since": [
+    "1.6.0",
+    "1.5.1",
+    "1.5.0",
+    "1.5.0-a2",
+    "1.5.0-a1",
+    "1.4.2"
+   ]
+  },
+  "dbt_tutorial": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_twilio": {
+   "duckdb_since": "1.4.1",
+   "releases_since": []
+  },
+  "dbt_twitter": {
+   "duckdb_since": "1.3.1",
+   "releases_since": []
+  },
+  "dbt_twitter_organic": {
+   "duckdb_since": "1.2.1",
+   "releases_since": [
+    "1.3.0"
+   ]
+  },
+  "dbt_typeform": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_typeform_source": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_unified_rag": {
+   "duckdb_since": "0.3.1",
+   "releases_since": []
+  },
+  "dbt_workday": {
+   "duckdb_since": "1.0.3",
+   "releases_since": []
+  },
+  "dbt_workday_financial_management": {
+   "duckdb_since": null,
+   "releases_since": []
+  },
+  "dbt_xero": {
+   "duckdb_since": "1.6.1",
+   "releases_since": [
+    "1.6.2"
+   ]
+  },
+  "dbt_yaml_schemas": {
+   "duckdb_since": null,
+   "note": "no CHANGELOG.md"
+  },
+  "dbt_youtube_analytics": {
+   "duckdb_since": "1.2.1",
+   "releases_since": [
+    "1.3.0",
+    "1.2.2"
+   ]
+  },
+  "dbt_zendesk": {
+   "duckdb_since": "1.7.1",
+   "releases_since": [
+    "1.10.0",
+    "1.9.1",
+    "1.9.0",
+    "1.9.0-a3",
+    "1.9.0-a2",
+    "1.9.0-a1",
+    "1.8.0",
+    "1.8.0-a1"
+   ]
+  },
+  "dbt_zuora": {
+   "duckdb_since": "1.4.1",
+   "releases_since": []
+  }
+ },
+ "candidates": [
+  {
+   "repo": "dbt_ad_reporting",
+   "kind": "bug_fix",
+   "versions": [
+    "2.8.1"
+   ],
+   "pr": 190,
+   "title": "Populate Reddit account_name and Pinterest keyword report IDs",
+   "merged_at": "2026-10-15T18:15:42Z",
+   "fix_sha": "fb57bcc38747dc5efef2cde9bc9818c3208f7fb7",
+   "parent_sha": "03880ed236d90f709de1738552017b596c2569d6",
+   "files": [
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/pinterest_keyword_report_data.csv",
+    "integration_tests/seeds/reddit_ads_business_account_data.csv",
+    "models/intermediate/int_ad_reporting__account_report.sql",
+    "models/intermediate/int_ad_reporting__ad_group_report.sql",
+    "models/intermediate/int_ad_reporting__ad_report.sql",
+    "models/intermediate/int_ad_reporting__campaign_report.sql",
+    "models/intermediate/int_ad_reporting__monthly_campaign_country_report.sql",
+    "models/intermediate/int_ad_reporting__url_report.sql"
+   ],
+   "code_files": [
+    "models/intermediate/int_ad_reporting__account_report.sql",
+    "models/intermediate/int_ad_reporting__ad_group_report.sql",
+    "models/intermediate/int_ad_reporting__ad_report.sql",
+    "models/intermediate/int_ad_reporting__campaign_report.sql",
+    "models/intermediate/int_ad_reporting__monthly_campaign_country_report.sql",
+    "models/intermediate/int_ad_reporting__url_report.sql"
+   ],
+   "fix_lines": [
+    "- Fixes `ad_reporting__keyword_report` returning `null` for `account_id`, `account_name`, `campaign_id`, `campaign_name`, `ad_group_id`, and `ad_group_name` on Pinterest Ads rows when a keyword was missing from the keyword history."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_ad_reporting",
+   "kind": "bug_fix",
+   "versions": [
+    "2.8.0",
+    "2.8.0-a2",
+    "2.8.0-a1"
+   ],
+   "pr": 187,
+   "title": "Bump tiktok_ads Smart+ ads join fix",
+   "merged_at": "2026-09-30T16:35:43Z",
+   "fix_sha": "0f6fc72cde6c6d11c52e43dc83de2b92755b1d49",
+   "parent_sha": "f84aef71d577f834a1ba63ba9f88b3feac8099c7",
+   "files": [
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/tiktok_ad_report_hourly_data.csv",
+    "integration_tests/seeds/tiktok_creative_history_data.csv",
+    "integration_tests/seeds/tiktok_smart_plus_ad_history_data.csv",
+    "integration_tests/seeds/twitter_campaign_report_data.csv",
+    "packages.yml"
+   ],
+   "code_files": [
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "| `ad_reporting__ad_report`, `ad_reporting__advertiser_report`, `ad_reporting__url_report` | Bug Fix | For TikTok Smart+ ads, `ad_id`, `ad_name`, `account_id`, `account_name`, and URL fields resolved to `null`. | These fields now resolve correctly for TikTok Smart+ ads. | Requires `tiktok_ads` [v1.5.0](https://github.com/fivetran/dbt_tiktok_ads/blob/main/CHANGELOG.md#dbt_tiktok_ads-v150), which resolves TikTok Smart+ ads through `creative_history.creative_id` instead of `smart_plus_ad_history.smart_plus_ad_id`. See the [`tiktok_ads` changelog](https://github.com/fivetran/dbt_tiktok_ads/blob/main/CHANGELOG.md#dbt_tiktok_ads-v150) for details. |",
+    "| `stg_tiktok_ads__creative_history`<br>`stg_tiktok_ads__creative_history_tmp` | New Staging Models | | | Adds `advertiser_id`, `adgroup_id`, `campaign_id`, and `creative_name` for TikTok Smart+ ads, resolved through `creative_id`. |"
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_ad_reporting",
+   "kind": "bug_fix",
+   "versions": [
+    "2.8.0"
+   ],
+   "pr": 189,
+   "title": "Expand reddit_ads version range to include v1.6.0",
+   "merged_at": "2026-09-30T23:38:45Z",
+   "fix_sha": "03880ed236d90f709de1738552017b596c2569d6",
+   "parent_sha": "0f6fc72cde6c6d11c52e43dc83de2b92755b1d49",
+   "files": [
+    "CHANGELOG.md",
+    "README.md",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "packages.yml"
+   ],
+   "code_files": [
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "| `ad_reporting__ad_report`, `ad_reporting__advertiser_report`, `ad_reporting__url_report` | Bug Fix | For TikTok Smart+ ads, `ad_id`, `ad_name`, `account_id`, `account_name`, and URL fields resolved to `null`. | These fields now resolve correctly for TikTok Smart+ ads. | Requires `tiktok_ads` [v1.5.0](https://github.com/fivetran/dbt_tiktok_ads/blob/main/CHANGELOG.md#dbt_tiktok_ads-v150), which resolves TikTok Smart+ ads through `creative_history.creative_id` instead of `smart_plus_ad_history.smart_plus_ad_id`. See the [`tiktok_ads` changelog](https://github.com/fivetran/dbt_tiktok_ads/blob/main/CHANGELOG.md#dbt_tiktok_ads-v150) for details. |",
+    "| `stg_tiktok_ads__creative_history`<br>`stg_tiktok_ads__creative_history_tmp` | New Staging Models | | | Adds `advertiser_id`, `adgroup_id`, `campaign_id`, and `creative_name` for TikTok Smart+ ads, resolved through `creative_id`. |"
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_ad_reporting",
+   "kind": "duckdb_port",
+   "versions": [
+    "2.7.3"
+   ],
+   "pr": 185,
+   "title": "Audience report fix",
+   "merged_at": null,
+   "fix_sha": null,
+   "parent_sha": null,
+   "files": [
+    "dbt_project.yml",
+    "macros/get_query.sql",
+    "models/ad_reporting__account_report.sql",
+    "models/ad_reporting__ad_group_report.sql",
+    "models/ad_reporting__ad_report.sql",
+    "models/ad_reporting__campaign_report.sql",
+    "models/ad_reporting__keyword_report.sql",
+    "models/ad_reporting__search_report.sql",
+    "models/ad_reporting__url_report.sql",
+    "models/ad_reporting_models.yml",
+    "models/intermediate/int_ad_reporting__account_report.sql",
+    "models/intermediate/int_ad_reporting__ad_group_report.sql",
+    "models/intermediate/int_ad_reporting__ad_report.sql",
+    "models/intermediate/int_ad_reporting__campaign_report.sql",
+    "models/intermediate/int_ad_reporting__url_report.sql",
+    "packages.yml"
+   ],
+   "code_files": [
+    "macros/get_query.sql",
+    "models/ad_reporting__account_report.sql",
+    "models/ad_reporting__ad_group_report.sql",
+    "models/ad_reporting__ad_report.sql",
+    "models/ad_reporting__campaign_report.sql",
+    "models/ad_reporting__keyword_report.sql",
+    "models/ad_reporting__search_report.sql",
+    "models/ad_reporting__url_report.sql",
+    "models/ad_reporting_models.yml",
+    "models/intermediate/int_ad_reporting__account_report.sql",
+    "models/intermediate/int_ad_reporting__ad_group_report.sql",
+    "models/intermediate/int_ad_reporting__ad_report.sql",
+    "models/intermediate/int_ad_reporting__campaign_report.sql",
+    "models/intermediate/int_ad_reporting__url_report.sql",
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_amazon_ads",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.1"
+   ],
+   "pr": 51,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T15:23:11Z",
+   "fix_sha": "f4bc9db0d5ffc99502d613c7b75586d915a84686",
+   "parent_sha": "531fe98f07a0f508ce2617bf6a7e33533e72fc28",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_amazon_selling_partner",
+   "kind": "duckdb_port",
+   "versions": [
+    "0.5.1"
+   ],
+   "pr": 19,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T17:48:13Z",
+   "fix_sha": "6227cee2c295f0af756a35daa2872182def9a0c6",
+   "parent_sha": "a9f5a9e62d387fa735a5eeeaab8ab6b3e41a8d1e",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "macros/convert_string_to_numeric.sql",
+    "packages.yml"
+   ],
+   "code_files": [
+    "macros/convert_string_to_numeric.sql",
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_amplitude",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.4.1"
+   ],
+   "pr": 44,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T17:46:09Z",
+   "fix_sha": "772528317399f90944f374ace10baa3f3396ecd7",
+   "parent_sha": "bc1c729920bf49439cdfbb88cd9abb6ce74e679e",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/amplitude__daily_performance.sql",
+    "models/amplitude__event_enhanced.sql",
+    "models/amplitude__sessions.sql"
+   ],
+   "code_files": [
+    "models/amplitude__daily_performance.sql",
+    "models/amplitude__event_enhanced.sql",
+    "models/amplitude__sessions.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_app_reporting",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.2"
+   ],
+   "pr": 40,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-19T15:08:53Z",
+   "fix_sha": "54d8310b7c61a9027e7bd782b65058b71cd0dc8c",
+   "parent_sha": "ab60b60255b08e3b848886015258df793c8d1e41",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_apple_search_ads",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.1"
+   ],
+   "pr": 50,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:02:06Z",
+   "fix_sha": "bdc7bfe468bdb5047237c3401e4d002e1a1dbac2",
+   "parent_sha": "d19c15bfd37b9a344bdeb3356ea8311f2243686a",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_apple_store",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.2"
+   ],
+   "pr": 52,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:02:59Z",
+   "fix_sha": "71aadadbf88acc8415fe47f5b55db0f044861a79",
+   "parent_sha": "4e8e3f11c724640162747cc8dd8e31e06ef74191",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_asana",
+   "kind": "bug_fix",
+   "versions": [
+    "1.4.2"
+   ],
+   "pr": 69,
+   "title": "Fix dbt compile on a new schema",
+   "merged_at": "2026-11-12T19:11:08Z",
+   "fix_sha": "d3303fb57c5cff65d0857efd028de09ec5c29239",
+   "parent_sha": "965748a76a5cc70d0937919119f8ac67c38cad03",
+   "files": [
+    ".changes/1.4.2.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "models/asana__daily_metrics.sql"
+   ],
+   "code_files": [
+    ".changes/1.4.2.yml",
+    "models/asana__daily_metrics.sql"
+   ],
+   "fix_lines": [
+    "- `dbt compile` fails on a new schema because the `asana__daily_metrics` model queries `asana__task` before it exists. The model now runs this query only during `dbt run` and `dbt build`, and falls back to 2016-01-01 when the query returns no date."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_asana",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.4.1"
+   ],
+   "pr": 58,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:03:21Z",
+   "fix_sha": "1c86bfef654806d4f6c47de89283b5ef4bc18366",
+   "parent_sha": "3a3ef622ddddbe0f43d155c55f3f0e69b7189b63",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_aws_cloud_cost",
+   "kind": "duckdb_port",
+   "versions": [
+    "0.4.1"
+   ],
+   "pr": 20,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:03:37Z",
+   "fix_sha": "436fb4ffe174a7ca2c29f3df01edd1c423bb86fe",
+   "parent_sha": "3362e52f824c6991deac40dce846d843f075cb68",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/aws_cloud_cost__daily_instance_report.sql",
+    "models/aws_cloud_cost__daily_overview.sql",
+    "models/aws_cloud_cost__daily_product_report.sql",
+    "packages.yml"
+   ],
+   "code_files": [
+    "models/aws_cloud_cost__daily_instance_report.sql",
+    "models/aws_cloud_cost__daily_overview.sql",
+    "models/aws_cloud_cost__daily_product_report.sql",
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_dynamics_365_crm",
+   "kind": "bug_fix",
+   "versions": [
+    "0.5.0"
+   ],
+   "pr": 27,
+   "title": "FY2027 updates",
+   "merged_at": "2026-11-20T04:30:26Z",
+   "fix_sha": "c68f9fa2d20401ded6a8563cbcb7d81cb6016a21",
+   "parent_sha": "0ffd86173c4be2b25dc35fa267dbfb7392ba0daf",
+   "files": [
+    ".changes/0.5.0.yml",
+    ".github/CODEOWNERS",
+    ".github/ISSUE_TEMPLATE/bug-report.yml",
+    ".github/ISSUE_TEMPLATE/feature-request.yml",
+    ".github/workflows/stale.yml",
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "models/dynamics_365_crm.yml"
+   ],
+   "code_files": [
+    ".changes/0.5.0.yml",
+    "models/dynamics_365_crm.yml"
+   ],
+   "fix_lines": [
+    "- Adds a `unique` test on the primary key of each model. If a test fails, please [open an issue](https://github.com/fivetran/dbt_dynamics_365_crm/issues/new/choose)."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_dynamics_365_crm",
+   "kind": "duckdb_port",
+   "versions": [
+    "0.4.1"
+   ],
+   "pr": 24,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:04:21Z",
+   "fix_sha": "2ccadb4aa1ca06dcf4342ae6db741f52832bf662",
+   "parent_sha": "264404480a3d71d38ac0dd60522e79fe9a367329",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_facebook_ads",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.5.1"
+   ],
+   "pr": 72,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:04:55Z",
+   "fix_sha": "7a879e95387de83d95d21ba42342344751a54590",
+   "parent_sha": "27180ace3c72d43f14292cd79b6d3d1134a9a42b",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "macros/get_url_tag_query.sql"
+   ],
+   "code_files": [
+    "macros/get_url_tag_query.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_facebook_pages",
+   "kind": "bug_fix",
+   "versions": [
+    "1.4.0"
+   ],
+   "pr": 36,
+   "title": "FY2027 updates",
+   "merged_at": "2026-11-20T16:12:28Z",
+   "fix_sha": "91a1b739d15e834b3c8f0485365df9f548db485c",
+   "parent_sha": "be14024a55813919a67aeea6d651dcad2a014e53",
+   "files": [
+    ".changes/1.4.0.yml",
+    ".github/CODEOWNERS",
+    ".github/ISSUE_TEMPLATE/bug-report.yml",
+    ".github/ISSUE_TEMPLATE/feature-request.yml",
+    ".github/workflows/stale.yml",
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "models/facebook_pages.yml",
+    "models/staging/stg_facebook_pages.yml"
+   ],
+   "code_files": [
+    ".changes/1.4.0.yml",
+    "models/facebook_pages.yml",
+    "models/staging/stg_facebook_pages.yml"
+   ],
+   "fix_lines": [
+    "- Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_facebook_pages/issues/new/choose)."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_facebook_pages",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.1"
+   ],
+   "pr": 34,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:05:28Z",
+   "fix_sha": "bd13d757a25b7efefb3084176394d98bbf472034",
+   "parent_sha": "7a56904e3d32f44d16fee2355dbc34d1836b63b0",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_fivetran_log",
+   "kind": "bug_fix",
+   "versions": [
+    "2.6.0"
+   ],
+   "pr": 194,
+   "title": "release_branch/v2.6.0",
+   "merged_at": "2026-11-03T21:58:56Z",
+   "fix_sha": "273b5535450c0c723a5cdf5bbc348ccc21956ebf",
+   "parent_sha": "d5905b556877bf1e25ba262bc384578f6b0ab06a",
+   "files": [
+    ".changes/2.6.0.yml",
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "DECISIONLOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/audit_trail.csv",
+    "integration_tests/seeds/connector_sdk_log.csv",
+    "integration_tests/seeds/destination.csv",
+    "integration_tests/seeds/log.csv",
+    "integration_tests/seeds/log_json_data.csv",
+    "integration_tests/tests/consistency/consistency__audit_table.sql",
+    "integration_tests/tests/consistency/consistency__audit_trail_enriched.sql",
+    "integration_tests/tests/consistency/consistency__connection_errors_and_warnings.sql",
+    "integration_tests/tests/consistency/consistency__sync_metrics.sql",
+    "integration_tests/tests/consistency/consistency__transformation_run_log.sql",
+    "integration_tests/tests/integrity/row_count__audit_trail_enriched.sql",
+    "integration_tests/tests/integrity/row_count__connection_errors_and_warnings.sql",
+    "integration_tests/tests/integrity/row_count__sync_metrics.sql",
+    "integration_tests/tests/integrity/row_count__transformation_run_log.sql",
+    "macros/fivetran_log_connection_ids_unnested.sql",
+    "macros/fivetran_log_json_parse.sql",
+    "macros/staging/get_audit_trail_columns.sql",
+    "macros/staging/get_connector_sdk_log_columns.sql",
+    "models/fivetran_platform.yml",
+    "models/fivetran_platform__audit_table.sql",
+    "models/fivetran_platform__audit_trail_enriched.sql",
+    "models/fivetran_platform__connection_errors_and_warnings.sql",
+    "models/fivetran_platform__sync_metrics.sql",
+    "models/fivetran_platform__transformation_run_log.sql",
+    "models/staging/src_fivetran_platform.yml",
+    "models/staging/stg_fivetran_platform.yml",
+    "models/staging/stg_fivetran_platform__audit_trail.sql",
+    "models/staging/stg_fivetran_platform__connector_sdk_log.sql",
+    "models/staging/stg_fivetran_platform__log.sql"
+   ],
+   "code_files": [
+    ".changes/2.6.0.yml",
+    "integration_tests/tests/consistency/consistency__audit_table.sql",
+    "integration_tests/tests/consistency/consistency__audit_trail_enriched.sql",
+    "integration_tests/tests/consistency/consistency__connection_errors_and_warnings.sql",
+    "integration_tests/tests/consistency/consistency__sync_metrics.sql",
+    "integration_tests/tests/consistency/consistency__transformation_run_log.sql",
+    "integration_tests/tests/integrity/row_count__audit_trail_enriched.sql",
+    "integration_tests/tests/integrity/row_count__connection_errors_and_warnings.sql",
+    "integration_tests/tests/integrity/row_count__sync_metrics.sql",
+    "integration_tests/tests/integrity/row_count__transformation_run_log.sql",
+    "macros/fivetran_log_connection_ids_unnested.sql",
+    "macros/fivetran_log_json_parse.sql",
+    "macros/staging/get_audit_trail_columns.sql",
+    "macros/staging/get_connector_sdk_log_columns.sql",
+    "models/fivetran_platform.yml",
+    "models/fivetran_platform__audit_table.sql",
+    "models/fivetran_platform__audit_trail_enriched.sql",
+    "models/fivetran_platform__connection_errors_and_warnings.sql",
+    "models/fivetran_platform__sync_metrics.sql",
+    "models/fivetran_platform__transformation_run_log.sql",
+    "models/staging/src_fivetran_platform.yml",
+    "models/staging/stg_fivetran_platform.yml",
+    "models/staging/stg_fivetran_platform__audit_trail.sql",
+    "models/staging/stg_fivetran_platform__connector_sdk_log.sql",
+    "models/staging/stg_fivetran_platform__log.sql"
+   ],
+   "fix_lines": [
+    "| [fivetran_platform__transformation_run_log](https://fivetran.github.io/dbt_fivetran_log/#!/model/model.fivetran_log.fivetran_platform__transformation_run_log) | New model |  |  | Surfaces transformation run events from the Fivetran log, including run timestamps, duration in HH:MM:SS format, per-step model success and failure counts, and overall run status. Requires the `transformation_runs` source table, is dynamically enabled in Quickstart while disabled by default otherwise. Self-managed dbt projects can enable by setting the `fivetran_platform_using_transformations` variable to `true`. |",
+    "| [fivetran_platform__connection_errors_and_warnings](https://fivetran.github.io/dbt_fivetran_log/#!/model/model.fivetran_log.fivetran_platform__connection_errors_and_warnings) | New model |  |  | Unions error and warning events from the `log` (standard connections) and `connector_sdk_log` (Connector SDK connections) tables, enriched with `connection_name`. |"
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_fivetran_log",
+   "kind": "duckdb_port",
+   "versions": [
+    "2.5.3"
+   ],
+   "pr": 203,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T23:05:51Z",
+   "fix_sha": "113a36b4b327b913ed576e115546ee5104b9130c",
+   "parent_sha": "0da7ac69669322de4b4c9ea88b5a0071b60b23e7",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/index.html",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "macros/fivetran_log_json_parse.sql"
+   ],
+   "code_files": [
+    "macros/fivetran_log_json_parse.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_ga4_export",
+   "kind": "bug_fix",
+   "versions": [
+    "0.8.0"
+   ],
+   "pr": 30,
+   "title": "FY2027 updates",
+   "merged_at": "2026-11-21T08:15:47Z",
+   "fix_sha": "6f912fe1ea59e27a323eb5cba51d82105afc45a5",
+   "parent_sha": "d03366472bfd63a964263015bae272b31b432b50",
+   "files": [
+    ".changes/0.8.0.yml",
+    ".github/CODEOWNERS",
+    ".github/ISSUE_TEMPLATE/bug-report.yml",
+    ".github/ISSUE_TEMPLATE/feature-request.yml",
+    ".github/workflows/stale.yml",
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "models/ga4_export.yml",
+    "models/staging/stg_ga4_export.yml"
+   ],
+   "code_files": [
+    ".changes/0.8.0.yml",
+    "models/ga4_export.yml",
+    "models/staging/stg_ga4_export.yml"
+   ],
+   "fix_lines": [
+    "- Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_ga4_export/issues/new/choose)."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_ga4_export",
+   "kind": "duckdb_port",
+   "versions": [
+    "0.7.2"
+   ],
+   "pr": 25,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:16:49Z",
+   "fix_sha": "b94827407990c5faffb68c8ea9a8afb8478b8e0c",
+   "parent_sha": "365bc6cd252ee787968e43a230a731acc1455382",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/ga4_export__conversions_report.sql",
+    "models/ga4_export__events_report.sql",
+    "models/ga4_export__sessions_enhanced.sql",
+    "models/ga4_export__traffic_acquisition_session_source_medium_report.sql",
+    "models/ga4_export__user_acquisition_first_user_source_medium_report.sql",
+    "models/intermediate/int_ga4_export__derived_event_fields.sql",
+    "packages.yml"
+   ],
+   "code_files": [
+    "models/ga4_export__conversions_report.sql",
+    "models/ga4_export__events_report.sql",
+    "models/ga4_export__sessions_enhanced.sql",
+    "models/ga4_export__traffic_acquisition_session_source_medium_report.sql",
+    "models/ga4_export__user_acquisition_first_user_source_medium_report.sql",
+    "models/intermediate/int_ga4_export__derived_event_fields.sql",
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_github",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.4.1"
+   ],
+   "pr": 82,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:17:10Z",
+   "fix_sha": "476ee64024f37406073bac58d0a96ef0a85a12c9",
+   "parent_sha": "e913743f666165c4b14fc7976f420e59873e9426",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_google_ads",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.4.1"
+   ],
+   "pr": 103,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:22:30Z",
+   "fix_sha": "310fd134db0308be0738ad6dfa98fc1ded0e1479",
+   "parent_sha": "5f90a793a56a4d734d5365d35032de0a7969a767",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_google_play",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.1"
+   ],
+   "pr": 36,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:23:26Z",
+   "fix_sha": "74274422b4d1db71177d11b5422a7cb8b278013c",
+   "parent_sha": "c24193ace6ddc96adc14cd318b8240aeb4446adf",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/intermediate/int_google_play__earnings.sql",
+    "models/staging/stg_google_play__earnings.sql"
+   ],
+   "code_files": [
+    "models/intermediate/int_google_play__earnings.sql",
+    "models/staging/stg_google_play__earnings.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_greenhouse",
+   "kind": "bug_fix",
+   "versions": [
+    "1.6.0",
+    "1.6.0-a3"
+   ],
+   "pr": 51,
+   "title": "[Release/pre-release] v1.6.0, closing the Harvest API migration",
+   "merged_at": "2026-10-22T22:37:06Z",
+   "fix_sha": "854fac5e1f13365097c40e1758f837df55ad00a2",
+   "parent_sha": "3fb918bb1f46f0ee3e0febde90e247b5687c6362",
+   "files": [
+    ".changes/1.6.0-a1.yml",
+    ".changes/1.6.0-a2.yml",
+    ".changes/1.6.0-a3.yml",
+    ".changes/1.6.0.yml",
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/activity.csv",
+    "integration_tests/seeds/application.csv",
+    "integration_tests/seeds/application_stage.csv",
+    "integration_tests/seeds/application_stage_snowflake.csv",
+    "integration_tests/seeds/interview_kit.csv",
+    "integration_tests/seeds/job_candidate_attribute.csv",
+    "integration_tests/seeds/job_interview.csv",
+    "integration_tests/seeds/job_office.csv",
+    "integration_tests/seeds/note.csv",
+    "integration_tests/seeds/office.csv",
+    "integration_tests/seeds/prospect_detail.csv",
+    "integration_tests/seeds/referrer.csv",
+    "integration_tests/seeds/rejection_detail.csv",
+    "integration_tests/seeds/rejection_reason.csv",
+    "integration_tests/seeds/scorecard.csv",
+    "integration_tests/seeds/scorecard_question.csv",
+    "integration_tests/seeds/scorecard_question_answer.csv",
+    "macros/staging/get_application_columns.sql",
+    "macros/staging/get_application_history_columns.sql",
+    "macros/staging/get_application_stage_columns.sql",
+    "macros/staging/get_attachment_columns.sql",
+    "macros/staging/get_candidate_columns.sql",
+    "macros/staging/get_candidate_phone_number_columns.sql",
+    "macros/staging/get_candidate_social_media_address_columns.sql",
+    "macros/staging/get_candidate_tag_link_columns.sql",
+    "macros/staging/get_department_columns.sql",
+    "macros/staging/get_eeoc_columns.sql",
+    "macros/staging/get_email_address_columns.sql",
+    "macros/staging/get_interview_columns.sql",
+    "macros/staging/get_interview_kit_columns.sql",
+    "macros/staging/get_interviewer_columns.sql",
+    "macros/staging/get_job_candidate_attribute_columns.sql",
+    "macros/staging/get_job_columns.sql",
+    "macros/staging/get_job_hiring_manager_columns.sql",
+    "macros/staging/get_job_interview_columns.sql",
+    "macros/staging/get_job_interview_stage_columns.sql",
+    "macros/staging/get_job_office_columns.sql",
+    "macros/staging/get_job_owner_columns.sql",
+    "macros/staging/get_job_post_columns.sql",
+    "macros/staging/get_job_post_location_columns.sql",
+    "macros/staging/get_note_columns.sql",
+    "macros/staging/get_office_columns.sql",
+    "macros/staging/get_opening_columns.sql",
+    "macros/staging/get_prospect_detail_columns.sql",
+    "macros/staging/get_prospect_pool_columns.sql",
+    "macros/staging/get_prospect_pool_stage_columns.sql",
+    "macros/staging/get_referrer_columns.sql",
+    "macros/staging/get_rejection_detail_columns.sql",
+    "macros/staging/get_rejection_reason_columns.sql",
+    "macros/staging/get_scorecard_candidate_attribute_columns.sql",
+    "macros/staging/get_scorecard_columns.sql",
+    "macros/staging/get_scorecard_question_answer_columns.sql",
+    "macros/staging/get_scorecard_question_columns.sql",
+    "macros/staging/get_source_columns.sql",
+    "macros/staging/get_user_email_columns.sql",
+    "macros/staging/get_users_columns.sql",
+    "models/greenhouse.yml",
+    "models/greenhouse__application_history.sql",
+    "models/greenhouse__interview_enhanced.sql",
+    "models/greenhouse__interview_scorecard_detail.sql",
+    "models/intermediate/application/int_application.yml",
+    "models/intermediate/application/int_greenhouse__application_info.sql",
+    "models/intermediate/application/int_greenhouse__application_users.sql",
+    "models/intermediate/interview/int_greenhouse__interview_scorecard.sql",
+    "models/staging/src_greenhouse.yml",
+    "models/staging/stg_greenhouse.yml",
+    "models/staging/stg_greenhouse__application_stage.sql",
+    "models/staging/stg_greenhouse__interview.sql",
+    "models/staging/stg_greenhouse__interview_kit.sql",
+    "models/staging/stg_greenhouse__job_candidate_attribute.sql",
+    "models/staging/stg_greenhouse__job_interview.sql",
+    "models/staging/stg_greenhouse__note.sql",
+    "models/staging/stg_greenhouse__prospect_detail.sql",
+    "models/staging/stg_greenhouse__referrer.sql",
+    "models/staging/stg_greenhouse__rejection_detail.sql",
+    "models/staging/stg_greenhouse__rejection_reason.sql",
+    "models/staging/stg_greenhouse__scorecard_question.sql",
+    "models/staging/stg_greenhouse__scorecard_question_answer.sql",
+    "models/staging/tmp/stg_greenhouse__application_stage_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__interview_kit_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__job_candidate_attribute_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__job_interview_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__note_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__prospect_detail_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__referrer_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__rejection_detail_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__rejection_reason_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__scorecard_question_answer_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__scorecard_question_tmp.sql"
+   ],
+   "code_files": [
+    ".changes/1.6.0-a1.yml",
+    ".changes/1.6.0-a2.yml",
+    ".changes/1.6.0-a3.yml",
+    ".changes/1.6.0.yml",
+    "macros/staging/get_application_columns.sql",
+    "macros/staging/get_application_history_columns.sql",
+    "macros/staging/get_application_stage_columns.sql",
+    "macros/staging/get_attachment_columns.sql",
+    "macros/staging/get_candidate_columns.sql",
+    "macros/staging/get_candidate_phone_number_columns.sql",
+    "macros/staging/get_candidate_social_media_address_columns.sql",
+    "macros/staging/get_candidate_tag_link_columns.sql",
+    "macros/staging/get_department_columns.sql",
+    "macros/staging/get_eeoc_columns.sql",
+    "macros/staging/get_email_address_columns.sql",
+    "macros/staging/get_interview_columns.sql",
+    "macros/staging/get_interview_kit_columns.sql",
+    "macros/staging/get_interviewer_columns.sql",
+    "macros/staging/get_job_candidate_attribute_columns.sql",
+    "macros/staging/get_job_columns.sql",
+    "macros/staging/get_job_hiring_manager_columns.sql",
+    "macros/staging/get_job_interview_columns.sql",
+    "macros/staging/get_job_interview_stage_columns.sql",
+    "macros/staging/get_job_office_columns.sql",
+    "macros/staging/get_job_owner_columns.sql",
+    "macros/staging/get_job_post_columns.sql",
+    "macros/staging/get_job_post_location_columns.sql",
+    "macros/staging/get_note_columns.sql",
+    "macros/staging/get_office_columns.sql",
+    "macros/staging/get_opening_columns.sql",
+    "macros/staging/get_prospect_detail_columns.sql",
+    "macros/staging/get_prospect_pool_columns.sql",
+    "macros/staging/get_prospect_pool_stage_columns.sql",
+    "macros/staging/get_referrer_columns.sql",
+    "macros/staging/get_rejection_detail_columns.sql",
+    "macros/staging/get_rejection_reason_columns.sql",
+    "macros/staging/get_scorecard_candidate_attribute_columns.sql",
+    "macros/staging/get_scorecard_columns.sql",
+    "macros/staging/get_scorecard_question_answer_columns.sql",
+    "macros/staging/get_scorecard_question_columns.sql",
+    "macros/staging/get_source_columns.sql",
+    "macros/staging/get_user_email_columns.sql",
+    "macros/staging/get_users_columns.sql",
+    "models/greenhouse.yml",
+    "models/greenhouse__application_history.sql",
+    "models/greenhouse__interview_enhanced.sql",
+    "models/greenhouse__interview_scorecard_detail.sql",
+    "models/intermediate/application/int_application.yml",
+    "models/intermediate/application/int_greenhouse__application_info.sql",
+    "models/intermediate/application/int_greenhouse__application_users.sql",
+    "models/intermediate/interview/int_greenhouse__interview_scorecard.sql",
+    "models/staging/src_greenhouse.yml",
+    "models/staging/stg_greenhouse.yml",
+    "models/staging/stg_greenhouse__application_stage.sql",
+    "models/staging/stg_greenhouse__interview.sql",
+    "models/staging/stg_greenhouse__interview_kit.sql",
+    "models/staging/stg_greenhouse__job_candidate_attribute.sql",
+    "models/staging/stg_greenhouse__job_interview.sql",
+    "models/staging/stg_greenhouse__note.sql",
+    "models/staging/stg_greenhouse__prospect_detail.sql",
+    "models/staging/stg_greenhouse__referrer.sql",
+    "models/staging/stg_greenhouse__rejection_detail.sql",
+    "models/staging/stg_greenhouse__rejection_reason.sql",
+    "models/staging/stg_greenhouse__scorecard_question.sql",
+    "models/staging/stg_greenhouse__scorecard_question_answer.sql",
+    "models/staging/tmp/stg_greenhouse__application_stage_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__interview_kit_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__job_candidate_attribute_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__job_interview_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__note_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__prospect_detail_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__referrer_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__rejection_detail_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__rejection_reason_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__scorecard_question_answer_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__scorecard_question_tmp.sql"
+   ],
+   "fix_lines": [
+    "| `greenhouse__interview_enhanced`<br>`greenhouse__interview_scorecard_detail`<br>(Breaking) | Key change | `interview_scorecard_key` hashed on `scheduled_interview_id`, `interviewer_user_id`, and `source_relation` | Hashed on `scheduled_interview_id`, `interviewer_user_id`, `scorecard_id`, and `source_relation` | `scorecard_id` was added to the key so the ad-hoc scorecards restored by the Bug Fix below get a unique key instead of colliding with an existing one. If you reference `interview_scorecard_key` directly, recompute any stored values after upgrading. |",
+    "| `greenhouse__interview_scorecard_detail` | Columns added |  | `attribute_name`, `sort_order` | Resolves the previously-opaque `job_candidate_attribute_id` FK with a readable attribute name and display order. |",
+    "- Fixes `job_stage` and `interview_name` returning `null` for most interviews in `greenhouse__interview_enhanced` and `greenhouse__interview_scorecard_detail`, by correctly resolving a scheduled interview's stage through the new `JOB_INTERVIEW` table.",
+    "- Fixes `scorecard_id`, `candidate_rating`, `scorecard_submitted_at`, and `interviewer_name` returning `null` for ad-hoc scorecards in `greenhouse__interview_scorecard_detail` \u2014 these scorecards exist on `SCORECARD` but have no matching row on the `INTERVIEWER` bridge table, so they previously dropped out of the join entirely. They now surface as additional rows keyed on `application_id`, with no interview association guessed at.",
+    "- Fixes duplicate rows in `greenhouse__application_enhanced`, `greenhouse__application_history`, and `greenhouse__job_enhanced` for applications with more than one `EEOC` submission (e.g. a candidate updates their self-identification responses). `int_greenhouse__application_info` now keeps only the most recent `EEOC` record per application instead of joining to all of them."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_greenhouse",
+   "kind": "bug_fix",
+   "versions": [
+    "1.6.0-a2"
+   ],
+   "pr": 50,
+   "title": "[Bug] V3 office and application stage fixes",
+   "merged_at": null,
+   "fix_sha": null,
+   "parent_sha": null,
+   "files": [
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/application.csv",
+    "integration_tests/seeds/application_stage.csv",
+    "integration_tests/seeds/application_stage_snowflake.csv",
+    "integration_tests/seeds/job_office.csv",
+    "integration_tests/seeds/office.csv",
+    "integration_tests/seeds/referrer.csv",
+    "macros/staging/get_application_stage_columns.sql",
+    "macros/staging/get_office_columns.sql",
+    "macros/staging/get_referrer_columns.sql",
+    "models/greenhouse.yml",
+    "models/greenhouse__application_history.sql",
+    "models/intermediate/application/int_greenhouse__application_users.sql",
+    "models/staging/src_greenhouse.yml",
+    "models/staging/stg_greenhouse.yml",
+    "models/staging/stg_greenhouse__application_stage.sql",
+    "models/staging/stg_greenhouse__office.sql",
+    "models/staging/stg_greenhouse__referrer.sql",
+    "models/staging/tmp/stg_greenhouse__application_stage_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__referrer_tmp.sql"
+   ],
+   "code_files": [
+    "macros/staging/get_application_stage_columns.sql",
+    "macros/staging/get_office_columns.sql",
+    "macros/staging/get_referrer_columns.sql",
+    "models/greenhouse.yml",
+    "models/greenhouse__application_history.sql",
+    "models/intermediate/application/int_greenhouse__application_users.sql",
+    "models/staging/src_greenhouse.yml",
+    "models/staging/stg_greenhouse.yml",
+    "models/staging/stg_greenhouse__application_stage.sql",
+    "models/staging/stg_greenhouse__office.sql",
+    "models/staging/stg_greenhouse__referrer.sql",
+    "models/staging/tmp/stg_greenhouse__application_stage_tmp.sql",
+    "models/staging/tmp/stg_greenhouse__referrer_tmp.sql"
+   ],
+   "fix_lines": [
+    "| `greenhouse__job_enhanced`<br>`stg_greenhouse__office`<br>(Breaking) | Bug fix | `location`, `primary_in_house_contact_user_id` | `location_name`, `primary_contact_user_id` | Restores `office_locations` data after making sure the proper V3 source names were referenced. |"
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_greenhouse",
+   "kind": "bug_fix",
+   "versions": [
+    "1.6.0-a1"
+   ],
+   "pr": 48,
+   "title": "Prerelease/harvest updates",
+   "merged_at": null,
+   "fix_sha": null,
+   "parent_sha": null,
+   "files": [
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/application.csv",
+    "integration_tests/seeds/referrer.csv",
+    "macros/staging/get_referrer_columns.sql",
+    "models/intermediate/application/int_greenhouse__application_users.sql",
+    "models/staging/src_greenhouse.yml",
+    "models/staging/stg_greenhouse.yml",
+    "models/staging/stg_greenhouse__referrer.sql",
+    "models/staging/tmp/stg_greenhouse__referrer_tmp.sql"
+   ],
+   "code_files": [
+    "macros/staging/get_referrer_columns.sql",
+    "models/intermediate/application/int_greenhouse__application_users.sql",
+    "models/staging/src_greenhouse.yml",
+    "models/staging/stg_greenhouse.yml",
+    "models/staging/stg_greenhouse__referrer.sql",
+    "models/staging/tmp/stg_greenhouse__referrer_tmp.sql"
+   ],
+   "fix_lines": [
+    "- Fixes `referrer_name` (and the downstream credited-user value) on `greenhouse__application_enhanced`, which was incorrect whenever `application.referrer_id` did not coincidentally match a valid `user_id`. `referrer_id` now joins through the new `stg_greenhouse__referrer` staging model (`referrer.id` \u2192 `referrer.user_id`) before resolving the user, matching the v3 API's `REFERRER` object rather than joining straight to `USER`."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_greenhouse",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.4.1"
+   ],
+   "pr": 47,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:24:14Z",
+   "fix_sha": "d3109e97ac653c4e03db66a8ed0b8babd5bfbce8",
+   "parent_sha": "96b2814be124d3ed037c446f84b6d9c7426de207",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/staging/stg_greenhouse__scheduled_interview.sql"
+   ],
+   "code_files": [
+    "models/staging/stg_greenhouse__scheduled_interview.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_hubspot",
+   "kind": "bug_fix",
+   "versions": [
+    "1.10.1"
+   ],
+   "pr": 220,
+   "title": "fix(staging): apply the default casts when hubspot__pass_through_all_columns is on",
+   "merged_at": "2026-10-17T02:13:56Z",
+   "fix_sha": "a39a8fdcf9a3ab861a74465bf8c62fc162d977ca",
+   "parent_sha": "5ce2581f8581075055217c024761908c26620ea8",
+   "files": [
+    "macros/staging/fill_staging_columns_with_casts.sql",
+    "models/staging/stg_hubspot__company.sql",
+    "models/staging/stg_hubspot__company_list.sql",
+    "models/staging/stg_hubspot__contact.sql",
+    "models/staging/stg_hubspot__contact_list.sql",
+    "models/staging/stg_hubspot__deal.sql",
+    "models/staging/stg_hubspot__ticket.sql"
+   ],
+   "code_files": [
+    "macros/staging/fill_staging_columns_with_casts.sql",
+    "models/staging/stg_hubspot__company.sql",
+    "models/staging/stg_hubspot__company_list.sql",
+    "models/staging/stg_hubspot__contact.sql",
+    "models/staging/stg_hubspot__contact_list.sql",
+    "models/staging/stg_hubspot__deal.sql",
+    "models/staging/stg_hubspot__ticket.sql"
+   ],
+   "fix_lines": [
+    "- [@acrahen](https://github.com/acrahen) ([PR #220](https://github.com/fivetran/dbt_hubspot/pull/220)) \u2014 Fixed the inconsistent column data types when `hubspot__pass_through_all_columns` is `true`."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_hubspot",
+   "kind": "bug_fix",
+   "versions": [
+    "1.10.1"
+   ],
+   "pr": 221,
+   "title": "fix(history): stop documenting _fivetran_synced on the three history models",
+   "merged_at": "2026-10-17T02:02:32Z",
+   "fix_sha": "5ce2581f8581075055217c024761908c26620ea8",
+   "parent_sha": "bf6831099e35148594fca717a1145319b8ee7f08",
+   "files": [
+    "models/marketing/history/history.yml",
+    "models/sales/history/history.yml"
+   ],
+   "code_files": [
+    "models/marketing/history/history.yml",
+    "models/sales/history/history.yml"
+   ],
+   "fix_lines": [
+    "- [@acrahen](https://github.com/acrahen) ([PR #220](https://github.com/fivetran/dbt_hubspot/pull/220)) \u2014 Fixed the inconsistent column data types when `hubspot__pass_through_all_columns` is `true`."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_hubspot",
+   "kind": "bug_fix",
+   "versions": [
+    "1.10.1"
+   ],
+   "pr": 224,
+   "title": "Release v1.10.1",
+   "merged_at": "2026-10-23T22:47:05Z",
+   "fix_sha": "a5200357e9c9d049267347fbd705f3bb4e2b42cf",
+   "parent_sha": "0e3fea29a53594953c6e13ff1fd3705c04d1e6af",
+   "files": [
+    ".changes/1.10.1.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "integration_tests/seeds/company_data.csv",
+    "macros/staging/fill_staging_columns_with_casts.sql",
+    "models/marketing/history/history.yml",
+    "models/sales/history/history.yml",
+    "models/staging/stg_hubspot__company.sql",
+    "models/staging/stg_hubspot__company_list.sql",
+    "models/staging/stg_hubspot__contact.sql",
+    "models/staging/stg_hubspot__contact_list.sql",
+    "models/staging/stg_hubspot__deal.sql",
+    "models/staging/stg_hubspot__ticket.sql"
+   ],
+   "code_files": [
+    ".changes/1.10.1.yml",
+    "macros/staging/fill_staging_columns_with_casts.sql",
+    "models/marketing/history/history.yml",
+    "models/sales/history/history.yml",
+    "models/staging/stg_hubspot__company.sql",
+    "models/staging/stg_hubspot__company_list.sql",
+    "models/staging/stg_hubspot__contact.sql",
+    "models/staging/stg_hubspot__contact_list.sql",
+    "models/staging/stg_hubspot__deal.sql",
+    "models/staging/stg_hubspot__ticket.sql"
+   ],
+   "fix_lines": [
+    "- [@acrahen](https://github.com/acrahen) ([PR #220](https://github.com/fivetran/dbt_hubspot/pull/220)) \u2014 Fixed the inconsistent column data types when `hubspot__pass_through_all_columns` is `true`."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_hubspot",
+   "kind": "bug_fix",
+   "versions": [
+    "1.10.0"
+   ],
+   "pr": 213,
+   "title": "[issue/212] Resolves bug resulting in inaccurate primary team assignments",
+   "merged_at": "2026-09-17T17:59:47Z",
+   "fix_sha": "38f294ef9f514aa0d37e540ebf4891810f2fe2a5",
+   "parent_sha": "439facd0cddafc1835ca7fe960e83c3a66e8f3f4",
+   "files": [
+    "models/intermediate/int_hubspot__owners_enhanced.sql"
+   ],
+   "code_files": [
+    "models/intermediate/int_hubspot__owners_enhanced.sql"
+   ],
+   "fix_lines": [
+    "| `hubspot__deals`, `hubspot__tickets`, `hubspot__conversations` | Bug Fix | `owner_primary_team_id`, `owner_primary_team_name`, `owner_all_team_ids`, and `owner_all_team_names` in `hubspot__deals` and `hubspot__tickets`; and `ticket_owner_primary_team_id`/`ticket_owner_primary_team_name` in `hubspot__conversations` could reflect a team an owner was removed from | These fields now only reflect the owner's active, non-deleted team memberships | Only changes output for accounts where an owner has since been removed from a HubSpot team |"
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_hubspot",
+   "kind": "bug_fix",
+   "versions": [
+    "1.10.0"
+   ],
+   "pr": 214,
+   "title": "customer pr: add is_deleted filter",
+   "merged_at": "2026-09-24T21:25:09Z",
+   "fix_sha": "0e3fea29a53594953c6e13ff1fd3705c04d1e6af",
+   "parent_sha": "8c09171614041caea1e3617ce3e52af1ce8b86d6",
+   "files": [
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/owner_team_data.csv",
+    "models/intermediate/int_hubspot__owners_enhanced.sql",
+    "models/service/hubspot__conversations.sql",
+    "models/staging/stg_hubspot__conversation_thread.sql"
+   ],
+   "code_files": [
+    "models/intermediate/int_hubspot__owners_enhanced.sql",
+    "models/service/hubspot__conversations.sql",
+    "models/staging/stg_hubspot__conversation_thread.sql"
+   ],
+   "fix_lines": [
+    "| `hubspot__deals`, `hubspot__tickets`, `hubspot__conversations` | Bug Fix | `owner_primary_team_id`, `owner_primary_team_name`, `owner_all_team_ids`, and `owner_all_team_names` in `hubspot__deals` and `hubspot__tickets`; and `ticket_owner_primary_team_id`/`ticket_owner_primary_team_name` in `hubspot__conversations` could reflect a team an owner was removed from | These fields now only reflect the owner's active, non-deleted team memberships | Only changes output for accounts where an owner has since been removed from a HubSpot team |"
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_hubspot",
+   "kind": "bug_fix",
+   "versions": [
+    "1.9.3"
+   ],
+   "pr": 215,
+   "title": "Data type fixes - conversation and marketing_event",
+   "merged_at": "2026-09-22T20:36:07Z",
+   "fix_sha": "8c09171614041caea1e3617ce3e52af1ce8b86d6",
+   "parent_sha": "439facd0cddafc1835ca7fe960e83c3a66e8f3f4",
+   "files": [
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/conversation_thread_data.csv",
+    "models/marketing/hubspot__marketing_event_performance.sql",
+    "models/staging/stg_hubspot__conversation_thread.sql"
+   ],
+   "code_files": [
+    "models/marketing/hubspot__marketing_event_performance.sql",
+    "models/staging/stg_hubspot__conversation_thread.sql"
+   ],
+   "fix_lines": [
+    "- Fixes a type mismatch error in `hubspot__marketing_event_performance` by casting relevant join keys as strings.",
+    "- Fixes an integer overflow error in `stg_hubspot__conversation_thread` by casting `associated_contact_id` and `associated_ticket_id` as `bigint` instead of `int`."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_hubspot",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.9.2"
+   ],
+   "pr": 211,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:25:45Z",
+   "fix_sha": "439facd0cddafc1835ca7fe960e83c3a66e8f3f4",
+   "parent_sha": "ce9993d550abff4d927c6799cdac52ddf6d8de9e",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "macros/merge_contacts.sql",
+    "models/marketing/history/hubspot__daily_contact_history.sql",
+    "models/marketing/intermediate/int_hubspot__contact_calendar_spine.sql",
+    "models/marketing/intermediate/int_hubspot__daily_contact_history.sql",
+    "models/marketing/intermediate/int_hubspot__pivot_daily_contact_history.sql",
+    "models/sales/history/hubspot__daily_company_history.sql",
+    "models/sales/history/hubspot__daily_deal_history.sql",
+    "models/sales/intermediate/int_hubspot__company_calendar_spine.sql",
+    "models/sales/intermediate/int_hubspot__daily_company_history.sql",
+    "models/sales/intermediate/int_hubspot__daily_deal_history.sql",
+    "models/sales/intermediate/int_hubspot__deal_calendar_spine.sql",
+    "models/sales/intermediate/int_hubspot__pivot_daily_company_history.sql",
+    "models/sales/intermediate/int_hubspot__pivot_daily_deal_history.sql",
+    "models/service/hubspot__daily_ticket_history.sql",
+    "models/service/intermediate/int_hubspot__daily_ticket_history.sql",
+    "models/service/intermediate/int_hubspot__pivot_daily_ticket_history.sql",
+    "models/service/intermediate/int_hubspot__ticket_calendar_spine.sql",
+    "models/staging/stg_hubspot__submission_response.sql"
+   ],
+   "code_files": [
+    "macros/merge_contacts.sql",
+    "models/marketing/history/hubspot__daily_contact_history.sql",
+    "models/marketing/intermediate/int_hubspot__contact_calendar_spine.sql",
+    "models/marketing/intermediate/int_hubspot__daily_contact_history.sql",
+    "models/marketing/intermediate/int_hubspot__pivot_daily_contact_history.sql",
+    "models/sales/history/hubspot__daily_company_history.sql",
+    "models/sales/history/hubspot__daily_deal_history.sql",
+    "models/sales/intermediate/int_hubspot__company_calendar_spine.sql",
+    "models/sales/intermediate/int_hubspot__daily_company_history.sql",
+    "models/sales/intermediate/int_hubspot__daily_deal_history.sql",
+    "models/sales/intermediate/int_hubspot__deal_calendar_spine.sql",
+    "models/sales/intermediate/int_hubspot__pivot_daily_company_history.sql",
+    "models/sales/intermediate/int_hubspot__pivot_daily_deal_history.sql",
+    "models/service/hubspot__daily_ticket_history.sql",
+    "models/service/intermediate/int_hubspot__daily_ticket_history.sql",
+    "models/service/intermediate/int_hubspot__pivot_daily_ticket_history.sql",
+    "models/service/intermediate/int_hubspot__ticket_calendar_spine.sql",
+    "models/staging/stg_hubspot__submission_response.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_instagram_business",
+   "kind": "bug_fix",
+   "versions": [
+    "1.3.0"
+   ],
+   "pr": 35,
+   "title": "FY2027 updates",
+   "merged_at": "2026-11-20T16:18:06Z",
+   "fix_sha": "1ee8e62ce77f42554f70645bb9546dfbd5d20ce2",
+   "parent_sha": "c21d3f2fbc6173e5495e10ba5b5aef195868392d",
+   "files": [
+    ".changes/1.3.0.yml",
+    ".github/CODEOWNERS",
+    ".github/ISSUE_TEMPLATE/bug-report.yml",
+    ".github/ISSUE_TEMPLATE/feature-request.yml",
+    ".github/workflows/stale.yml",
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "models/instagram_business.yml",
+    "models/staging/stg_instagram_business.yml"
+   ],
+   "code_files": [
+    ".changes/1.3.0.yml",
+    "models/instagram_business.yml",
+    "models/staging/stg_instagram_business.yml"
+   ],
+   "fix_lines": [
+    "- Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_instagram_business/issues/new/choose)."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_instagram_business",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.2.1"
+   ],
+   "pr": 33,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:26:13Z",
+   "fix_sha": "f7ca73ddf93b68523830c26e03e50290d18f2531",
+   "parent_sha": "9840a21aceda4077ed0a55f9fee4acf6e1129fb5",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_intercom",
+   "kind": "bug_fix",
+   "versions": [
+    "1.8.1"
+   ],
+   "pr": 91,
+   "title": "[Bug Fix] Assignee id data type",
+   "merged_at": "2026-11-03T23:32:58Z",
+   "fix_sha": "e8fd82324c33e0a3ea343a4ca27564fbe4052531",
+   "parent_sha": "1a8ca30fd051a21c102e37c597d4b66635952aa9",
+   "files": [
+    ".changes/1.8.1.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "macros/staging/get_conversation_history_columns.sql",
+    "models/staging/stg_intercom__conversation_history.sql"
+   ],
+   "code_files": [
+    ".changes/1.8.1.yml",
+    "macros/staging/get_conversation_history_columns.sql",
+    "models/staging/stg_intercom__conversation_history.sql"
+   ],
+   "fix_lines": [
+    "- Fixes a runtime error in `stg_intercom__conversation_history` when `assignee_id` arrives from the source as a string. The conversion of `0` to null added in v1.8.0 now compares the value as text and keeps the column's original type."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_intercom",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.7.1"
+   ],
+   "pr": 87,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:26:55Z",
+   "fix_sha": "a64952bf560f801597f3e5c22a6660ef9bb416d2",
+   "parent_sha": "067394cd42e7f9cdc52e6708dc91b6f820ba6074",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/intercom__company_metrics.sql"
+   ],
+   "code_files": [
+    "models/intercom__company_metrics.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_iterable",
+   "kind": "bug_fix",
+   "versions": [
+    "1.6.1"
+   ],
+   "pr": 86,
+   "title": "Fix memory-heavy list aggregation in iterable__users",
+   "merged_at": "2026-10-20T18:33:31Z",
+   "fix_sha": "33a59b7eae7a02d75dd357f920e36c6dbea5786d",
+   "parent_sha": "1cc764aba92d54e8e091a04d84b2b34886ac4759",
+   "files": [
+    "integration_tests/tests/integrity/users_email_list_ids_ordered.sql",
+    "models/iterable__users.sql"
+   ],
+   "code_files": [
+    "integration_tests/tests/integrity/users_email_list_ids_ordered.sql",
+    "models/iterable__users.sql"
+   ],
+   "fix_lines": [
+    "- Fixes `iterable__users` failing on BigQuery with large list data by removing a full-table sort that exceeded BigQuery's memory limit. ([#85](https://github.com/fivetran/dbt_iterable/issues/85))"
+   ],
+   "other_warehouse_only": true
+  },
+  {
+   "repo": "dbt_iterable",
+   "kind": "bug_fix",
+   "versions": [
+    "1.6.1"
+   ],
+   "pr": 87,
+   "title": "Release/1.6.1",
+   "merged_at": "2026-10-21T20:54:19Z",
+   "fix_sha": "8967b305c048aca7e4ae12d0f625c9a6653cfa70",
+   "parent_sha": "1cc764aba92d54e8e091a04d84b2b34886ac4759",
+   "files": [
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/list_user_data.csv",
+    "integration_tests/seeds/user_history_data.csv",
+    "models/iterable__users.sql"
+   ],
+   "code_files": [
+    "models/iterable__users.sql"
+   ],
+   "fix_lines": [
+    "- Fixes `iterable__users` failing on BigQuery with large list data by removing a full-table sort that exceeded BigQuery's memory limit. ([#85](https://github.com/fivetran/dbt_iterable/issues/85))"
+   ],
+   "other_warehouse_only": true
+  },
+  {
+   "repo": "dbt_iterable",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.5.1"
+   ],
+   "pr": 83,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:27:23Z",
+   "fix_sha": "ad835b838cbddf1836eee0b425a821829ea14663",
+   "parent_sha": "0b65c481a984f8f0e63829366dae317bae955e63",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/intermediate/int_iterable__list_user_unnest.sql",
+    "models/iterable__events.sql"
+   ],
+   "code_files": [
+    "models/intermediate/int_iterable__list_user_unnest.sql",
+    "models/iterable__events.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_jira",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.10.2"
+   ],
+   "pr": 195,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:29:07Z",
+   "fix_sha": "0ed5dcf2e96b5ca138699825dcb605f61802406a",
+   "parent_sha": "6b7d33392a306ae41a54b9a111c5d9f14a83dcb5",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "macros/split_sprint_ids.sql",
+    "models/intermediate/field_history/int_jira__pivot_daily_field_history.sql",
+    "models/jira__daily_issue_field_history.sql",
+    "models/jira__daily_sprint_issue_history.sql"
+   ],
+   "code_files": [
+    "macros/split_sprint_ids.sql",
+    "models/intermediate/field_history/int_jira__pivot_daily_field_history.sql",
+    "models/jira__daily_issue_field_history.sql",
+    "models/jira__daily_sprint_issue_history.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_klaviyo",
+   "kind": "bug_fix",
+   "versions": [
+    "1.5.0"
+   ],
+   "pr": 65,
+   "title": "Fix Redshift/Postgres revenue metrics showing $0, and decimal rounding on other adapters, due to integer-only try_cast regex (GA-1035294)",
+   "merged_at": "2026-09-11T14:29:25Z",
+   "fix_sha": "cf75982eee7a7b71d264c7115454f3d34a2bbf23",
+   "parent_sha": "15d17fa8a15024aa0bf453e57b46732dadc98748",
+   "files": [
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/event.csv",
+    "integration_tests/seeds/event_norename.csv",
+    "macros/safe_numeric_cast.sql",
+    "models/klaviyo__person_campaign_flow.sql"
+   ],
+   "code_files": [
+    "macros/safe_numeric_cast.sql",
+    "models/klaviyo__person_campaign_flow.sql"
+   ],
+   "fix_lines": [
+    "| `klaviyo__person_campaign_flow`, `klaviyo__campaigns`, `klaviyo__flows` | Fixed value | `sum_revenue_*` columns return `0` for decimal revenue values on Redshift/Postgres, or round them to whole numbers on Snowflake/Databricks | `sum_revenue_*` columns return the correct decimal amount on all supported destinations | Re-run (`dbt run`) required to refresh existing data with correct revenue totals |"
+   ],
+   "other_warehouse_only": true
+  },
+  {
+   "repo": "dbt_klaviyo",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.4.1"
+   ],
+   "pr": 64,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:29:32Z",
+   "fix_sha": "15d17fa8a15024aa0bf453e57b46732dadc98748",
+   "parent_sha": "9b5a32ecefb393dfb6ce84abc16de6ae3d65eb47",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_lever",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.1"
+   ],
+   "pr": 38,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:30:03Z",
+   "fix_sha": "bd73fbfd6f00ce1ad4e2c96036e174d0c43b6b57",
+   "parent_sha": "60e3d364fe7065fdc52f705220da771d54ad8da3",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_linkedin",
+   "kind": "bug_fix",
+   "versions": [
+    "1.3.2"
+   ],
+   "pr": 67,
+   "title": "Join geo on its own source_relation in the country and region reports",
+   "merged_at": "2026-10-19T20:10:37Z",
+   "fix_sha": "d67e86d30f8f9c77449b322bb3ac3cc69b5e85a8",
+   "parent_sha": "e23583bfadbc40d0ebb7329f776474fa72886975",
+   "files": [
+    "models/linkedin_ads__monthly_campaign_country_report.sql",
+    "models/linkedin_ads__monthly_campaign_region_report.sql"
+   ],
+   "code_files": [
+    "models/linkedin_ads__monthly_campaign_country_report.sql",
+    "models/linkedin_ads__monthly_campaign_region_report.sql"
+   ],
+   "fix_lines": [
+    "- Fixes inflated `cost`, `clicks`, `impressions`, and conversion metrics in the `linkedin_ads__monthly_campaign_country_report` and `linkedin_ads__monthly_campaign_region_report` models when you union multiple LinkedIn Ads connections. Each metric was multiplied by the number of connections."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_linkedin",
+   "kind": "bug_fix",
+   "versions": [
+    "1.3.2"
+   ],
+   "pr": 68,
+   "title": "Join geo on its own source_relation in the country and region reports\u2026",
+   "merged_at": "2026-10-19T22:09:35Z",
+   "fix_sha": "f0d76e270333de36540a3358919115d19b38b567",
+   "parent_sha": "e23583bfadbc40d0ebb7329f776474fa72886975",
+   "files": [
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/linkedin_monthly_ad_analytics_by_member_country_data.csv",
+    "models/linkedin_ads__monthly_campaign_country_report.sql",
+    "models/linkedin_ads__monthly_campaign_region_report.sql"
+   ],
+   "code_files": [
+    "models/linkedin_ads__monthly_campaign_country_report.sql",
+    "models/linkedin_ads__monthly_campaign_region_report.sql"
+   ],
+   "fix_lines": [
+    "- Fixes inflated `cost`, `clicks`, `impressions`, and conversion metrics in the `linkedin_ads__monthly_campaign_country_report` and `linkedin_ads__monthly_campaign_region_report` models when you union multiple LinkedIn Ads connections. Each metric was multiplied by the number of connections."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_linkedin",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.1"
+   ],
+   "pr": 65,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:30:59Z",
+   "fix_sha": "e23583bfadbc40d0ebb7329f776474fa72886975",
+   "parent_sha": "32ae9638e669435dd56efb9e564a73880d7b2a47",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "macros/staging/date_from_month_string.sql"
+   ],
+   "code_files": [
+    "macros/staging/date_from_month_string.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_linkedin_pages",
+   "kind": "bug_fix",
+   "versions": [
+    "1.6.0"
+   ],
+   "pr": 36,
+   "title": "FY2027 updates",
+   "merged_at": "2026-11-20T18:08:34Z",
+   "fix_sha": "65ae1ee3248ed0c37a7a1eea77772cc9b798addf",
+   "parent_sha": "8f8d4f6d5f0e3a20433c522863210bda2cee9ffa",
+   "files": [
+    ".changes/1.6.0.yml",
+    ".github/CODEOWNERS",
+    ".github/ISSUE_TEMPLATE/bug-report.yml",
+    ".github/ISSUE_TEMPLATE/feature-request.yml",
+    ".github/workflows/stale.yml",
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "models/linkedin_pages.yml",
+    "models/staging/stg_linkedin_pages.yml"
+   ],
+   "code_files": [
+    ".changes/1.6.0.yml",
+    "models/linkedin_pages.yml",
+    "models/staging/stg_linkedin_pages.yml"
+   ],
+   "fix_lines": [
+    "- Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_linkedin_pages/issues/new/choose)."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_linkedin_pages",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.5.1"
+   ],
+   "pr": 34,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:31:30Z",
+   "fix_sha": "0a5228f382e047b0aa12b9be9e41f6efeec37688",
+   "parent_sha": "c17e8d2e52b8ae56f141d0a8a98ecf46146e3c7b",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_mailchimp",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.2"
+   ],
+   "pr": 66,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:34:38Z",
+   "fix_sha": "c76ee2c0354ce4eb8bdcff3f16f76723306f00a8",
+   "parent_sha": "c3b690e3a1fe23ab0c6c11a7bfb7f650117dadc8",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_marketo",
+   "kind": "bug_fix",
+   "versions": [
+    "1.4.3"
+   ],
+   "pr": 68,
+   "title": "Fix dbt compile on a new schema",
+   "merged_at": "2026-11-12T19:41:15Z",
+   "fix_sha": "3a57caead3a0d1b51e1d3735f81b5c0c37d4705d",
+   "parent_sha": "9f51e90c8c3bd49976e1407b8af82bf3d0cdd90d",
+   "files": [
+    ".changes/1.4.3.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "models/intermediate/marketo__change_data_details.sql",
+    "models/intermediate/marketo__change_data_pivot.sql"
+   ],
+   "code_files": [
+    ".changes/1.4.3.yml",
+    "models/intermediate/marketo__change_data_details.sql",
+    "models/intermediate/marketo__change_data_pivot.sql"
+   ],
+   "fix_lines": [
+    "- The `marketo__change_data_details` and `marketo__change_data_pivot` models no longer fail `dbt compile` on a new schema. They now query `stg_marketo__lead_describe` only during `dbt run` or `dbt build`, and use an empty column list otherwise."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_marketo",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.4.1"
+   ],
+   "pr": 59,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:36:26Z",
+   "fix_sha": "4473d382e34feb23bb37808a2366c965fb07131d",
+   "parent_sha": "d1c5853aa73195457713988d6d0b285bb6977b34",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/intermediate/marketo__change_data_details.sql",
+    "models/intermediate/marketo__change_data_pivot.sql",
+    "models/intermediate/marketo__change_data_scd.sql",
+    "models/intermediate/marketo__lead_calendar_spine.sql",
+    "models/marketo__lead_history.sql",
+    "models/utils/marketo__calendar_spine.sql"
+   ],
+   "code_files": [
+    "models/intermediate/marketo__change_data_details.sql",
+    "models/intermediate/marketo__change_data_pivot.sql",
+    "models/intermediate/marketo__change_data_scd.sql",
+    "models/intermediate/marketo__lead_calendar_spine.sql",
+    "models/marketo__lead_history.sql",
+    "models/utils/marketo__calendar_spine.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_microsoft_ads",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.1"
+   ],
+   "pr": 60,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:36:44Z",
+   "fix_sha": "f91a18299f5a4f9740214a1a51a9869d04e22be6",
+   "parent_sha": "dbb98f9a99c4e6aac0de1e87a61792c9a3de5f75",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_mixpanel",
+   "kind": "duckdb_port",
+   "versions": [
+    "0.17.1"
+   ],
+   "pr": 70,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:37:06Z",
+   "fix_sha": "3762f7a475f0354f3f0c1be94bd68a867eb8a505",
+   "parent_sha": "3db9a302a7e7598e97a0ea001805c62f1a3652fc",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/mixpanel__daily_events.sql",
+    "models/mixpanel__event.sql",
+    "models/mixpanel__monthly_events.sql",
+    "models/mixpanel__sessions.sql",
+    "models/staging/stg_mixpanel__user_event_date_spine.sql",
+    "packages.yml"
+   ],
+   "code_files": [
+    "models/mixpanel__daily_events.sql",
+    "models/mixpanel__event.sql",
+    "models/mixpanel__monthly_events.sql",
+    "models/mixpanel__sessions.sql",
+    "models/staging/stg_mixpanel__user_event_date_spine.sql",
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_netsuite",
+   "kind": "bug_fix",
+   "versions": [
+    "1.8.0"
+   ],
+   "pr": 210,
+   "title": "Release/1.8.0",
+   "merged_at": "2026-08-31T16:02:51Z",
+   "fix_sha": "84bfa8ab446434e30df5cf3a06035abf10d2c343",
+   "parent_sha": "5cd03022085ee85e57724153bf735405b8c57986",
+   "files": [
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/netsuite2_accounting_book_sub_data.csv",
+    "integration_tests/seeds/netsuite2_tran_acct_line_data.csv",
+    "macros/staging/get_accountingbooksubsidiaries_columns.sql",
+    "macros/staging/get_transactionaccountingline_columns.sql",
+    "models/docs.md",
+    "models/netsuite2/intermediate/base/int_netsuite2__transaction_lines.sql",
+    "models/netsuite2/intermediate/int_netsuite2__acctxperiod_exchange_rate_map.sql",
+    "models/netsuite2/intermediate/int_netsuite2__tran_with_converted_amounts.sql",
+    "models/netsuite2/netsuite2__transaction_details.sql",
+    "models/netsuite2/staging/src_netsuite2.yml",
+    "models/netsuite2/staging/stg_netsuite2.yml",
+    "models/netsuite2/staging/stg_netsuite2__accounting_book_subsidiaries.sql",
+    "models/netsuite2/staging/stg_netsuite2__transaction_accounting_lines.sql",
+    "models/netsuite2/staging/tmp/stg_netsuite2__accounting_book_subsidiaries_tmp.sql"
+   ],
+   "code_files": [
+    "macros/staging/get_accountingbooksubsidiaries_columns.sql",
+    "macros/staging/get_transactionaccountingline_columns.sql",
+    "models/netsuite2/intermediate/base/int_netsuite2__transaction_lines.sql",
+    "models/netsuite2/intermediate/int_netsuite2__acctxperiod_exchange_rate_map.sql",
+    "models/netsuite2/intermediate/int_netsuite2__tran_with_converted_amounts.sql",
+    "models/netsuite2/netsuite2__transaction_details.sql",
+    "models/netsuite2/staging/src_netsuite2.yml",
+    "models/netsuite2/staging/stg_netsuite2.yml",
+    "models/netsuite2/staging/stg_netsuite2__accounting_book_subsidiaries.sql",
+    "models/netsuite2/staging/stg_netsuite2__transaction_accounting_lines.sql",
+    "models/netsuite2/staging/tmp/stg_netsuite2__accounting_book_subsidiaries_tmp.sql"
+   ],
+   "fix_lines": [
+    "- Fixes null conversion amounts for top-level subsidiaries missing a self-conversion exchange rate; rate now defaults to 1. Updates `converted_amount` values in `netsuite2__transaction_details`, `netsuite2__income_statement`, and `netsuite2__balance_sheet`."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_netsuite",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.7.1"
+   ],
+   "pr": 208,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:37:37Z",
+   "fix_sha": "5cd03022085ee85e57724153bf735405b8c57986",
+   "parent_sha": "986fb90aab6ea658bf15c532a094e4f9d8ada1be",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "macros/date_from_parts.sql",
+    "models/netsuite2/netsuite2__balance_sheet.sql",
+    "models/netsuite2/netsuite2__income_statement.sql",
+    "models/netsuite2/netsuite2__transaction_details.sql",
+    "models/netsuite2/staging/stg_netsuite2__account_types.sql"
+   ],
+   "code_files": [
+    "macros/date_from_parts.sql",
+    "models/netsuite2/netsuite2__balance_sheet.sql",
+    "models/netsuite2/netsuite2__income_statement.sql",
+    "models/netsuite2/netsuite2__transaction_details.sql",
+    "models/netsuite2/staging/stg_netsuite2__account_types.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_pardot",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.4.1"
+   ],
+   "pr": 34,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:38:00Z",
+   "fix_sha": "9b72b1ef49261fd2acde2002292786c6488a82af",
+   "parent_sha": "8affaa8ba3e90e4c91b9dcbcc62b6752558089db",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_pendo",
+   "kind": "bug_fix",
+   "versions": [
+    "1.4.2"
+   ],
+   "pr": 52,
+   "title": "Fix dbt compile on a new schema",
+   "merged_at": "2026-11-12T20:25:02Z",
+   "fix_sha": "baddd4e13399a23c0315eb01e341ff47475bdd89",
+   "parent_sha": "52e80a2b274a1810fd24fd25f96459bdbdab7953",
+   "files": [
+    ".changes/1.4.2.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "models/intermediate/daily_metrics/int_pendo__calendar_spine.sql",
+    "models/intermediate/daily_metrics/int_pendo__guide_daily_metrics.sql",
+    "models/intermediate/int_pendo__guide_alltime_metrics.sql"
+   ],
+   "code_files": [
+    ".changes/1.4.2.yml",
+    "models/intermediate/daily_metrics/int_pendo__calendar_spine.sql",
+    "models/intermediate/daily_metrics/int_pendo__guide_daily_metrics.sql",
+    "models/intermediate/int_pendo__guide_alltime_metrics.sql"
+   ],
+   "fix_lines": [
+    "- `dbt compile` fails on a new schema because the `int_pendo__guide_daily_metrics`, `int_pendo__guide_alltime_metrics`, and `int_pendo__calendar_spine` models query package-built tables before they exist. These models now run those queries only during `dbt run` and `dbt build`. The calendar spine also falls back to 2016-01-01 when `stg_pendo__application_history` is empty."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_pendo",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.4.1"
+   ],
+   "pr": 46,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:38:17Z",
+   "fix_sha": "9eed1cf81e9bc65734a1562350e8bbda0d1cf9aa",
+   "parent_sha": "5fee4275e4e8ecdf75187f656b66dea7731b67c2",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/intermediate/daily_metrics/int_pendo__calendar_spine.sql"
+   ],
+   "code_files": [
+    "models/intermediate/daily_metrics/int_pendo__calendar_spine.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_pinterest",
+   "kind": "bug_fix",
+   "versions": [
+    "1.3.2"
+   ],
+   "pr": 61,
+   "title": "Populate keyword report IDs and names from the report row",
+   "merged_at": "2026-10-14T22:45:28Z",
+   "fix_sha": "10db5dddd45858bcd8e1d50891990d8f5bb1b376",
+   "parent_sha": "ae8f9473cefca3f7c0d10904894ea7e3b0dd44a6",
+   "files": [
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/pinterest_keyword_report_data.csv",
+    "models/pinterest_ads__keyword_report.sql"
+   ],
+   "code_files": [
+    "models/pinterest_ads__keyword_report.sql"
+   ],
+   "fix_lines": [
+    "- Fixes `pinterest_ads__keyword_report` returning `null` account, campaign, and ad group IDs and names for keywords missing from `keyword_history`, for example keywords deleted in Pinterest. The model now takes the IDs from the keyword report row and looks up the names from them."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_pinterest",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.1"
+   ],
+   "pr": 60,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:38:34Z",
+   "fix_sha": "ae8f9473cefca3f7c0d10904894ea7e3b0dd44a6",
+   "parent_sha": "d3cfa7b113476962499ba5500e73be8398109645",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_qualtrics",
+   "kind": "bug_fix",
+   "versions": [
+    "1.4.0"
+   ],
+   "pr": 37,
+   "title": "FY2027 updates",
+   "merged_at": "2026-11-21T08:35:03Z",
+   "fix_sha": "86a06214f496b4f23e5e586ad296332ff46d6ec8",
+   "parent_sha": "47f93587d1284d051226694f6d7fb45a27b9dac8",
+   "files": [
+    ".changes/1.4.0.yml",
+    ".github/CODEOWNERS",
+    ".github/ISSUE_TEMPLATE/bug-report.yml",
+    ".github/ISSUE_TEMPLATE/feature-request.yml",
+    ".github/workflows/stale.yml",
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "models/qualtrics.yml",
+    "models/qualtrics__daily_breakdown.sql",
+    "models/staging/stg_qualtrics.yml"
+   ],
+   "code_files": [
+    ".changes/1.4.0.yml",
+    "models/qualtrics.yml",
+    "models/qualtrics__daily_breakdown.sql",
+    "models/staging/stg_qualtrics.yml"
+   ],
+   "fix_lines": [
+    "- Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_qualtrics/issues/new/choose)."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_qualtrics",
+   "kind": "bug_fix",
+   "versions": [
+    "1.3.3"
+   ],
+   "pr": 36,
+   "title": "Fix dbt compile on a new schema",
+   "merged_at": "2026-11-12T19:31:04Z",
+   "fix_sha": "47f93587d1284d051226694f6d7fb45a27b9dac8",
+   "parent_sha": "f732e0f576838d6612fbda1442c2a4fd4daac9de",
+   "files": [
+    ".changes/1.3.3.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "models/qualtrics__daily_breakdown.sql"
+   ],
+   "code_files": [
+    ".changes/1.3.3.yml",
+    "models/qualtrics__daily_breakdown.sql"
+   ],
+   "fix_lines": [
+    "- Fixes `dbt compile` on a new schema for `qualtrics__daily_breakdown`. The model queried `stg_qualtrics__distribution_contact` at compile time, which failed when the table did not exist yet. The model now runs this query only during `dbt run` and `dbt build`."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_qualtrics",
+   "kind": "bug_fix",
+   "versions": [
+    "1.3.2"
+   ],
+   "pr": 32,
+   "title": "Fix null question_type in qualtrics__response (v1.3.2)",
+   "merged_at": "2026-10-28T19:46:35Z",
+   "fix_sha": "f732e0f576838d6612fbda1442c2a4fd4daac9de",
+   "parent_sha": "2ba50217f65f9e05065f59d30ba30de79612b609",
+   "files": [
+    ".changes/1.3.2.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "models/qualtrics__response.sql"
+   ],
+   "code_files": [
+    ".changes/1.3.2.yml",
+    "models/qualtrics__response.sql"
+   ],
+   "fix_lines": [
+    "- Fixes the `sub_question_key` join between responses and questions in `qualtrics__response`. A `null` key never matched another `null` key, so responses to questions without sub-questions had `null` `question_*` and `block_*` fields, including `question_type`. The join now treats two `null` keys as a match."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_qualtrics",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.1"
+   ],
+   "pr": 31,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:38:56Z",
+   "fix_sha": "b8297714cc75936796742fff9d2c93583704f9a4",
+   "parent_sha": "bcce17989addd271498a33087a824da12c22bfb6",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "macros/percentile.sql"
+   ],
+   "code_files": [
+    "macros/percentile.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_quickbooks",
+   "kind": "bug_fix",
+   "versions": [
+    "1.11.0"
+   ],
+   "pr": 225,
+   "title": "Match invoice bundle components to their own parent line (#224)",
+   "merged_at": "2026-10-15T18:04:31Z",
+   "fix_sha": "aa95e895ef56da2431834e1c24258c5c0f44f575",
+   "parent_sha": "6b44f490cf6ae274756f5baf883df20a002895b4",
+   "files": [
+    "integration_tests/seeds/account_data.csv",
+    "integration_tests/seeds/bundle_data.csv",
+    "integration_tests/seeds/bundle_item_data.csv",
+    "integration_tests/seeds/invoice_data.csv",
+    "integration_tests/seeds/invoice_line_bundle_data.csv",
+    "integration_tests/seeds/invoice_line_data.csv",
+    "integration_tests/seeds/invoice_tax_line_data.csv",
+    "integration_tests/seeds/item_data.csv",
+    "integration_tests/tests/integrity/invoice_double_entry_bundle_amounts_match.sql",
+    "models/double_entry_transactions/int_quickbooks__invoice_double_entry.sql"
+   ],
+   "code_files": [
+    "integration_tests/tests/integrity/invoice_double_entry_bundle_amounts_match.sql",
+    "models/double_entry_transactions/int_quickbooks__invoice_double_entry.sql"
+   ],
+   "fix_lines": [
+    "| `quickbooks__general_ledger`<br>`int_quickbooks__invoice_double_entry` | Changed model | Bundle components join to every line on the invoice | Bundle components join only to their own parent line | Fixes duplicated component amounts and dropped lines on invoices that mix bundles and other lines ([#224](https://github.com/fivetran/dbt_quickbooks/issues/224)). Components whose `invoice_line_index` doesn\u2019t match an invoice line are no longer posted.|"
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_quickbooks",
+   "kind": "bug_fix",
+   "versions": [
+    "1.11.0"
+   ],
+   "pr": 227,
+   "title": "Release/v1.11.0",
+   "merged_at": "2026-10-19T17:17:29Z",
+   "fix_sha": "3a48f703cc42283e0601b9ceab8c6ef7e4daf59b",
+   "parent_sha": "6b44f490cf6ae274756f5baf883df20a002895b4",
+   "files": [
+    "CHANGELOG.md",
+    "DECISIONLOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/account_data.csv",
+    "integration_tests/seeds/bundle_data.csv",
+    "integration_tests/seeds/bundle_item_data.csv",
+    "integration_tests/seeds/invoice_data.csv",
+    "integration_tests/seeds/invoice_line_bundle_data.csv",
+    "integration_tests/seeds/invoice_line_data.csv",
+    "integration_tests/seeds/invoice_tax_line_data.csv",
+    "integration_tests/seeds/item_data.csv",
+    "models/double_entry_transactions/int_quickbooks__invoice_double_entry.sql"
+   ],
+   "code_files": [
+    "models/double_entry_transactions/int_quickbooks__invoice_double_entry.sql"
+   ],
+   "fix_lines": [
+    "| `quickbooks__general_ledger`<br>`int_quickbooks__invoice_double_entry` | Changed model | Bundle components join to every line on the invoice | Bundle components join only to their own parent line | Fixes duplicated component amounts and dropped lines on invoices that mix bundles and other lines ([#224](https://github.com/fivetran/dbt_quickbooks/issues/224)). Components whose `invoice_line_index` doesn\u2019t match an invoice line are no longer posted.|"
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_quickbooks",
+   "kind": "bug_fix",
+   "versions": [
+    "1.10.0"
+   ],
+   "pr": 223,
+   "title": "Feature: Exchange rate addition",
+   "merged_at": "2026-09-16T21:49:16Z",
+   "fix_sha": "6b44f490cf6ae274756f5baf883df20a002895b4",
+   "parent_sha": "b83f44a42a7e1166b1c0cf6088f234558de237c4",
+   "files": [
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/account_data.csv",
+    "integration_tests/seeds/exchange_rate_data.csv",
+    "integration_tests/seeds/transfer_data.csv",
+    "macros/get_report_date_fx_enabled.sql",
+    "macros/staging/get_exchange_rate_columns.sql",
+    "models/docs.md",
+    "models/intermediate/int_quickbooks__general_ledger_balances.sql",
+    "models/quickbooks.yml",
+    "models/staging/src_quickbooks.yml",
+    "models/staging/stg_quickbooks.yml",
+    "models/staging/stg_quickbooks__exchange_rate.sql",
+    "models/staging/tmp/stg_quickbooks__exchange_rate_tmp.sql"
+   ],
+   "code_files": [
+    "macros/get_report_date_fx_enabled.sql",
+    "macros/staging/get_exchange_rate_columns.sql",
+    "models/intermediate/int_quickbooks__general_ledger_balances.sql",
+    "models/quickbooks.yml",
+    "models/staging/src_quickbooks.yml",
+    "models/staging/stg_quickbooks.yml",
+    "models/staging/stg_quickbooks__exchange_rate.sql",
+    "models/staging/tmp/stg_quickbooks__exchange_rate_tmp.sql"
+   ],
+   "fix_lines": [
+    "- Adds the `using_report_date_fx_conversion` variable (default `false`) to opt into revaluing foreign-currency balance sheet accounts (Bank, AR, AP, Credit Card, Equity, Fixed Asset, etc.) using the exchange rate as of the report date, matching how QuickBooks Online itself calculates balance sheet conversions. Profit and loss accounts are unaffected, since period activity is already valued at the transaction date. See the [README](https://github.com/fivetran/dbt_quickbooks/tree/main#enabling-report-date-balance-sheet-fx-conversion) for configuration details."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_quickbooks",
+   "kind": "bug_fix",
+   "versions": [
+    "1.9.2"
+   ],
+   "pr": 216,
+   "title": "Multiple accounts payable cause bug",
+   "merged_at": "2026-08-05T22:20:59Z",
+   "fix_sha": "ed5df58865a4394999bfbe54493f67d2d2605bcb",
+   "parent_sha": "cf1867c4bd77d88931ff624d5e8cbd2f75c9843d",
+   "files": [
+    "models/double_entry_transactions/int_quickbooks__bill_payment_double_entry.sql",
+    "models/staging/stg_quickbooks__bill_payment.sql"
+   ],
+   "code_files": [
+    "models/double_entry_transactions/int_quickbooks__bill_payment_double_entry.sql",
+    "models/staging/stg_quickbooks__bill_payment.sql"
+   ],
+   "fix_lines": [
+    "- Fixes an issue in `int_quickbooks__payment_double_entry` and `int_quickbooks__bill_payment_double_entry` where payments cleared against a Journal Entry (rather than an Invoice or Bill) could be duplicated across every Accounts Receivable or Accounts Payable account sharing the same currency. The models now first attempt to resolve the correct AR/AP account through the linked Journal Entry before falling back to the currency-based match, preventing the duplicate postings."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_quickbooks",
+   "kind": "bug_fix",
+   "versions": [
+    "1.9.2"
+   ],
+   "pr": 220,
+   "title": "Bug/ap ar account fanout",
+   "merged_at": "2026-09-01T23:09:22Z",
+   "fix_sha": "b83f44a42a7e1166b1c0cf6088f234558de237c4",
+   "parent_sha": "e499957a887111652b7c30876dbe3a81c459a2ef",
+   "files": [
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/account_data.csv",
+    "integration_tests/seeds/bill_payment_data.csv",
+    "integration_tests/seeds/bill_payment_line_data.csv",
+    "integration_tests/seeds/journal_entry_data.csv",
+    "integration_tests/seeds/journal_entry_line_data.csv",
+    "integration_tests/seeds/payment_data.csv",
+    "integration_tests/seeds/payment_line_data.csv",
+    "integration_tests/tests/integrity/ap_ar_double_entry_no_fanout.sql",
+    "integration_tests/tests/integrity/ap_ar_double_entry_no_null_account.sql",
+    "models/double_entry_transactions/int_quickbooks__bill_payment_double_entry.sql",
+    "models/double_entry_transactions/int_quickbooks__payment_double_entry.sql",
+    "models/staging/stg_quickbooks__bill_payment.sql",
+    "models/staging/stg_quickbooks__bill_payment_line.sql",
+    "models/staging/stg_quickbooks__payment_line.sql"
+   ],
+   "code_files": [
+    "integration_tests/tests/integrity/ap_ar_double_entry_no_fanout.sql",
+    "integration_tests/tests/integrity/ap_ar_double_entry_no_null_account.sql",
+    "models/double_entry_transactions/int_quickbooks__bill_payment_double_entry.sql",
+    "models/double_entry_transactions/int_quickbooks__payment_double_entry.sql",
+    "models/staging/stg_quickbooks__bill_payment.sql",
+    "models/staging/stg_quickbooks__bill_payment_line.sql",
+    "models/staging/stg_quickbooks__payment_line.sql"
+   ],
+   "fix_lines": [
+    "- Fixes an issue in `int_quickbooks__payment_double_entry` and `int_quickbooks__bill_payment_double_entry` where payments cleared against a Journal Entry (rather than an Invoice or Bill) could be duplicated across every Accounts Receivable or Accounts Payable account sharing the same currency. The models now first attempt to resolve the correct AR/AP account through the linked Journal Entry before falling back to the currency-based match, preventing the duplicate postings."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_quickbooks",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.9.1"
+   ],
+   "pr": 221,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:39:19Z",
+   "fix_sha": "e499957a887111652b7c30876dbe3a81c459a2ef",
+   "parent_sha": "cf1867c4bd77d88931ff624d5e8cbd2f75c9843d",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_recharge",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.5.2"
+   ],
+   "pr": 51,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:39:39Z",
+   "fix_sha": "5129f34c335bd91d83d31b8f8418d6e0d15a5afc",
+   "parent_sha": "a7efff0ef0dec62e752c524dfd4c94892a3a7aff",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_recurly",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.5.1"
+   ],
+   "pr": 49,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:39:56Z",
+   "fix_sha": "994b33a3459a83c84622b8d660fe536459ebf1d6",
+   "parent_sha": "b8b545c7fe0e2078a6c946b20c0ed01d5905e332",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/intermediate/int_recurly__transactions_date_spine.sql"
+   ],
+   "code_files": [
+    "models/intermediate/int_recurly__transactions_date_spine.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_reddit_ads",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.5.1"
+   ],
+   "pr": 40,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:40:18Z",
+   "fix_sha": "2d8a5aba5217bae1a6336383ecd9d64ae72fe632",
+   "parent_sha": "0574252cd66a4b73df09c3b4ee1fa02f3044b40b",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_sage_intacct",
+   "kind": "bug_fix",
+   "versions": [
+    "1.4.2"
+   ],
+   "pr": 46,
+   "title": "Fix UNION ALL type mismatch in sage_intacct__ap_ar_enhanced",
+   "merged_at": "2026-08-24T21:21:23Z",
+   "fix_sha": "fb2c9884f1badaf3c9fddb43395eb3fc410aa1bc",
+   "parent_sha": "c35a265ba5f416f66e5e0a6de7c68ea595997aeb",
+   "files": [
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/.gitignore",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/sage_intacct__ap_bill_item.csv",
+    "models/staging/stg_sage_intacct.yml",
+    "models/staging/stg_sage_intacct__ap_bill.sql",
+    "models/staging/stg_sage_intacct__ap_bill_item.sql",
+    "models/staging/stg_sage_intacct__ar_invoice.sql",
+    "models/staging/stg_sage_intacct__ar_invoice_item.sql"
+   ],
+   "code_files": [
+    "models/staging/stg_sage_intacct.yml",
+    "models/staging/stg_sage_intacct__ap_bill.sql",
+    "models/staging/stg_sage_intacct__ap_bill_item.sql",
+    "models/staging/stg_sage_intacct__ar_invoice.sql",
+    "models/staging/stg_sage_intacct__ar_invoice_item.sql"
+   ],
+   "fix_lines": [
+    "- Fixes a union type mismatch error in `sage_intacct__ap_ar_enhanced` by explicitly casting:",
+    "- Previously, these columns could be inferred as different data types, causing the model to fail."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_sage_intacct",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.4.1"
+   ],
+   "pr": 45,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:40:48Z",
+   "fix_sha": "c35a265ba5f416f66e5e0a6de7c68ea595997aeb",
+   "parent_sha": "b3aa7165e419065a75820b248fd46954bb20973c",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_salesforce",
+   "kind": "duckdb_port",
+   "versions": [
+    "2.4.1"
+   ],
+   "pr": 88,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:41:19Z",
+   "fix_sha": "2e99cce10766c16c08aaf5c1fef8e6d17b857171",
+   "parent_sha": "a9d2b20457eb57d3a1cc02fc4f2f99d9d7f4a7f8",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/salesforce_history/salesforce__account_daily_history.sql",
+    "models/salesforce_history/salesforce__campaign_daily_history.sql",
+    "models/salesforce_history/salesforce__contact_daily_history.sql",
+    "models/salesforce_history/salesforce__opportunity_daily_history.sql"
+   ],
+   "code_files": [
+    "models/salesforce_history/salesforce__account_daily_history.sql",
+    "models/salesforce_history/salesforce__campaign_daily_history.sql",
+    "models/salesforce_history/salesforce__contact_daily_history.sql",
+    "models/salesforce_history/salesforce__opportunity_daily_history.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_salesforce_formula_utils",
+   "kind": "bug_fix",
+   "versions": [
+    "0.13.1"
+   ],
+   "pr": 140,
+   "title": "fix(redshift): fall back to raw model_large when fromjson() fails",
+   "merged_at": "2026-09-15T19:26:01Z",
+   "fix_sha": "3df48c5ef6aa55219ffe94c058d63a6932caaf8a",
+   "parent_sha": "72e65aa09bde265ee0f151aacc11d92d15453470",
+   "files": [
+    "CHANGELOG.md",
+    "README.md",
+    "SNOWFLAKE_MDLS.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/.gitignore",
+    "integration_tests/dbt_project.yml",
+    "macros/sfdc_formula_view.sql"
+   ],
+   "code_files": [
+    "macros/sfdc_formula_view.sql"
+   ],
+   "fix_lines": [
+    "- Fixes a Redshift-specific compilation error where `sfdc_formula_view` emits the literal string `None` when `fivetran_formula_model.model_large` is a plain `VARCHAR` column rather than a `SUPER` column."
+   ],
+   "other_warehouse_only": true
+  },
+  {
+   "repo": "dbt_salesforce_formula_utils",
+   "kind": "bug_fix",
+   "versions": [
+    "0.13.0",
+    "0.13.0-a1"
+   ],
+   "pr": 138,
+   "title": "Feature/query redesign",
+   "merged_at": "2026-09-01T13:56:58Z",
+   "fix_sha": "72e65aa09bde265ee0f151aacc11d92d15453470",
+   "parent_sha": "270d22829a46aa1f8054c54bda5e08a94415fb9c",
+   "files": [
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "macros/sfdc_formula_view.sql"
+   ],
+   "code_files": [
+    "macros/sfdc_formula_view.sql"
+   ],
+   "fix_lines": [
+    "- Reduces the `sfdc_formula_view` macro from up to five warehouse queries per model down to one, addressing the potential for intermittent failures when leveraging many formula field models."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_salesforce_formula_utils",
+   "kind": "duckdb_port",
+   "versions": [
+    "0.12.1"
+   ],
+   "pr": 137,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:41:34Z",
+   "fix_sha": "270d22829a46aa1f8054c54bda5e08a94415fb9c",
+   "parent_sha": "f8c4011d09a1fb246ebb7d759fb43f292bd96643",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "integration_tests/seeds/fivetran_formula_model_duckdb.csv"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_salesforce_marketing_cloud",
+   "kind": "duckdb_port",
+   "versions": [
+    "0.6.1"
+   ],
+   "pr": 21,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:41:50Z",
+   "fix_sha": "c965332f46eeee317c1966d947a8cb6119662b8f",
+   "parent_sha": "9f55a8560206cd360dcd50e0a64bd45896b8d85e",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/salesforce_marketing_cloud__events_enhanced.sql",
+    "packages.yml"
+   ],
+   "code_files": [
+    "models/salesforce_marketing_cloud__events_enhanced.sql",
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_sap",
+   "kind": "bug_fix",
+   "versions": [
+    "0.8.2"
+   ],
+   "pr": 54,
+   "title": "Fix BYTES casts, parameterized type, and hardcoded archiving columns (v0.8.2)",
+   "merged_at": "2026-09-24T16:41:12Z",
+   "fix_sha": "acdd907a1d370ed85b1d266f4ab57d30a75b65d5",
+   "parent_sha": "23d76d658e1919f64d9bb1f47229602e2abf61b6",
+   "files": [
+    "CHANGELOG.md",
+    "DECISIONLOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "models/compatibility_views/mart/bsad.sql",
+    "models/compatibility_views/mart/bsak.sql",
+    "models/compatibility_views/mart/bsid.sql",
+    "models/compatibility_views/mart/coss.sql",
+    "models/staging/stg_sap__coep.sql",
+    "models/staging/stg_sap__prps.sql"
+   ],
+   "code_files": [
+    "models/compatibility_views/mart/bsad.sql",
+    "models/compatibility_views/mart/bsak.sql",
+    "models/compatibility_views/mart/bsid.sql",
+    "models/compatibility_views/mart/coss.sql",
+    "models/staging/stg_sap__coep.sql",
+    "models/staging/stg_sap__prps.sql"
+   ],
+   "fix_lines": [
+    "- Fixes a compile error in [`stg_sap__coep`](https://fivetran.github.io/dbt_sap/#!/model/model.sap.stg_sap__coep) and [`stg_sap__prps`](https://fivetran.github.io/dbt_sap/#!/model/model.sap.stg_sap__prps) when optional columns such as `_fivetran_sap_archived` are missing from the source. Both models now fill missing columns with null.",
+    "- Fixes a BigQuery query error in [`bsad`](https://fivetran.github.io/dbt_sap/#!/model/model.sap.bsad), [`bsak`](https://fivetran.github.io/dbt_sap/#!/model/model.sap.bsak), and [`bsid`](https://fivetran.github.io/dbt_sap/#!/model/model.sap.bsid). The four `hist_tax_factor` columns hold bytes that cannot always convert to a string. They now return null instead of failing the query. See [DECISIONLOG](https://github.com/fivetran/dbt_sap/blob/main/DECISIONLOG.md) for more details.",
+    "- Fixes a BigQuery query error in [`coss`](https://fivetran.github.io/dbt_sap/#!/model/model.sap.coss). A hardcoded `decimal(16, 0)` cast made the view unreadable. It now uses the same numeric type as the rest of the model."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_sap",
+   "kind": "duckdb_port",
+   "versions": [
+    "0.8.1"
+   ],
+   "pr": 51,
+   "title": "not found: gh api repos/fivetran/dbt_sap/pulls/51 failed: gh: Not Found (HTTP 404)",
+   "merged_at": null,
+   "fix_sha": null,
+   "parent_sha": null,
+   "files": [],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_servicenow",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.0.2"
+   ],
+   "pr": 32,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:43:07Z",
+   "fix_sha": "975c8487fcf50ae9645f7588429737da1e83cc81",
+   "parent_sha": "472785a61215a92b6d90ec45ab82cca50d8f1811",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "packages.yml"
+   ],
+   "code_files": [
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_shopify",
+   "kind": "bug_fix",
+   "versions": [
+    "1.11.1"
+   ],
+   "pr": 187,
+   "title": "Fix dbt compile on a new schema",
+   "merged_at": "2026-11-12T20:14:24Z",
+   "fix_sha": "d194e15533522658cc696eff8c77733517869e46",
+   "parent_sha": "a033782ef90f0a009b534220bb0253fb2e3d3cb2",
+   "files": [
+    ".changes/1.11.1.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "macros/get_metafields.sql"
+   ],
+   "code_files": [
+    ".changes/1.11.1.yml",
+    "macros/get_metafields.sql"
+   ],
+   "fix_lines": [
+    "- `dbt compile` fails on a new schema because the `get_metafields` macro queries `stg_shopify__metafield` before it exists. The macro now queries metafield keys only during `dbt run` and `dbt build`, which fixes compile for all `*_metafields` models.",
+    "- dbt v2 strict compile (`--static-analysis strict`) fails on DuckDB because `shopify__calendar` compares a timestamp to a date. `shopify__calendar.date_day` is now a date on every warehouse, and the `shopify_lookback` macro now returns a date. This fixes strict compile for `shopify__calendar`, the `*__daily_shop` models and the `*__customer_cohorts` and `*__customer_email_cohorts` models. Their output values don't change."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_shopify",
+   "kind": "bug_fix",
+   "versions": [
+    "1.11.1"
+   ],
+   "pr": 190,
+   "title": "Fix dbt v2 strict compile date/timestamp comparisons",
+   "merged_at": "2026-11-12T22:55:36Z",
+   "fix_sha": "c87deb7953d018a6183b15cdc3624aa11562baff",
+   "parent_sha": "d194e15533522658cc696eff8c77733517869e46",
+   "files": [
+    ".changes/1.11.1.yml",
+    "CHANGELOG.md",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "macros/shopify_lookback.sql",
+    "models/utils/shopify__calendar.sql"
+   ],
+   "code_files": [
+    ".changes/1.11.1.yml",
+    "macros/shopify_lookback.sql",
+    "models/utils/shopify__calendar.sql"
+   ],
+   "fix_lines": [
+    "- `dbt compile` fails on a new schema because the `get_metafields` macro queries `stg_shopify__metafield` before it exists. The macro now queries metafield keys only during `dbt run` and `dbt build`, which fixes compile for all `*_metafields` models.",
+    "- dbt v2 strict compile (`--static-analysis strict`) fails on DuckDB because `shopify__calendar` compares a timestamp to a date. `shopify__calendar.date_day` is now a date on every warehouse, and the `shopify_lookback` macro now returns a date. This fixes strict compile for `shopify__calendar`, the `*__daily_shop` models and the `*__customer_cohorts` and `*__customer_email_cohorts` models. Their output values don't change."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_shopify",
+   "kind": "bug_fix",
+   "versions": [
+    "1.11.0"
+   ],
+   "pr": 183,
+   "title": "Fix Databricks cohort incremental runs; sunset deprecated discount_redeem_code fields",
+   "merged_at": "2026-11-05T22:07:35Z",
+   "fix_sha": "a033782ef90f0a009b534220bb0253fb2e3d3cb2",
+   "parent_sha": "56ee0ff062e47aa751da77d6b76e42689f2e69e4",
+   "files": [
+    ".changes/1.11.0.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/shopify_discount_redeem_code_data.csv",
+    "integration_tests/seeds/shopify_gql_discount_redeem_code_data.csv",
+    "macros/staging/get_discount_redeem_code_columns.sql",
+    "models/graphql/shopify_gql__customer_cohorts.sql",
+    "models/graphql/shopify_gql__customer_email_cohorts.sql",
+    "models/graphql/staging/src_shopify_graphql.yml",
+    "models/graphql/staging/stg_shopify_gql__discount_redeem_code.sql",
+    "models/graphql/staging/stg_shopify_graphql.yml",
+    "models/rest/shopify__customer_cohorts.sql",
+    "models/rest/shopify__customer_email_cohorts.sql",
+    "models/rest/staging/src_shopify.yml",
+    "models/rest/staging/stg_shopify.yml",
+    "models/rest/staging/stg_shopify__discount_redeem_code.sql"
+   ],
+   "code_files": [
+    ".changes/1.11.0.yml",
+    "macros/staging/get_discount_redeem_code_columns.sql",
+    "models/graphql/shopify_gql__customer_cohorts.sql",
+    "models/graphql/shopify_gql__customer_email_cohorts.sql",
+    "models/graphql/staging/src_shopify_graphql.yml",
+    "models/graphql/staging/stg_shopify_gql__discount_redeem_code.sql",
+    "models/graphql/staging/stg_shopify_graphql.yml",
+    "models/rest/shopify__customer_cohorts.sql",
+    "models/rest/shopify__customer_email_cohorts.sql",
+    "models/rest/staging/src_shopify.yml",
+    "models/rest/staging/stg_shopify.yml",
+    "models/rest/staging/stg_shopify__discount_redeem_code.sql"
+   ],
+   "fix_lines": [
+    "| `shopify__customer_cohorts`<br>`shopify__customer_email_cohorts`<br>`shopify_gql__customer_cohorts`<br>`shopify_gql__customer_email_cohorts`<br>(Breaking) | Materialization | file_format `parquet` on Databricks all-purpose clusters, `delta` on SQL warehouses | file_format `delta` everywhere on Databricks | Fixes incremental run errors on newer Databricks versions. Requires a `--full-refresh` after upgrading to convert existing tables to Delta format. |"
+   ],
+   "other_warehouse_only": true
+  },
+  {
+   "repo": "dbt_shopify",
+   "kind": "bug_fix",
+   "versions": [
+    "1.10.0"
+   ],
+   "pr": 166,
+   "title": "fix: quantity double-counted in GraphQL gross_sales / line_item_enhanced (fixes #165)",
+   "merged_at": "2026-08-24T19:45:56Z",
+   "fix_sha": "9c905a4816fe0d1048a8fee4507bef507ed4bf97",
+   "parent_sha": "9df2a8be300dbddc63ef91be2ad648a7706d989e",
+   "files": [],
+   "code_files": [],
+   "fix_lines": [
+    "| [`shopify_gql__orders`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__orders), [`shopify_gql__daily_shop`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__daily_shop) | Column value | `gross_sales` / `net_sales` = `\u03a3 quantity\u00b2 \u00d7 unit_price` | `gross_sales` / `net_sales` = `\u03a3 quantity \u00d7 unit_price` | Fixes a bug where GraphQL orders with any line `quantity > 1` had sales figures inflated quadratically. Orders where every line has `quantity = 1` are unaffected. |",
+    "| [`shopify_gql__line_item_enhanced`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__line_item_enhanced) | Column value | `total_amount = quantity\u00b2 \u00d7 unit_price`; `unit_amount` = line total, then a quantity-derived unit price | `total_amount = quantity \u00d7 unit_price`; `unit_amount` = Shopify's own reported unit price | The quantity double-count is fixed as before. `unit_amount` now reads the real per-unit price directly from the source instead of back-deriving it by dividing the line total by quantity, avoiding rounding/edge-case drift (e.g. `quantity = 0`). |",
+    "| [`stg_shopify_gql__metafield`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.stg_shopify_gql__metafield) | Deduplication logic and `unique_key` value | Deduplicated on `id` only; `unique_key` hashed on `metafield_id` and `source_relation` | Deduplicated on `id`, `owner_id`, and `owner_resource`; `unique_key` hashed on `metafield_id`, `owner_resource_id`, `owner_resource`, and `source_relation` | Shopify changed the underlying `METAFIELD` table's primary key to a composite of `owner_id` and `owner_resource` to fix cross-entity ID collisions. This change does not affect any downstream `shopify_gql__*_metafields` models, since `unique_key` is never selected from `stg_shopify_gql__metafield` into those outputs. |"
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_shopify",
+   "kind": "bug_fix",
+   "versions": [
+    "1.10.0"
+   ],
+   "pr": 167,
+   "title": "Update metafield dedup key to composite (id, owner_id, owner_resource)",
+   "merged_at": "2026-08-24T19:40:10Z",
+   "fix_sha": "2cf454cd69b0e411eef4a02782a65d1b7f8c267c",
+   "parent_sha": "8646eb9b5e7449a23b49bc6d1f0f1d9889ac9bd1",
+   "files": [
+    "README.md",
+    "dbt_project.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/shopify_gql_metafield_data.csv",
+    "integration_tests/tests/integrity/integrity_metafield_composite_key.sql",
+    "models/graphql/staging/stg_shopify_gql__metafield.sql",
+    "models/graphql/staging/stg_shopify_graphql.yml"
+   ],
+   "code_files": [
+    "integration_tests/tests/integrity/integrity_metafield_composite_key.sql",
+    "models/graphql/staging/stg_shopify_gql__metafield.sql",
+    "models/graphql/staging/stg_shopify_graphql.yml"
+   ],
+   "fix_lines": [
+    "| [`shopify_gql__orders`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__orders), [`shopify_gql__daily_shop`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__daily_shop) | Column value | `gross_sales` / `net_sales` = `\u03a3 quantity\u00b2 \u00d7 unit_price` | `gross_sales` / `net_sales` = `\u03a3 quantity \u00d7 unit_price` | Fixes a bug where GraphQL orders with any line `quantity > 1` had sales figures inflated quadratically. Orders where every line has `quantity = 1` are unaffected. |",
+    "| [`shopify_gql__line_item_enhanced`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__line_item_enhanced) | Column value | `total_amount = quantity\u00b2 \u00d7 unit_price`; `unit_amount` = line total, then a quantity-derived unit price | `total_amount = quantity \u00d7 unit_price`; `unit_amount` = Shopify's own reported unit price | The quantity double-count is fixed as before. `unit_amount` now reads the real per-unit price directly from the source instead of back-deriving it by dividing the line total by quantity, avoiding rounding/edge-case drift (e.g. `quantity = 0`). |",
+    "| [`stg_shopify_gql__metafield`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.stg_shopify_gql__metafield) | Deduplication logic and `unique_key` value | Deduplicated on `id` only; `unique_key` hashed on `metafield_id` and `source_relation` | Deduplicated on `id`, `owner_id`, and `owner_resource`; `unique_key` hashed on `metafield_id`, `owner_resource_id`, `owner_resource`, and `source_relation` | Shopify changed the underlying `METAFIELD` table's primary key to a composite of `owner_id` and `owner_resource` to fix cross-entity ID collisions. This change does not affect any downstream `shopify_gql__*_metafields` models, since `unique_key` is never selected from `stg_shopify_gql__metafield` into those outputs. |"
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_shopify",
+   "kind": "bug_fix",
+   "versions": [
+    "1.10.0"
+   ],
+   "pr": 172,
+   "title": "fix: quantity double-counted in GraphQL gross_sales / line_item_enhanced",
+   "merged_at": "2026-08-24T19:44:51Z",
+   "fix_sha": "9df2a8be300dbddc63ef91be2ad648a7706d989e",
+   "parent_sha": "6e9bb86a7ad0bbc2e3cae1903400057bbc3315c3",
+   "files": [
+    "CHANGELOG.md",
+    "models/graphql/intermediate/int_shopify_gql__orders_order_line_aggregates.sql",
+    "models/graphql/standardized_models/shopify_gql__line_item_enhanced.sql"
+   ],
+   "code_files": [
+    "models/graphql/intermediate/int_shopify_gql__orders_order_line_aggregates.sql",
+    "models/graphql/standardized_models/shopify_gql__line_item_enhanced.sql"
+   ],
+   "fix_lines": [
+    "| [`shopify_gql__orders`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__orders), [`shopify_gql__daily_shop`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__daily_shop) | Column value | `gross_sales` / `net_sales` = `\u03a3 quantity\u00b2 \u00d7 unit_price` | `gross_sales` / `net_sales` = `\u03a3 quantity \u00d7 unit_price` | Fixes a bug where GraphQL orders with any line `quantity > 1` had sales figures inflated quadratically. Orders where every line has `quantity = 1` are unaffected. |",
+    "| [`shopify_gql__line_item_enhanced`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__line_item_enhanced) | Column value | `total_amount = quantity\u00b2 \u00d7 unit_price`; `unit_amount` = line total, then a quantity-derived unit price | `total_amount = quantity \u00d7 unit_price`; `unit_amount` = Shopify's own reported unit price | The quantity double-count is fixed as before. `unit_amount` now reads the real per-unit price directly from the source instead of back-deriving it by dividing the line total by quantity, avoiding rounding/edge-case drift (e.g. `quantity = 0`). |",
+    "| [`stg_shopify_gql__metafield`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.stg_shopify_gql__metafield) | Deduplication logic and `unique_key` value | Deduplicated on `id` only; `unique_key` hashed on `metafield_id` and `source_relation` | Deduplicated on `id`, `owner_id`, and `owner_resource`; `unique_key` hashed on `metafield_id`, `owner_resource_id`, `owner_resource`, and `source_relation` | Shopify changed the underlying `METAFIELD` table's primary key to a composite of `owner_id` and `owner_resource` to fix cross-entity ID collisions. This change does not affect any downstream `shopify_gql__*_metafields` models, since `unique_key` is never selected from `stg_shopify_gql__metafield` into those outputs. |"
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_shopify",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.9.2"
+   ],
+   "pr": 164,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:43:31Z",
+   "fix_sha": "0573606e1b7c37d4828a133103cf3c9bc04e67eb",
+   "parent_sha": "1a4b7d18dd793c55ac6ce9841a5b1d7e38c1f5fe",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "integration_tests/seeds/shopify_gql_order_data.csv",
+    "macros/get_metafields.sql",
+    "macros/staging/get_transaction_columns.sql",
+    "models/graphql/shopify_gql__customer_cohorts.sql",
+    "models/graphql/shopify_gql__customer_email_cohorts.sql",
+    "models/rest/shopify__customer_cohorts.sql",
+    "models/rest/shopify__customer_email_cohorts.sql"
+   ],
+   "code_files": [
+    "macros/get_metafields.sql",
+    "macros/staging/get_transaction_columns.sql",
+    "models/graphql/shopify_gql__customer_cohorts.sql",
+    "models/graphql/shopify_gql__customer_email_cohorts.sql",
+    "models/rest/shopify__customer_cohorts.sql",
+    "models/rest/shopify__customer_email_cohorts.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_shopify_holistic_reporting",
+   "kind": "bug_fix",
+   "versions": [
+    "1.5.0"
+   ],
+   "pr": 49,
+   "title": "fix: bump fivetran/shopify dependency to v1.11.0 (GA-1044236)",
+   "merged_at": "2026-11-06T00:44:44Z",
+   "fix_sha": "5b14323fbd81ec0d0a6bca1b99050d30a6c87c28",
+   "parent_sha": "00e6414f767b622125fd5317d8ed21a25a1f1f01",
+   "files": [
+    ".changes/1.5.0.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/shopify_discount_redeem_code_data.csv",
+    "integration_tests/seeds/shopify_gql_discount_redeem_code_data.csv",
+    "integration_tests/seeds/shopify_gql_shop_data.csv",
+    "packages.yml"
+   ],
+   "code_files": [
+    ".changes/1.5.0.yml",
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "| `shopify__customer_cohorts`<br>`shopify__customer_email_cohorts`<br>`shopify_gql__customer_cohorts`<br>`shopify_gql__customer_email_cohorts`<br>(Breaking) | Materialization | file_format `parquet` on Databricks all-purpose clusters, `delta` on SQL warehouses | file_format `delta` everywhere on Databricks | Fixes incremental run errors on newer Databricks versions. Requires a `--full-refresh` after upgrading to convert existing tables to Delta format. |"
+   ],
+   "other_warehouse_only": true
+  },
+  {
+   "repo": "dbt_shopify_holistic_reporting",
+   "kind": "bug_fix",
+   "versions": [
+    "1.4.0"
+   ],
+   "pr": 45,
+   "title": "Fix revenue metrics showing $0/rounded via klaviyo.safe_numeric_cast (GA-1035294)",
+   "merged_at": "2026-09-14T19:39:22Z",
+   "fix_sha": "f0d56001913e3bec8cabc3634be957d97c37b7b0",
+   "parent_sha": "1848fa6697ae52d9f19dffb6898bd11c6eefac29",
+   "files": [
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/klaviyo_event.csv",
+    "models/intermediate/int__daily_klaviyo_user_metrics.sql",
+    "packages.yml"
+   ],
+   "code_files": [
+    "models/intermediate/int__daily_klaviyo_user_metrics.sql",
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "| `int__daily_klaviyo_user_metrics` | Fixed value | `sum_revenue_*` columns return `0` for decimal revenue values on Redshift/Postgres, or round them to whole numbers on Snowflake/Databricks | `sum_revenue_*` columns return the correct decimal amount on all supported destinations | Re-run (`dbt run`) required to refresh existing data with correct revenue totals |",
+    "- Replaces the local `fivetran_utils.try_cast` call with `klaviyo.safe_numeric_cast`, the same fix shipped in [dbt_klaviyo v1.5.0](https://github.com/fivetran/dbt_klaviyo/releases). BigQuery is unaffected because its `numeric` type already retains decimals by default."
+   ],
+   "other_warehouse_only": true
+  },
+  {
+   "repo": "dbt_shopify_holistic_reporting",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.1"
+   ],
+   "pr": 44,
+   "title": "not found: gh api repos/fivetran/dbt_shopify_holistic_reporting/pulls/44 failed: Get \"https://api.github.com/repos/fivetran/dbt_shopify_holistic_reporting/pulls/44\": net/http: TLS handshake timeout",
+   "merged_at": null,
+   "fix_sha": null,
+   "parent_sha": null,
+   "files": [],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_snapchat_ads",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.1"
+   ],
+   "pr": 53,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:43:50Z",
+   "fix_sha": "494cddc4c601368291b92455319689df8cd7d63b",
+   "parent_sha": "011fde6a92be66e5e05737187d9fa9ba206b1b9d",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_social_media_reporting",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.6.2"
+   ],
+   "pr": 42,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-19T15:28:32Z",
+   "fix_sha": "bf62be70aaef23f8f2c6aaa2450b20d961bc927d",
+   "parent_sha": "347603dee8e33e6682e6ae486b05dca8e0ba8135",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "packages.yml"
+   ],
+   "code_files": [
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_stackadapt",
+   "kind": "duckdb_port",
+   "versions": [
+    "0.2.1"
+   ],
+   "pr": 3,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:44:48Z",
+   "fix_sha": "c229e7454e499da7bfc00c7f879468d1a4a00099",
+   "parent_sha": "24d4de430798f3fe2324add8d8f72aa904f619c5",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "packages.yml"
+   ],
+   "code_files": [
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_stripe",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.10.1"
+   ],
+   "pr": 157,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:45:20Z",
+   "fix_sha": "42687a212832b7a2f735e0d4cf0ddf0aa00b6211",
+   "parent_sha": "3b8df885a61b1b0f53f05e564652c1060bdf3859",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "macros/date_timezone.sql"
+   ],
+   "code_files": [
+    "macros/date_timezone.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_tiktok_ads",
+   "kind": "bug_fix",
+   "versions": [
+    "1.5.1"
+   ],
+   "pr": 55,
+   "title": "Fix Smart+ staging models: use `updated_at` and support SUPER on Redshift",
+   "merged_at": "2026-11-09T19:28:06Z",
+   "fix_sha": "ab82102bf3bf798c0cd0575d5880dce5551bebc4",
+   "parent_sha": "f31081ce9684d89a0a955095e33f8111516c8b9b",
+   "files": [
+    ".changes/1.5.1.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/tiktok_creative_history_data.csv",
+    "integration_tests/seeds/tiktok_smart_plus_ad_history_data.csv",
+    "integration_tests/seeds/tiktok_smart_plus_ad_history_json_data.csv",
+    "macros/staging/get_creative_history_columns.sql",
+    "macros/staging/get_smart_plus_ad_history_columns.sql",
+    "macros/staging/tiktok_ads_get_landing_page_urls_query.sql",
+    "models/staging/src_tiktok_ads.yml",
+    "models/staging/stg_tiktok_ads__creative_history.sql",
+    "models/staging/stg_tiktok_ads__smart_plus_ad_history.sql"
+   ],
+   "code_files": [
+    ".changes/1.5.1.yml",
+    "macros/staging/get_creative_history_columns.sql",
+    "macros/staging/get_smart_plus_ad_history_columns.sql",
+    "macros/staging/tiktok_ads_get_landing_page_urls_query.sql",
+    "models/staging/src_tiktok_ads.yml",
+    "models/staging/stg_tiktok_ads__creative_history.sql",
+    "models/staging/stg_tiktok_ads__smart_plus_ad_history.sql"
+   ],
+   "fix_lines": [
+    "- Previously, `modify_time` filled in as `null` for every record. On Redshift, this caused the error `constant expressions are not supported in order by clauses`. On other destinations, `updated_at` was `null` and `is_most_recent_record` was not deterministic.",
+    "- **Redshift support for `landing_page_url_list` synced as SUPER**: `stg_tiktok_ads__smart_plus_ad_history` no longer calls `json_parse()` on `landing_page_url_list` when Fivetran syncs it as SUPER, which caused the error `function json_parse(super) does not exist`."
+   ],
+   "other_warehouse_only": true
+  },
+  {
+   "repo": "dbt_tiktok_ads",
+   "kind": "bug_fix",
+   "versions": [
+    "1.5.0",
+    "1.5.0-a2",
+    "1.5.0-a1"
+   ],
+   "pr": 48,
+   "title": "feature/smart-ads",
+   "merged_at": "2026-09-29T22:16:13Z",
+   "fix_sha": "0f19dad35a4f7316a2958fe30eeda006e92bf6ea",
+   "parent_sha": "a34fb6f40f00175eecf4f14f5116cbe20886c375",
+   "files": [
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/tiktok_ad_report_hourly_data.csv",
+    "integration_tests/seeds/tiktok_creative_history_data.csv",
+    "integration_tests/seeds/tiktok_smart_plus_ad_history_data.csv",
+    "macros/staging/get_creative_history_columns.sql",
+    "macros/staging/get_smart_plus_ad_history_columns.sql",
+    "macros/staging/tiktok_ads_get_landing_page_urls_query.sql",
+    "models/staging/src_tiktok_ads.yml",
+    "models/staging/stg_tiktok_ads.yml",
+    "models/staging/stg_tiktok_ads__creative_history.sql",
+    "models/staging/stg_tiktok_ads__smart_plus_ad_history.sql",
+    "models/staging/tmp/stg_tiktok_ads__creative_history_tmp.sql",
+    "models/staging/tmp/stg_tiktok_ads__smart_plus_ad_history_tmp.sql",
+    "models/tiktok_ads.yml",
+    "models/tiktok_ads__ad_report.sql",
+    "models/tiktok_ads__advertiser_report.sql",
+    "models/tiktok_ads__url_report.sql"
+   ],
+   "code_files": [
+    "macros/staging/get_creative_history_columns.sql",
+    "macros/staging/get_smart_plus_ad_history_columns.sql",
+    "macros/staging/tiktok_ads_get_landing_page_urls_query.sql",
+    "models/staging/src_tiktok_ads.yml",
+    "models/staging/stg_tiktok_ads.yml",
+    "models/staging/stg_tiktok_ads__creative_history.sql",
+    "models/staging/stg_tiktok_ads__smart_plus_ad_history.sql",
+    "models/staging/tmp/stg_tiktok_ads__creative_history_tmp.sql",
+    "models/staging/tmp/stg_tiktok_ads__smart_plus_ad_history_tmp.sql",
+    "models/tiktok_ads.yml",
+    "models/tiktok_ads__ad_report.sql",
+    "models/tiktok_ads__advertiser_report.sql",
+    "models/tiktok_ads__url_report.sql"
+   ],
+   "fix_lines": [
+    "| `tiktok_ads__ad_report`, `tiktok_ads__advertiser_report` | Bug Fix | `ad_name`, `advertiser_id`, `advertiser_name`, `campaign_id`, and `ad_group_id` were `null` for TikTok Smart+ ads | These fields now populate correctly for Smart+ ads | TikTok stores Smart+ ads in `creative_history`. Both models now include `creative_history`, using `creative_id` as the reporting `ad_id`, so Smart+ ads resolve correctly. |",
+    "| `tiktok_ads__url_report` | Bug Fix, New Column | `ad_name`, `base_url`, `url_host`, `url_path`, and `utm_*` were `null` for Smart+ ads | These fields now populate correctly for Smart+ ads, and a new `landing_page_urls` column is included | Smart+ ads are matched through `creative_history`, then joined to `smart_plus_ad_history` for landing page data. Because a Smart+ ad can have multiple landing pages, `landing_page_urls` preserves the full comma-separated set, while the existing single-URL fields continue to use one URL for backwards compatibility. |"
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_tiktok_ads",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.4.1"
+   ],
+   "pr": 46,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:45:34Z",
+   "fix_sha": "3e804c469ce9766c3dbe0818d09fa0edf2aa7f2e",
+   "parent_sha": "a0f90ff582f3e12e9d51d76204c3d1a509561d7d",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_twilio",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.4.1"
+   ],
+   "pr": 25,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:46:16Z",
+   "fix_sha": "58934459d68a0f3b62539446fc361aaa7f3f7626",
+   "parent_sha": "a5b4b90ad0457b47bec86c7bbb3a6761215fa90e",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_twitter",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.3.1"
+   ],
+   "pr": 52,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:46:32Z",
+   "fix_sha": "b610ac7661d788a5395520487925d9331603d254",
+   "parent_sha": "48f695b9704ee0ee13a26ed50b09f805d0ae4bc3",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_twitter_organic",
+   "kind": "bug_fix",
+   "versions": [
+    "1.3.0"
+   ],
+   "pr": 32,
+   "title": "FY2027 updates",
+   "merged_at": "2026-11-20T18:53:06Z",
+   "fix_sha": "7cfc4a4c2dca280a4bf2b42f0691ddb36d4d7f47",
+   "parent_sha": "a894aaca1a9bb13ab7c2955dfd473b8d5d72856e",
+   "files": [
+    ".changes/1.3.0.yml",
+    ".github/CODEOWNERS",
+    ".github/ISSUE_TEMPLATE/bug-report.yml",
+    ".github/ISSUE_TEMPLATE/feature-request.yml",
+    ".github/workflows/stale.yml",
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "models/staging/docs.md",
+    "models/staging/src_twitter_organic.yml",
+    "models/staging/stg_twitter_organic.yml",
+    "models/twitter_organic.yml"
+   ],
+   "code_files": [
+    ".changes/1.3.0.yml",
+    "models/staging/src_twitter_organic.yml",
+    "models/staging/stg_twitter_organic.yml",
+    "models/twitter_organic.yml"
+   ],
+   "fix_lines": [
+    "- Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_twitter_organic/issues/new/choose)."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_twitter_organic",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.2.1"
+   ],
+   "pr": 29,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:46:49Z",
+   "fix_sha": "f03e6f52694857a8594cf174206aa0d30792025a",
+   "parent_sha": "c1ddf0a2905933ef2aa079033670e1c3425830a1",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_unified_rag",
+   "kind": "duckdb_port",
+   "versions": [
+    "0.3.1"
+   ],
+   "pr": 42,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:47:38Z",
+   "fix_sha": "1a3502be3dc2f10f0b0e69da9f57ee4b3741b30b",
+   "parent_sha": "6c57681ca8e41a275e261cba5d0cb2f1c5f90b51",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/rag__unified_document.sql",
+    "packages.yml"
+   ],
+   "code_files": [
+    "models/rag__unified_document.sql",
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_workday",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.0.3"
+   ],
+   "pr": 38,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:49:09Z",
+   "fix_sha": "731afae6cad62de8044b756bb33044833590f055",
+   "parent_sha": "47e3a619cd9a722171f07812d180cd938c7119d7",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "packages.yml"
+   ],
+   "code_files": [
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_xero",
+   "kind": "bug_fix",
+   "versions": [
+    "1.6.2"
+   ],
+   "pr": 86,
+   "title": "Fix dbt compile on a new schema",
+   "merged_at": "2026-11-12T19:32:51Z",
+   "fix_sha": "c3b823fccc822a42f3d85fbb36644e39f3c708b7",
+   "parent_sha": "13646d23b6a3a908e0d839a9a40a1062bf38aa58",
+   "files": [
+    ".changes/1.6.2.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "models/intermediate/int_xero__invoice_line_item_pivoted_tracking_categories.sql",
+    "models/intermediate/int_xero__journal_cash_line_pivoted_tracking_categories.sql",
+    "models/intermediate/int_xero__journal_line_pivoted_tracking_categories.sql"
+   ],
+   "code_files": [
+    ".changes/1.6.2.yml",
+    "models/intermediate/int_xero__invoice_line_item_pivoted_tracking_categories.sql",
+    "models/intermediate/int_xero__journal_cash_line_pivoted_tracking_categories.sql",
+    "models/intermediate/int_xero__journal_line_pivoted_tracking_categories.sql"
+   ],
+   "fix_lines": [
+    "- `dbt compile` no longer fails on a new schema. The `int_xero__journal_line_pivoted_tracking_categories`, `int_xero__journal_cash_line_pivoted_tracking_categories`, and `int_xero__invoice_line_item_pivoted_tracking_categories` models now look up tracking category names only during `dbt run` and `dbt build`, and query them once instead of twice."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_xero",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.6.1"
+   ],
+   "pr": 83,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:50:32Z",
+   "fix_sha": "204fd8b211d72d8da84e8d9f69b4d8e1f9d41fc9",
+   "parent_sha": "51d236fe63baa3804923b791fae5302f81889517",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_youtube_analytics",
+   "kind": "bug_fix",
+   "versions": [
+    "1.3.0"
+   ],
+   "pr": 41,
+   "title": "FY2027 updates",
+   "merged_at": "2026-11-21T06:15:03Z",
+   "fix_sha": "7542990d4b1c5b3095d16a8149d811c60c0d45b4",
+   "parent_sha": "b415426104eb7cd17d8399fcdb340f805e8ec6d3",
+   "files": [
+    ".changes/1.3.0.yml",
+    ".github/CODEOWNERS",
+    ".github/ISSUE_TEMPLATE/bug-report.yml",
+    ".github/ISSUE_TEMPLATE/feature-request.yml",
+    ".github/workflows/stale.yml",
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "models/staging/stg_youtube.yml",
+    "models/youtube.yml"
+   ],
+   "code_files": [
+    ".changes/1.3.0.yml",
+    "models/staging/stg_youtube.yml",
+    "models/youtube.yml"
+   ],
+   "fix_lines": [
+    "- Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_youtube_analytics/issues/new/choose)."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_youtube_analytics",
+   "kind": "bug_fix",
+   "versions": [
+    "1.2.2"
+   ],
+   "pr": 40,
+   "title": "Fix dbt compile on a new schema",
+   "merged_at": "2026-11-12T19:44:20Z",
+   "fix_sha": "b415426104eb7cd17d8399fcdb340f805e8ec6d3",
+   "parent_sha": "b61d04bbccd30932c7c5a835254ba5a676371e68",
+   "files": [
+    ".changes/1.2.2.yml",
+    "CHANGELOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "models/intermediate/int_youtube__age_pivot.sql",
+    "models/intermediate/int_youtube__gender_pivot.sql",
+    "models/youtube__age_demographics_pivot.sql",
+    "models/youtube__gender_demographics_pivot.sql"
+   ],
+   "code_files": [
+    ".changes/1.2.2.yml",
+    "models/intermediate/int_youtube__age_pivot.sql",
+    "models/intermediate/int_youtube__gender_pivot.sql",
+    "models/youtube__age_demographics_pivot.sql",
+    "models/youtube__gender_demographics_pivot.sql"
+   ],
+   "fix_lines": [
+    "- Fixes `dbt compile` on a new schema for the `int_youtube__age_pivot`, `int_youtube__gender_pivot`, `youtube__age_demographics_pivot`, and `youtube__gender_demographics_pivot` models. These models query `stg_youtube__channel_demographics` at compile time, which fails when the table does not exist yet. The query now runs only during `dbt run` and `dbt build`."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_youtube_analytics",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.2.1"
+   ],
+   "pr": 37,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:50:49Z",
+   "fix_sha": "bd98b64496d1427c9e27afcd5f8be612de7e53a0",
+   "parent_sha": "bd44a65b7be7cb6e52aaade0be45608c577d2118",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt"
+   ],
+   "code_files": [],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_zendesk",
+   "kind": "bug_fix",
+   "versions": [
+    "1.10.0"
+   ],
+   "pr": 290,
+   "title": "Keep standard field history columns when a custom field shares their title (v1.10.0)",
+   "merged_at": "2026-11-04T00:30:47Z",
+   "fix_sha": "c5f2cfa03a1629a357a3ad2d06c8173f52eeff69",
+   "parent_sha": "f546ce6a1f2061b0d75e9e2f7eaf60b1de616a56",
+   "files": [
+    ".changes/1.10.0.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/ticket_custom_field_data.csv",
+    "integration_tests/seeds/ticket_field_history_data.csv",
+    "macros/resolve_ticket_field_history_columns.sql",
+    "models/ticket_history/int_zendesk__field_history_pivot.sql"
+   ],
+   "code_files": [
+    ".changes/1.10.0.yml",
+    "macros/resolve_ticket_field_history_columns.sql",
+    "models/ticket_history/int_zendesk__field_history_pivot.sql"
+   ],
+   "fix_lines": [
+    "| `zendesk__ticket_field_history`<br>`zendesk__ticket_backlog`<br>`int_zendesk__field_history_pivot`<br>(Breaking) | Changed column | `status_status` | `status` | Fixes column naming conflicts when a custom field shares a title with a standard field. Also removes unintended `<field>_<custom_field_id>` columns. Only affects configurations with these conflicts. |",
+    "- Fixes `zendesk__ticket_backlog` failing when a custom ticket field shares a title with a standard field (for example, `Status`). Standard fields now retain their names; custom fields can be tracked separately by adding their numeric IDs to `ticket_field_history_columns` (for example, `status_<field_id>`).",
+    "- Fixes failures when custom ticket field titles contain no Latin letters or numbers (for example, `\u8cfc\u5165\u6bb5\u968e`). These fields can be tracked regardless of title using their numeric IDs, with a leading underscore (for example, `_<field_id>`)."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_zendesk",
+   "kind": "bug_fix",
+   "versions": [
+    "1.9.1"
+   ],
+   "pr": 288,
+   "title": "Fix: Ignore reopened solves in reply time SLAs and apply internal_user_criteria to audit-log roles (v1.9.1)",
+   "merged_at": "2026-10-28T12:27:39Z",
+   "fix_sha": "f546ce6a1f2061b0d75e9e2f7eaf60b1de616a56",
+   "parent_sha": "bb4021c5c2b5d3e1e3b9a25e0c52e73f532df61b",
+   "files": [
+    ".changes/1.9.1.yml",
+    "CHANGELOG.md",
+    "DECISIONLOG.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/audit_log_data.csv",
+    "integration_tests/seeds/schedule_data.csv",
+    "integration_tests/seeds/ticket_comment_data.csv",
+    "integration_tests/seeds/ticket_data.csv",
+    "integration_tests/seeds/ticket_field_history_data.csv",
+    "integration_tests/seeds/ticket_schedule_data.csv",
+    "integration_tests/seeds/user_data.csv",
+    "integration_tests/seeds/user_data_snowflake.csv",
+    "models/reply_times/int_zendesk__comments_enriched.sql",
+    "models/sla_policy/reply_time/int_zendesk__reply_time_business_hours.sql",
+    "models/sla_policy/reply_time/int_zendesk__reply_time_combined.sql"
+   ],
+   "code_files": [
+    ".changes/1.9.1.yml",
+    "models/reply_times/int_zendesk__comments_enriched.sql",
+    "models/sla_policy/reply_time/int_zendesk__reply_time_business_hours.sql",
+    "models/sla_policy/reply_time/int_zendesk__reply_time_combined.sql"
+   ],
+   "fix_lines": [
+    "- Fixes `internal_user_criteria` not applying to comments from users whose historical support role was `not set` or `end-user`. Affects `zendesk__ticket_metrics` and `zendesk__sla_policies`.",
+    "- Fixes inflated `first_reply_time` and `next_reply_time` values and missed SLA breaches in `zendesk__sla_policies` for tickets that were solved and then reopened before the reply."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_zendesk",
+   "kind": "bug_fix",
+   "versions": [
+    "1.9.0",
+    "1.9.0-a3"
+   ],
+   "pr": 278,
+   "title": "Fix false first_reply_time SLA breaches to match Zendesk's own determination (v1.9.0)",
+   "merged_at": "2026-10-09T17:39:39Z",
+   "fix_sha": "a9300572dc5d0370b1408c395913d330178c1031",
+   "parent_sha": "0246c8cae7bd3a7494e91a4801583ff70c1dc141",
+   "files": [
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "DECISIONLOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/ticket_chat_event_data.csv",
+    "integration_tests/seeds/ticket_comment_data.csv",
+    "integration_tests/seeds/ticket_data.csv",
+    "integration_tests/seeds/ticket_field_history_data.csv",
+    "integration_tests/tests/integrity/sla_first_reply_time_match.sql",
+    "models/sla_policy/int_zendesk__sla_policy_applied.sql",
+    "models/sla_policy/reply_time/int_zendesk__commenter_reply_at.sql",
+    "models/zendesk__sla_policies.sql"
+   ],
+   "code_files": [
+    "integration_tests/tests/integrity/sla_first_reply_time_match.sql",
+    "models/sla_policy/int_zendesk__sla_policy_applied.sql",
+    "models/sla_policy/reply_time/int_zendesk__commenter_reply_at.sql",
+    "models/zendesk__sla_policies.sql"
+   ],
+   "fix_lines": [
+    "- Fixes false `first_reply_time` SLA breaches in `zendesk__sla_policies`. `sla_applied_at` for `first_reply_time` now uses the application time Zendesk logs in `ticket_field_history`. The SLA clock now starts when Zendesk starts it; for a ticket created on a customer's behalf with a private comment, that's the customer's first comment.",
+    "- Fixes a related false breach when Zendesk re-applies the `first_reply_time` target to a ticket that was already replied to, such as after a priority change. `sla_applied_at` now always anchors to the earliest logged application for the ticket instead of the latest, so an already-satisfied reply is no longer discarded.",
+    "- As above, `sla_event_id` also changes for the `first_reply_time` events affected by this fix."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_zendesk",
+   "kind": "bug_fix",
+   "versions": [
+    "1.9.0-a2"
+   ],
+   "pr": 277,
+   "title": "Fix SLA breach on tickets with no real external customer (v1.9.0-a2)",
+   "merged_at": null,
+   "fix_sha": null,
+   "parent_sha": null,
+   "files": [
+    "CHANGELOG.md",
+    "DECISIONLOG.md",
+    "README.md",
+    "integration_tests/seeds/ticket_comment_data.csv",
+    "integration_tests/seeds/ticket_data.csv",
+    "integration_tests/seeds/ticket_field_history_data.csv",
+    "models/sla_policy/int_zendesk__sla_policy_applied.sql",
+    "models/sla_policy/reply_time/int_zendesk__commenter_reply_at.sql"
+   ],
+   "code_files": [
+    "models/sla_policy/int_zendesk__sla_policy_applied.sql",
+    "models/sla_policy/reply_time/int_zendesk__commenter_reply_at.sql"
+   ],
+   "fix_lines": [
+    "- Fixes false `first_reply_time` SLA breaches for tickets with no real external requester (e.g. an agent filing a ticket on their own behalf). The a1 fix below disqualified an agent's early reply until \"the customer\" engaged, but on these tickets no customer ever will, so the reply now counts normally against the ticket's creation time, matching Zendesk's behavior."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_zendesk",
+   "kind": "bug_fix",
+   "versions": [
+    "1.9.0-a1"
+   ],
+   "pr": 273,
+   "title": "Fix false first-reply SLA breaches on privately-created tickets (RD-1277353)",
+   "merged_at": null,
+   "fix_sha": null,
+   "parent_sha": null,
+   "files": [
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "DECISIONLOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/ticket_chat_event_data.csv",
+    "integration_tests/seeds/ticket_comment_data.csv",
+    "integration_tests/seeds/ticket_data.csv",
+    "integration_tests/seeds/ticket_field_history_data.csv",
+    "integration_tests/tests/integrity/sla_first_reply_time_match.sql",
+    "models/sla_policy/int_zendesk__sla_policy_applied.sql",
+    "models/sla_policy/reply_time/int_zendesk__commenter_reply_at.sql",
+    "models/zendesk__sla_policies.sql"
+   ],
+   "code_files": [
+    "integration_tests/tests/integrity/sla_first_reply_time_match.sql",
+    "models/sla_policy/int_zendesk__sla_policy_applied.sql",
+    "models/sla_policy/reply_time/int_zendesk__commenter_reply_at.sql",
+    "models/zendesk__sla_policies.sql"
+   ],
+   "fix_lines": [
+    "- Fixes false `first_reply_time` SLA breaches in `zendesk__sla_policies` for tickets created on a customer's behalf via private/internal comments. For these tickets, the SLA clock now starts at the customer's first comment, public or private, matching Zendesk's behavior. An agent's own comment no longer counts as a reply until the customer has engaged, which can also surface previously-hidden breaches where a proactive agent comment was wrongly counted as the reply. `zendesk__ticket_metrics` is unchanged and may differ due to its intentionally separate `first_reply_time` definition (see `DECISIONLOG.md`)."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_zendesk",
+   "kind": "bug_fix",
+   "versions": [
+    "1.8.0",
+    "1.8.0-a1"
+   ],
+   "pr": 270,
+   "title": "Resolve custom ticket field IDs to readable names (RD-1260302)",
+   "merged_at": "2026-09-01T21:34:24Z",
+   "fix_sha": "0246c8cae7bd3a7494e91a4801583ff70c1dc141",
+   "parent_sha": "bd58d112641e6d059cbef084b60a3aa7914011ac",
+   "files": [
+    ".quickstart/quickstart.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/seeds/ticket_custom_field_data.csv",
+    "integration_tests/seeds/ticket_field_history_data.csv",
+    "macros/resolve_ticket_field_history_columns.sql",
+    "macros/staging/get_ticket_custom_field_columns.sql",
+    "models/staging/src_zendesk.yml",
+    "models/staging/stg_zendesk.yml",
+    "models/staging/stg_zendesk__ticket_custom_field.sql",
+    "models/staging/tmp/stg_zendesk__ticket_custom_field_tmp.sql",
+    "models/ticket_history/int_zendesk__field_history_pivot.sql",
+    "models/zendesk__ticket_backlog.sql"
+   ],
+   "code_files": [
+    "macros/resolve_ticket_field_history_columns.sql",
+    "macros/staging/get_ticket_custom_field_columns.sql",
+    "models/staging/src_zendesk.yml",
+    "models/staging/stg_zendesk.yml",
+    "models/staging/stg_zendesk__ticket_custom_field.sql",
+    "models/staging/tmp/stg_zendesk__ticket_custom_field_tmp.sql",
+    "models/ticket_history/int_zendesk__field_history_pivot.sql",
+    "models/zendesk__ticket_backlog.sql"
+   ],
+   "fix_lines": [
+    "- Resolves custom ticket field IDs in the `ticket_field_history_columns` variable to their actual field titles, so `int_zendesk__field_history_pivot` and `zendesk__ticket_backlog` use readable custom field names instead of raw numeric IDs. Custom fields can be referenced by either their numeric ID or their `title`. If multiple custom fields resolve to the same title, the raw field ID is appended to keep column names unique, and a field with no title falls back to its ID. Standard fields (`status`, `priority`, etc.) are unaffected."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_zendesk",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.7.1"
+   ],
+   "pr": 268,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:51:11Z",
+   "fix_sha": "bd58d112641e6d059cbef084b60a3aa7914011ac",
+   "parent_sha": "d4a8aa378862c51f0c6136eb16f87bef8c34e908",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "models/sla_policy/agent_work_time/int_zendesk__agent_work_time_calendar_hours.sql",
+    "models/sla_policy/requester_wait_time/int_zendesk__requester_wait_time_calendar_hours.sql",
+    "models/ticket_history/int_zendesk__field_calendar_spine.sql",
+    "models/ticket_history/int_zendesk__field_history_pivot.sql",
+    "models/zendesk__ticket_field_history.sql"
+   ],
+   "code_files": [
+    "models/sla_policy/agent_work_time/int_zendesk__agent_work_time_calendar_hours.sql",
+    "models/sla_policy/requester_wait_time/int_zendesk__requester_wait_time_calendar_hours.sql",
+    "models/ticket_history/int_zendesk__field_calendar_spine.sql",
+    "models/ticket_history/int_zendesk__field_history_pivot.sql",
+    "models/zendesk__ticket_field_history.sql"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  },
+  {
+   "repo": "dbt_zuora",
+   "kind": "duckdb_port",
+   "versions": [
+    "1.4.1"
+   ],
+   "pr": 44,
+   "title": "DuckDB support",
+   "merged_at": "2026-08-18T18:51:29Z",
+   "fix_sha": "dd3bbc7774f43f2906ad3bb213b9b6e86817e49d",
+   "parent_sha": "9cb02445c70c1cbb0143b73d75b23a70e27163f2",
+   "files": [
+    ".github/pull_request_template.md",
+    ".github/workflows/check-docs-current.yml",
+    "CHANGELOG.md",
+    "README.md",
+    "dbt_project.yml",
+    "docs/catalog.json",
+    "docs/manifest.json",
+    "integration_tests/ci/test_scenarios.yml",
+    "integration_tests/dbt_project.yml",
+    "integration_tests/requirements.txt",
+    "packages.yml"
+   ],
+   "code_files": [
+    "packages.yml"
+   ],
+   "fix_lines": [
+    "- Adds DuckDB as a supported destination."
+   ],
+   "other_warehouse_only": false
+  }
+ ]
+}
