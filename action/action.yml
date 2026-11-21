@@ -1,0 +1,98 @@
+name: VeriMend
+description: >-
+  Diagnose a failed dbt build. Open a pull request when an independent verifier passes the
+  fix; otherwise post the diagnosis as a comment. Never merges, never pushes to your branches.
+author: Aditya Kanbargi
+
+inputs:
+  anthropic-api-key:
+    description: Anthropic API key. Pass a secret; it reaches only the step that runs VeriMend.
+    required: true
+  project-dir:
+    description: The dbt project, relative to the repository root.
+    default: "."
+  max-usd:
+    description: Dollar cap for the run. The run stops when it is reached.
+    default: "0.25"
+  model:
+    description: Model to use. Empty means VeriMend's configured default.
+    default: ""
+  max-attempts:
+    description: How many fixes the verifier may reject before the run ends as not fixed.
+    default: "3"
+  github-token:
+    description: Token for pushing the fix branch and opening the pull request or comment.
+    default: ${{ github.token }}
+
+outputs:
+  exit-code:
+    description: >-
+      0 fixed and verified (pull request opened), 2 escalated, 3 not fixed, 4 stopped by a
+      cap (the diagnosis is posted for 2, 3 and 4), 1 error. Empty when VeriMend was skipped.
+    value: ${{ steps.run.outputs.exit-code }}
+
+runs:
+  using: composite
+  steps:
+    - name: Check VeriMend may run here
+      id: guard
+      shell: bash
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+        HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+        REPO: ${{ github.repository }}
+        REF: ${{ github.head_ref || github.ref_name }}
+      run: |
+        if [[ "$EVENT_NAME" == pull_request* && "$HEAD_REPO" != "$REPO" ]]; then
+          echo "::notice::VeriMend does not run for pull requests from forks."
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+        elif [[ "$REF" == verimend/fix-* ]]; then
+          echo "::notice::$REF is one of VeriMend's own fix branches; not running again."
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Set up Python
+      if: steps.guard.outputs.skip != 'true'
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install VeriMend
+      if: steps.guard.outputs.skip != 'true'
+      shell: bash
+      run: |
+        python -m pip install --quiet "uv==0.13.7"
+        uv sync --frozen --no-dev --quiet --project "$GITHUB_ACTION_PATH/.."
+
+    - name: Run VeriMend
+      id: run
+      if: steps.guard.outputs.skip != 'true'
+      shell: bash
+      env:
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        VERIMEND_HOME: ${{ runner.temp }}/verimend
+        PROJECT_DIR: ${{ inputs.project-dir }}
+        MAX_USD: ${{ inputs.max-usd }}
+        MAX_ATTEMPTS: ${{ inputs.max-attempts }}
+        MODEL: ${{ inputs.model }}
+      run: |
+        args=(fix --project-dir "$PROJECT_DIR" --max-usd "$MAX_USD" --max-attempts "$MAX_ATTEMPTS" --open-pr)
+        if [ -n "$MODEL" ]; then args+=(--model "$MODEL"); fi
+        set +e
+        uv run --frozen --no-dev --project "$GITHUB_ACTION_PATH/.." verimend "${args[@]}"
+        code=$?
+        set -e
+        echo "exit-code=$code" >> "$GITHUB_OUTPUT"
+        # A fix, an escalation and "not fixed" are results. Only an error fails the step.
+        if [ "$code" = 1 ]; then exit 1; fi
+
+    - name: Keep the run record
+      if: always() && steps.guard.outputs.skip != 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: verimend-run
+        path: ${{ runner.temp }}/verimend/sandboxes/*/out/
+        if-no-files-found: ignore

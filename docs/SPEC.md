@@ -4,7 +4,7 @@ VeriMend is an open-source agent that diagnoses a failed dbt run, proposes a fix
 
 This file is what Claude Code builds against. Each phase has a scope and a "done when" line. A phase is not done until its "done when" is true and you have seen the evidence.
 
-Dates: phase 1 on Thu Nov 19, phase 2 Nov 20 to 22, phase 3 Nov 23 to 26, phase 4 Nov 27 to 29, phase 5 Nov 30 to Dec 2, phase 6 Dec 3 to 4, phase 7 Dec 5 to 7, phase 8 Dec 8 to 9. Dec 10 and 11 are spare.
+Dates: phase 1 on Thu Nov 19, phase 2 Nov 20 to 22, phase 3 Nov 23 to 26, phase 4 Nov 27 to 29, phase 5 Nov 30 to Dec 2, phase 6 Dec 3 to 4, phase 7 Dec 5 to 9, phase 8 Dec 10 to 11. No spare days: phase 7 took them for the site's motion and finish (Aditya, 2026-11-21).
 
 ---
 
@@ -296,11 +296,15 @@ Exit codes for `fix`: 0 fixed and verified, 2 escalated, 3 not fixed, 4 stopped 
 - Escalated or not fixed: posts the diagnosis as a comment.
 - It never pushes to the default branch, never merges, and does not run with secrets on pull requests from forks.
 
+As built in phase 6 ([decision 0006](decisions/0006-github-action.md)): a composite action in `action/` that installs VeriMend from its own `uv.lock` and runs `verimend fix --open-pr`. The diagnosis goes on the failing pull request, or else on the failing commit. Only `verimend/fix-*` branches are ever pushed, from a separate worktree. A project at the root of its repository keeps its git history in the sandbox, so the agent can see the commit that broke the build. End to end in a demo repository: [bench/results/action-demo-2026-11-21](../bench/results/action-demo-2026-11-21/README.md).
+
 ---
 
 ## 11. Replay site
 
 Static, built from recorded traces. No model calls, so it costs nothing to run and cannot be abused. Design rules are in `docs/DESIGN.md`.
+
+**Hosting: Vercel** (with Aditya). The Next.js app in `site/` is built as a static export and deployed from `main`; every pull request that touches `site/` gets a preview deploy. Aditya creates the Vercel project and connects the repository. The site holds no secrets and no API key, and nothing on it calls a model.
 
 - `/` the lineage graph replaying one featured run, then the results table.
 - `/runs/<id>` a full replay: the graph, the step log, the diff, the verifier's verdict.
@@ -354,13 +358,13 @@ Injection scripts, expected outcomes, hidden checks and references for the 20 fa
 
 **Done when** the broken commit produces a correct pull request end to end, and a failure it cannot fix produces a diagnosis comment.
 
-### Phase 7: replay site (Sat Dec 5 to Mon Dec 7)
+### Phase 7: replay site (Sat Dec 5 to Wed Dec 9)
 
 Build from recorded traces, following `docs/DESIGN.md`.
 
 **Done when** the three featured replays play correctly at 375, 1280 and 1600 px, with keyboard controls and with reduced motion respected.
 
-### Phase 8: final runs and write-up (Tue Dec 8 to Wed Dec 9)
+### Phase 8: final runs and write-up (Thu Dec 10 to Fri Dec 11)
 
 Aditya runs the held-out batches on December's credit. Then the README, a two-minute video and the "what it cannot fix" post.
 

@@ -21,6 +21,8 @@ Phase 1 creates these. If one changes, update this list in the same commit.
 - Python lint and types: `uv run ruff check .` and `uv run pyright`
 - Build the demo database from `demo/raw_data` (not committed; run before using `demo/jaffle_shop`): `uv run python scripts/build_demo.py`
 - Fix a failed dbt project in a sandbox copy (paid; writes `fix.diff` and `run.json` under `~/.verimend/sandboxes/`): `uv run verimend fix --project-dir demo/jaffle_shop --max-usd 0.25`
+- Same, then hand the result to GitHub (a pull request from `verimend/fix-<sha>` for a verified fix, else a diagnosis comment; needs `GITHUB_TOKEN`): add `--open-pr`. The GitHub Action in `action/` runs exactly this.
+- Demo repository for the Action: `uv run python scripts/make_demo_repo.py build --dest ~/.verimend/demo-repo --action-ref main`, then `break logic` or `break bad-data --repo ~/.verimend/demo-repo` for its broken commits. Nothing in it pushes.
 - Verify any diff, no agent involved: `uv run verimend verify --project-dir demo/jaffle_shop --diff fix.diff`
 - Benchmark, development set only: `uv run python -m bench.run --agent verimend --set dev --limit 5 --max-usd 2`. Agents: `none`, `reference`, `baseline` (paid), `verimend` (paid). Add `--source data-eng-bench` for that benchmark, `--trials 3`, `--tasks a,b` or `--dry-run`. `--with-verifier` runs the verifier around `none` or `reference` (free; VeriMend always has it). Runs in the Linux runner (Docker Desktop).
 - Fault suite (`bench/faults/`, 20 faults, not split): `uv run python -m bench.run --source faults --set all --agent reference --with-verifier --limit 20 --max-usd 0.01`. Agents `none`, `reference`, `verimend` (paid); runs on this machine, no Docker.

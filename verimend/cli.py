@@ -2,7 +2,9 @@
 
 `verify` checks any diff, no agent involved. `fix` copies the project and its database
 into a sandbox under ~/.verimend, runs the agent there with the verifier loop, and writes
-the result next to the sandbox. The project you point it at is never changed.
+the result next to the sandbox. The project you point it at is never changed. With
+`--open-pr`, a verified fix becomes a pull request from `verimend/fix-<sha>` and any
+other outcome a diagnosis comment (verimend/github.py).
 
 Exit codes for fix: 0 fixed and verified, 2 escalated, 3 not fixed, 4 stopped by a cap,
 1 error. For verify: 0 passed, 1 a check failed, 2 the verifier could not run.
@@ -12,6 +14,7 @@ import argparse
 import asyncio
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -28,6 +31,7 @@ from verifier.project import (
     write_profiles,
 )
 
+from verimend import github
 from verimend.config import ConfigError, load_settings
 
 EXIT_FIXED, EXIT_ERROR, EXIT_ESCALATED, EXIT_NOT_FIXED, EXIT_CAP = 0, 1, 2, 3, 4
@@ -113,6 +117,10 @@ def make_sandbox(
     """Copy the project and its database; point a profile of our own at the copy."""
     sandbox_project = root / "project"
     copy_project(project, sandbox_project)
+    # A project at the root of a git repository keeps its history in the sandbox, so
+    # inspect_history can find the commit that broke the build. The verifier ignores .git.
+    if (project / ".git").is_dir():
+        shutil.copytree(project / ".git", sandbox_project / ".git")
     sandbox_db = copy_database(db, root / "db")
     profile = read_profile(project, profiles, target)
     sandbox_profiles = write_profiles(profile, sandbox_db, root / "profiles")
@@ -146,6 +154,18 @@ def cmd_fix(args: argparse.Namespace) -> int:
     except (ConfigError, VerifierError) as error:
         print(f"verimend fix: {error}", file=sys.stderr)
         return EXIT_ERROR
+    ctx = None
+    if args.open_pr:  # check where we are before spending anything
+        try:
+            token = settings.github_token.get_secret_value() if settings.github_token else None
+            ctx = github.context_from_env(os.environ, project, token)
+        except github.GitHubError as error:
+            print(f"verimend fix: {error}", file=sys.stderr)
+            return EXIT_ERROR
+        reason = github.refusal(ctx)
+        if reason:
+            print(f"verimend fix: not running: {reason}.", file=sys.stderr)
+            return EXIT_ERROR
     root = settings.verimend_home / "sandboxes" / run_id()
     sandbox, sandbox_db, sandbox_profiles = make_sandbox(project, profiles, args.target, db, root)
     workspace = LocalWorkspace(sandbox, sandbox_db, {"DBT_PROFILES_DIR": str(sandbox_profiles)})
@@ -183,7 +203,33 @@ def cmd_fix(args: argparse.Namespace) -> int:
     if run.error or run.verifier_error:
         print(f"Error: {run.error or run.verifier_error}", file=sys.stderr)
     print(f"Wrote {out / 'run.json'} and {out / 'fix.diff'}; {project} is unchanged.")
-    return exit_code(run)
+    code = exit_code(run)
+    if ctx is not None and code != EXIT_ERROR:
+        try:
+            url = hand_back(ctx, run, project, diff, root)
+        except github.GitHubError as error:
+            print(f"verimend fix: {error}", file=sys.stderr)
+            return EXIT_ERROR
+        print(url)
+    return code
+
+
+def hand_back(ctx: github.Context, run: Any, project: Path, diff: str, root: Path) -> str:
+    """A pull request for a verified fix; a diagnosis comment for anything else."""
+    out = root / "out"
+    if run.final_verdict == "fixed":
+        body = github.pr_body(run, diff, ctx)
+        (out / "pull_request.md").write_text(body, "utf-8")
+        url = github.open_pull_request(ctx, project, diff, github.pr_title(run), body,
+                                       root / "pr-worktree")  # fmt: skip
+        print(f"Opened a pull request from {github.fix_branch(ctx)} into {ctx.ref_name}:")
+    else:
+        body = github.diagnosis_body(run, ctx)
+        (out / "diagnosis.md").write_text(body, "utf-8")
+        url = github.post_diagnosis(ctx, body)
+        where = f"pull request #{ctx.pr_number}" if ctx.pr_number else f"commit {ctx.short_sha}"
+        print(f"Posted the diagnosis on {where}:")
+    return url
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -203,6 +249,11 @@ def build_parser() -> argparse.ArgumentParser:
     fix.add_argument("--max-attempts", type=int, default=settings.max_attempts)
     fix.add_argument("--model", help="defaults to the configured model")
     fix.add_argument("--task", help="what is wrong, if the failure alone does not say")
+    fix.add_argument(
+        "--open-pr",
+        action="store_true",
+        help="open a pull request for a verified fix, or post the diagnosis as a comment",
+    )
     verify.add_argument("--diff", type=Path, required=True)
     verify.add_argument("--json", action="store_true", help="print the verifier's JSON")
     return parser
