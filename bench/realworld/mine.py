@@ -7,7 +7,7 @@ supported destination around August 2026. Each release section of a package's CH
 names the PRs it shipped. For every package whose CHANGELOG records DuckDB support, this
 lists the releases after it, their PRs (merge date, merge commit, parent) and the
 changelog lines that read like bug fixes. Picking the cases is done by hand from this
-list (decision 0007).
+list (decision 0011).
 
 Public GitHub only, through `gh`; nothing about the user is sent. No model calls.
 Writes bench/results/realworld-mine-<date>/candidates.json.

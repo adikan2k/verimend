@@ -1,6 +1,6 @@
 """The real-world case contract, and building a case into a folder offline.
 
-A case is a folder bench/realworld/<id>/ (decision 0007):
+A case is a folder bench/realworld/<id>/ (decision 0011):
 
     case.json          the PR it comes from (repository, number, parent and fix commits,
                        merge date), its licence and attribution, the scenario vars, the

@@ -1,4 +1,4 @@
-# 0007: Real-world cases from Fivetran's dbt packages
+# 0011: Real-world cases from Fivetran's dbt packages
 
 Status: draft by Claude Code for Aditya to rewrite. Date: 2026-11-21.
 
