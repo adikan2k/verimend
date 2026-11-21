@@ -217,7 +217,7 @@ For the baseline, which has no verifier, "false success" is the agent's own clai
 
 ### Runs to report
 
-1. Plain-agent baseline: same model, the SDK's default file and shell tools inside the sandbox, no VeriMend tools, no verifier. Three trials per task. It is ADE-bench's own Claude Code agent with caps, a pinned CLI and one verdict line ([decision 0002](decisions/0002-scoring-harness.md)); on data-eng-bench it needs a Harbor adapter, built in phase 3.
+1. Plain-agent baseline: same model, the SDK's default file and shell tools inside the sandbox, no VeriMend tools, no verifier. Three trials per task. It is ADE-bench's own Claude Code agent with caps, a pinned CLI and one verdict line ([decision 0002](decisions/0002-scoring-harness.md)); on data-eng-bench it needs a Harbor adapter, built in phase 3. It is also run with the verifier **watching** (`--with-verifier`): snapshot before, check after, nothing told to the agent. Comparing the verifier's verdict with the grader's on every claimed fix measures the verifier as a gate on an agent it does not steer ([decision 0007](decisions/0007-verifier-vs-baseline.md)).
 2. VeriMend on Haiku 5.5, three trials per task.
 3. VeriMend on Sonnet 5.5, one trial on eight tasks.
 4. Two ablations on Haiku 5.5, 15 tasks each: without `walk_lineage`, and without the verifier's feedback.
@@ -251,7 +251,7 @@ Each fault is a folder under `bench/faults/<id>/`:
 - `checks/`: optional extra hidden checks (SQL that must return no rows). The grader always also requires a clean build, unchanged tests (contracts count as tests), and every model equal to the clean project built on clean data; for an escalation, the right category and the broken nodes still failing.
 - `reference/`: a reference patch or a reference escalation that passes its own checks.
 
-Each fault project is a git repository: a baseline commit, then a code fault's own commit with a neutral message. `python -m bench.faults check` proves every fault builds the same way from the seed (1119), fails as `expected.json` says, fails when nothing is done, and passes with its reference ([check.json](../bench/results/faults-check-2026-11-21/check.json)). Fault runs use `bench.run --source faults --set all`; the faults are not split.
+Each fault project is a git repository: a baseline commit, then a code fault's own commit with a neutral message. `python -m bench.faults check` proves every fault builds the same way from the seed (1119), fails as `expected.json` says, fails when nothing is done, and passes with its reference ([check.json](../bench/results/faults-check-2026-11-21/check.json)). Fault runs use `bench.run --source faults --set all`; the faults are not split. The baseline runs each fault in a container holding only the fault's project, asked for a `CATEGORY:` line so its escalations are graded like VeriMend's; the verifier watches from outside the container ([decision 0007](decisions/0007-verifier-vs-baseline.md)).
 
 ---
 
