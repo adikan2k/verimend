@@ -1,0 +1,14 @@
+diff --git a/dbt_project.yml b/dbt_project.yml
+index 55ac429..803f91d 100644
+--- a/dbt_project.yml
++++ b/dbt_project.yml
+@@ -16,6 +16,9 @@ clean-targets:
+ 
+ require-dbt-version: [">=1.10.0", "<2.0.0"]
+ 
++vars:
++  payment_methods: ['credit_card', 'coupon', 'bank_transfer', 'gift_card']
++
+ models:
+   jaffle_shop:
+     +materialized: table
