@@ -31,6 +31,11 @@ def build_parser() -> argparse.ArgumentParser:
     source = ver.add_mutually_exclusive_group(required=True)
     source.add_argument("--diff", type=Path, help="a unified diff file")
     source.add_argument("--from-project", type=Path, help="diff this folder against the base")
+    ver.add_argument(
+        "--replay",
+        action="store_true",
+        help="re-verify a recorded diff: leave the snapshot as it was, measure every check",
+    )
 
     for p in (snap, ver):
         p.add_argument("--dbt", default=None, help="the dbt executable")
@@ -58,7 +63,9 @@ def main(argv: list[str] | None = None) -> int:
                 diff_text = args.diff.read_bytes().decode("utf-8")
             else:
                 diff_text = diff_from_project(args.work, args.from_project)
-            result = verify(args.work, diff_text, dbt_exe=dbt_exe, timeout=args.timeout)
+            result = verify(
+                args.work, diff_text, dbt_exe=dbt_exe, timeout=args.timeout, replay=args.replay
+            )
             result["diff"] = diff_text
             code = 0 if result["passed"] else 1
     except (VerifierError, DiffError, OSError, UnicodeDecodeError) as exc:

@@ -6,7 +6,7 @@ Work folder layout:
     base/manifest.json the manifest of the base build
     state.json         profile, folders, vars, and the base build's statuses and stats
     base-build/        where the base was built (a copy)
-    runs/<n>/          one fresh copy per verification
+    runs/<n>/          one fresh copy per verification (runs/replay with --replay, removed after)
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from verifier import checks
+from verifier import accounting, checks
 from verifier.patch import DiffError, FilePatch, apply_diff, make_diff, parse_diff
 from verifier.project import (
     FAILED_STATUSES,
@@ -177,7 +177,21 @@ def _result(found: list[checks.Check], started: float, failed: str | None = None
     }
 
 
-def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0) -> dict:
+def verify(
+    work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0, replay: bool = False
+) -> dict:
+    """The verifier's decision on a diff. `replay` is for re-verifying recorded diffs
+    (bench/replay.py), never a real run: each diff starts from the snapshot as it was
+    (nothing learned is written back), a collateral failure does not stop row accounting,
+    so both are measured, and the build copy is removed afterwards."""
+    try:
+        return _verify(work, diff_text, dbt_exe=dbt_exe, timeout=timeout, replay=replay)
+    finally:
+        if replay:
+            shutil.rmtree(work / "runs" / "replay", ignore_errors=True)
+
+
+def _verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float, replay: bool) -> dict:
     started = time.monotonic()
     state = read_json(work / "state.json")
     base_manifest = read_json(work / "base" / "manifest.json")
@@ -201,7 +215,8 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
 
     runs = work / "runs"
     number = len(list(runs.iterdir())) + 1 if runs.is_dir() else 1
-    project, dbt = _build_copy(work, f"runs/{number}", state, dbt_exe, timeout)
+    name = "runs/replay" if replay else f"runs/{number}"
+    project, dbt = _build_copy(work, name, state, dbt_exe, timeout)
     try:
         apply_diff(project, patches)
     except DiffError as exc:
@@ -268,6 +283,7 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
 
     if base_manifest is None:
         found.append(checks.Check("collateral", True, checks.NO_BASE_BUILD))
+        found.append(_row_accounting(work, state, None, new_manifest, project, patches, statuses))
         return _result(found, started)
     built_manifest = read_json(project / "target" / "manifest.json") or new_manifest
     changed = checks.changed_nodes(base_manifest, built_manifest, vars_changed)
@@ -288,7 +304,8 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
         if newly:
             unstable = {**unstable, **newly}
             state["unstable"] = unstable
-            (work / "state.json").write_text(json.dumps(state, indent=1), "utf-8")
+            if not replay:
+                (work / "state.json").write_text(json.dumps(state, indent=1), "utf-8")
             collateral = checks.collateral(state["stats"], new_stats, in_lineage, unstable)
         found_text = (
             f"{len(newly)} moved there too: {', '.join(sorted(newly)[:5])}"
@@ -300,7 +317,81 @@ def verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0)
             f"unchanged base ({builds} build(s)), and {found_text}"
         )[:1500]
     found.append(collateral)
+    if not collateral.passed and not replay:
+        return _result(found, started)
+    found.append(
+        _row_accounting(work, state, base_manifest, built_manifest, project, patches, statuses)
+    )
     return _result(found, started)
+
+
+def _compiled_sql(node: dict[str, Any], project: Path) -> str | None:
+    code = node.get("compiled_code")
+    if code:
+        return str(code)
+    path = (
+        project
+        / "target"
+        / "compiled"
+        / str(node.get("package_name"))
+        / str(node.get("original_file_path"))
+    )
+    return path.read_text("utf-8") if path.is_file() else None
+
+
+def _row_accounting(
+    work: Path,
+    state: dict[str, Any],
+    base_manifest: dict[str, Any] | None,
+    built_manifest: dict[str, Any],
+    project: Path,
+    patches: list[FilePatch],
+    statuses: dict[str, dict[str, str]],
+) -> checks.Check:
+    """Check 5 over every SQL model whose file the diff touched and that built."""
+    import duckdb  # imported here so the rest of the package loads without it
+
+    touched = {p.path.replace("\\", "/") for p in patches}
+    base_nodes = (base_manifest or {}).get("nodes", {})
+    base_project = work / "base-build" / "project"
+    results: list[accounting.ModelResult] = []
+    todo: list[tuple[str, str, str | None, str]] = []
+    for uid, node in sorted(built_manifest.get("nodes", {}).items()):
+        if node.get("resource_type") != "model":
+            continue
+        if str(node.get("original_file_path", "")).replace("\\", "/") not in touched:
+            continue
+        materialized = (node.get("config") or {}).get("materialized")
+        skip = None
+        if node.get("language", "sql") != "sql":
+            skip = "a Python model"
+        elif materialized in ("incremental", "ephemeral"):
+            skip = f"{materialized}"
+        elif statuses.get(uid, {}).get("status") != "success":
+            skip = "it did not build"
+        sql = None if skip else _compiled_sql(node, project)
+        if skip is None and sql is None:
+            skip = "no compiled SQL"
+        if skip is not None or sql is None:
+            results.append(accounting.ModelResult(uid, skipped=skip))
+            continue
+        base = base_nodes.get(uid)
+        base_sql = _compiled_sql(base, base_project) if base else None
+        relation = f"{_quote(node['schema'])}.{_quote(node.get('alias') or node['name'])}"
+        todo.append((uid, sql, base_sql, relation))
+    if todo:
+        deadline = time.monotonic() + accounting.TOTAL_BUDGET_S
+        con = duckdb.connect(str(project.parent / "db" / state["db_name"]), read_only=True)
+        try:
+            for uid, sql, base_sql, relation in todo:
+                results.append(accounting.analyse(con, uid, sql, base_sql, relation, deadline))
+        finally:
+            con.close()
+    return checks.row_accounting(results)
+
+
+def _quote(identifier: str) -> str:
+    return '"' + identifier.replace('"', '""') + '"'
 
 
 RECHECK_BUILDS = 5

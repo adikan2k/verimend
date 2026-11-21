@@ -71,7 +71,11 @@ def test_the_real_fix_passes_every_check(snap):
         "masking",
         "clean_rebuild",
         "collateral",
+        "row_accounting",
     ]
+    assert result["checks"][-1]["detail"] == "no changed SQL model to analyse" or (
+        "1 changed model(s) analysed" in result["checks"][-1]["detail"]
+    )
     # Nothing touched the real project or its database.
     assert not (project / "shop.duckdb").exists()
     assert "amout" in (project / "models/marts/customer_totals.sql").read_text()
@@ -325,8 +329,9 @@ def test_the_fix_of_a_parse_error_passes_and_collateral_says_why_it_compared_not
     only if the fix removes its file or changes `enabled` settings."""
     result = run(broken_snap[0], PARSE_FIX)
     assert result["passed"], result
-    collateral = result["checks"][-1]
-    assert collateral["name"] == "collateral" and "did not parse" in collateral["detail"]
+    names = [c["name"] for c in result["checks"]]
+    assert names[-2:] == ["collateral", "row_accounting"]
+    assert "did not parse" in result["checks"][-2]["detail"]
 
 
 @pytest.mark.parametrize(
@@ -471,7 +476,7 @@ def test_collateral_rechecks_the_base_before_rejecting(messy_snap):
     state_file.write_text(json.dumps(state))
     result = run(work, FIX)
     assert result["passed"], result
-    detail = result["checks"][-1]["detail"]
+    detail = next(c["detail"] for c in result["checks"] if c["name"] == "collateral")
     assert "1 suspect model(s) were rebuilt on the unchanged base (1 build(s))" in detail
     assert "1 moved there too: model.tiny_shop.random_draw" in detail
     assert json.loads(state_file.read_text())["unstable"] == {
@@ -488,3 +493,75 @@ def test_collateral_still_rejects_a_real_change_after_the_recheck(snap):
     assert "order_count" in detail
     assert f"rebuilt on the unchanged base ({RECHECK_BUILDS} build(s))" in detail
     assert "none moved there" in detail
+
+
+# ---- check 5: row accounting ------------------------------------------------------------
+
+
+def new_model(name: str, sql: str) -> str:
+    lines = sql.strip("\n").splitlines()
+    body = "".join(f"+{line}\n" for line in lines)
+    return f"--- /dev/null\n+++ b/models/marts/{name}.sql\n@@ -0,0 +1,{len(lines)} @@\n{body}"
+
+
+def revenue_model(customers: str) -> str:
+    """Revenue per customer on a hand-written spine. The seed has customers 10, 11, 12."""
+    return new_model(
+        "customer_revenue",
+        f"""
+{{{{ config(materialized='table') }}}}
+with totals as (
+    select customer_id, sum(amount) as revenue from {{{{ ref('stg_orders') }}}} group by 1
+),
+known as (
+    select * from (values {customers}) as t(customer_id)
+)
+select k.customer_id, t.revenue
+from known k
+left join totals t on t.customer_id = k.customer_id
+""",
+    )
+
+
+def test_row_accounting_rejects_facts_a_spine_drops(snap):
+    result = run(snap[1], with_fix(revenue_model("(10), (11)")))
+    assert result["failed_check"] == "row_accounting", result
+    detail = result["checks"][-1]["detail"]
+    assert "customer_revenue" in detail and "revenue 9.99" in detail and "dropped" in detail
+
+
+def test_row_accounting_passes_when_no_fact_is_lost(snap):
+    result = run(snap[1], with_fix(revenue_model("(10), (11), (12)")))
+    assert result["passed"], result
+    # customer_totals (the fix itself) and customer_revenue
+    assert "2 changed model(s) analysed, 1 LEFT join(s) counted" in result["checks"][-1]["detail"]
+
+
+def test_replay_measures_every_check_and_leaves_no_trace(snap):
+    """--replay: a collateral failure does not stop row accounting, and the build copy is
+    removed. Without it, the first failure stops the run as always."""
+    work = snap[1]
+    diff = with_fix(COLLATERAL + revenue_model("(10), (11)"))
+    assert [c["name"] for c in run(work, diff)["checks"]][-1] == "collateral"
+    replayed = verify(work, diff, dbt_exe=DBT, replay=True)
+    assert replayed["failed_check"] == "collateral"
+    assert [(c["name"], c["passed"]) for c in replayed["checks"]][-2:] == [
+        ("collateral", False),
+        ("row_accounting", False),
+    ]
+    assert not (work / "runs" / "replay").exists()
+
+
+def test_replay_leaves_the_snapshot_as_it_was(messy_snap):
+    """What the collateral recheck learns is written back in a real run (see
+    test_collateral_rechecks_the_base_before_rejecting), never in a replay."""
+    work = messy_snap[0]
+    state_file = work / "state.json"
+    state = json.loads(state_file.read_text())
+    state["unstable"] = {}
+    state_file.write_text(json.dumps(state))
+    before = state_file.read_text()
+    result = verify(work, FIX, dbt_exe=DBT, replay=True)
+    assert result["passed"], result
+    assert "1 moved there too: model.tiny_shop.random_draw" in result["checks"][-2]["detail"]
+    assert state_file.read_text() == before
