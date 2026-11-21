@@ -12,7 +12,7 @@ It costs nothing to run: no API key, no model call. It is the verifier VeriMend'
 | Hidden failures | A model that failed is removed or disabled, or a change adds `limit 0` or an always-false filter. Removing a model with no failure behind it is fine, and listed. |
 | Clean rebuild | `dbt build` fails anywhere, on a fresh copy of the base's database. |
 | Collateral damage | A model outside the change's lineage has different rows or contents afterwards. Models that differ between two builds of the unchanged base are compared by row count only, or not at all. |
-| Row accounting | A LEFT join drops summed rows its spine has no key for, or groups unmatched rows under a NULL key, without a filter that says so. |
+| Row accounting | A LEFT join groups rows whose key found no partner under a NULL key. Summed rows a LEFT join drops because its spine has no key for them are listed, not failed: in our replay a benchmark's own reference fix drops such rows on purpose ([decision 0008](../../docs/decisions/0008-row-accounting.md)). |
 
 Files outside the dbt project (README, CI, scripts) are listed as not checked.
 

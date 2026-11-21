@@ -28,7 +28,8 @@ CHECKS_TEXT = (
     "It rebuilds the project from the pull request's base on a fresh copy of the database, "
     "applies the change, and checks that no test was removed or weakened, that no failure "
     "was hidden, that `dbt build` passes, that models outside the change are unchanged, "
-    "and that no LEFT join silently drops rows or groups them under a NULL key."
+    "and that no LEFT join groups unmatched rows under a NULL key. Rows a LEFT join drops "
+    "are reported, not failed."
 )
 
 

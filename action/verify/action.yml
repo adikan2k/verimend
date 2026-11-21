@@ -2,7 +2,7 @@ name: VeriMend inspector
 description: >-
   Checks a pull request to a dbt project on DuckDB, whoever or whatever wrote it: no test
   removed or weakened, no failure hidden, a clean rebuild, nothing outside the change
-  altered, and no LEFT join silently dropping rows. Free: no API key, no model call.
+  altered, and no LEFT join grouping unmatched rows under NULL. Free: no API key, no model call.
 author: Aditya Kanbargi
 
 inputs:
