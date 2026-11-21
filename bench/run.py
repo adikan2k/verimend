@@ -54,7 +54,9 @@ HARBOR_VENV_PINS = (
 # on data-eng-bench each full build takes about 2.5 minutes.
 AGENT_TIMEOUT_SEC = 2400
 # The free agents the verifier can be run on, to measure its false rejections.
-VERIFIER_CHECKED_AGENTS = ("none", "reference")
+# The verifier watches these agents without telling them anything (snapshot before,
+# check after). VeriMend runs its own verifier inside its loop.
+VERIFIER_CHECKED_AGENTS = ("none", "reference", "baseline")
 REPO_INSIDE = "/verimend"
 
 
@@ -74,7 +76,7 @@ def parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument(
         "--with-verifier",
         action="store_true",
-        help="also run the verifier on what none or reference leaves (no model calls)",
+        help="also run the verifier on what none, reference or baseline leaves; it only watches",
     )
     return parser.parse_args(argv)
 
@@ -268,8 +270,8 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
             raise CapError("--trials must be at least 1")
         if args.with_verifier and spec.name not in VERIFIER_CHECKED_AGENTS:
             raise TaskSetError(
-                "--with-verifier is for none and reference; VeriMend always runs its verifier "
-                "and the baseline never does."
+                "--with-verifier is for none, reference and baseline, where the verifier only "
+                "watches; VeriMend always runs its own."
             )
         settings = load_settings()
         if spec.model_calls:

@@ -143,6 +143,7 @@ def assemble_run(
         largest_prompt_tokens=largest,
         stopped=stopped,
         verifier_error=checked.get("error"),
+        agent_mentioned_verifier=checked.get("agent_mentioned_verifier"),
         model_usage=stream.result.get("modelUsage") if stream and stream.result else None,
     )
     result = RunResult(
