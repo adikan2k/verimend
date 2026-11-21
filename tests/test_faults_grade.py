@@ -108,12 +108,8 @@ def test_a_loosened_generic_test_counts_as_weakened(suite, tmp_path: Path) -> No
 def test_removing_a_contract_counts_as_weakened(suite, tmp_path: Path) -> None:
     built = build(suite, "code", tmp_path)
     undo_code_fault(built)
-    edit(built, "models/staging/schema.yml", "      - name: order_date
-        data_type: date
-",
-         "      - name: order_date
-        data_type: varchar
-")  # fmt: skip
+    column = "      - name: order_date\n        data_type: "
+    edit(built, "models/staging/schema.yml", column + "date\n", column + "varchar\n")
     result = grade(suite, built, {"verdict": "fixed"}, tmp_path)
     assert not result.rules["tests_unchanged"] and not result.passed
 
