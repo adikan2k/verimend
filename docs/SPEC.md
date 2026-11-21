@@ -296,6 +296,8 @@ Exit codes for `fix`: 0 fixed and verified, 2 escalated, 3 not fixed, 4 stopped 
 - Escalated or not fixed: posts the diagnosis as a comment.
 - It never pushes to the default branch, never merges, and does not run with secrets on pull requests from forks.
 
+As built in phase 6 ([decision 0006](decisions/0006-github-action.md)): a composite action in `action/` that installs VeriMend from its own `uv.lock` and runs `verimend fix --open-pr`. The diagnosis goes on the failing pull request, or else on the failing commit. Only `verimend/fix-*` branches are ever pushed, from a separate worktree. A project at the root of its repository keeps its git history in the sandbox, so the agent can see the commit that broke the build. End to end in a demo repository: [bench/results/action-demo-2026-11-21](../bench/results/action-demo-2026-11-21/README.md).
+
 ---
 
 ## 11. Replay site
