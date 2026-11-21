@@ -53,6 +53,9 @@ def run_trial(
 ) -> tuple[AgentRecord, Grade]:
     root = Path(batch["stage_dir"]) / fault_id / str(trial)
     built = materialize(fault_id, root / "fault", batch["seed"])
+    if batch["agent"] == "baseline":
+        # In the project, where its own profile looks (bench/faults/container.py).
+        built.db = built.db.replace(built.project / built.db.name)
     workspace = workspace_for(root, built.project, built.db)
     record = AgentRecord(task=fault_id, trial=trial, started=time.time(), run_cap_usd=cap)
     started = time.monotonic()
@@ -97,7 +100,6 @@ def run_trial(
             # In a container that holds only the fault; the verifier stays on this side.
             log, agent_seconds = container.run_baseline(
                 built.project,
-                built.db.parent,
                 root,
                 task=DEFAULT_TASK,
                 model=batch["model"],

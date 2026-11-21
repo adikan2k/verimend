@@ -34,10 +34,10 @@ def batch(tmp_path: Path, tasks: list[str]) -> dict[str, Any]:
 def stub_container(monkeypatch: pytest.MonkeyPatch, act: Any) -> list[dict[str, Any]]:
     calls: list[dict[str, Any]] = []
 
-    def fake(project: Path, db_dir: Path, profiles: Path, command: str, api_key: str | None,
+    def fake(project: Path, profiles: Path, command: str, api_key: str | None,
              timeout: float = 0) -> tuple[str, float]:  # fmt: skip
-        calls.append({"project": project, "db_dir": db_dir, "profiles": profiles,
-                      "command": command, "api_key": api_key})  # fmt: skip
+        calls.append({"project": project, "profiles": profiles, "command": command,
+                      "api_key": api_key})  # fmt: skip
         return act(project), 12.5
 
     monkeypatch.setattr(container, "run_container", fake)
@@ -64,9 +64,12 @@ def test_a_baseline_that_deletes_the_failing_test_is_a_false_success_the_verifie
     assert call["api_key"] == "test-key" and "test-key" not in call["command"]
     assert "A dbt build of this project failed" in call["command"]
     assert "CATEGORY:" in call["command"] and "VERDICT: fixed" in call["command"]
-    # Only the fault's project and database go in: nothing of the answers is next to them.
-    assert call["project"].name == "project" and call["db_dir"].name == "db"
-    assert sorted(p.name for p in call["db_dir"].iterdir()) == ["warehouse.duckdb"]
+    # Only the fault's project goes in, with its database where its own profile looks.
+    assert call["project"].name == "project"
+    assert (call["project"] / "warehouse.duckdb").is_file()
+    assert (
+        not (call["project"] / "reference").exists() and not (call["project"] / "checks").exists()
+    )
 
 
 def test_a_baseline_escalation_is_graded_on_its_category_line(
@@ -104,11 +107,10 @@ def test_baseline_report_needs_a_verdict() -> None:
     }
 
 
-def test_docker_gets_three_mounts_and_the_key_by_name_only(tmp_path: Path) -> None:
-    argv = container.docker_argv("n", tmp_path / "project", tmp_path / "db",
-                                 tmp_path / "profiles", "echo hi")  # fmt: skip
+def test_docker_gets_two_mounts_and_the_key_by_name_only(tmp_path: Path) -> None:
+    argv = container.docker_argv("n", tmp_path / "project", tmp_path / "profiles", "echo hi")
     mounts = [argv[i + 1] for i, a in enumerate(argv) if a == "-v"]
-    assert [m.split(":/work/")[1] for m in mounts] == ["project", "db", "profiles:ro"]
+    assert [m.split(":/work/")[1] for m in mounts] == ["project", "profiles:ro"]
     assert argv[argv.index("-e") + 1] == "ANTHROPIC_API_KEY"  # the name, never the value
     assert "--rm" in argv and argv[-3:] == ["bash", "-c", "echo hi"]
 
@@ -121,4 +123,4 @@ def test_the_image_is_pinned_to_this_environment(tmp_path: Path) -> None:
     assert all(f"${{{name}}}" in dockerfile for name in args)
     assert "COPY" not in dockerfile and "ADD " not in dockerfile  # built with no context
     profile = (container.write_container_profile(tmp_path) / "profiles.yml").read_text()
-    assert "path: '/work/db/warehouse.duckdb'" in profile
+    assert "path: '/work/project/warehouse.duckdb'" in profile

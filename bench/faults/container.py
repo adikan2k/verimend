@@ -3,9 +3,15 @@
 VeriMend's tools cannot leave the project, so it runs on this machine. The baseline is
 Claude Code with a shell, so it runs in a container that holds nothing but the fault:
 
-    /work/project   the built fault's project (a git repository), read-write
-    /work/db        its database, read-write (dbt builds into it)
-    /work/profiles  a profile pointing at /work/db, read-only
+    /work/project   the built fault's project (a git repository), read-write, with its
+                    database at warehouse.duckdb, where the project's own profile looks
+                    (gitignored, as in a real checkout)
+    /work/profiles  a profile pointing at that same file, read-only
+
+Every way of calling dbt reaches the same database: plain `dbt build` (the image sets
+DBT_PROFILES_DIR) and `dbt build --profiles-dir .` (the project's own profile). The first
+smoke run showed why: with the database elsewhere, the agent's `--profiles-dir .` found an
+empty one and it concluded the data was missing.
 
 The faulted copy, the pristine database, the verifier's folder and bench/faults/ (checks
 and references) are never mounted. The verifier snapshots on the host before the
@@ -75,20 +81,19 @@ def write_container_profile(out_dir: Path) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     text = (
         f"{PROFILE}:\n  target: {TARGET}\n  outputs:\n    {TARGET}:\n"
-        f"      type: duckdb\n      path: '/work/db/{DB_NAME}'\n      threads: 4\n"
+        f"      type: duckdb\n      path: '/work/project/{DB_NAME}'\n      threads: 4\n"
     )
     (out_dir / "profiles.yml").write_text(text, "utf-8", newline="\n")
     return out_dir
 
 
-def docker_argv(name: str, project: Path, db_dir: Path, profiles: Path, command: str) -> list[str]:
+def docker_argv(name: str, project: Path, profiles: Path, command: str) -> list[str]:
     """`docker run` for one trial. The API key is passed by name only: its value comes
     from the environment of the docker process, never the command line."""
     return [
         "docker", "run", "--rm", "--name", name,
         "-e", "ANTHROPIC_API_KEY",
         "-v", f"{project.resolve()}:/work/project",
-        "-v", f"{db_dir.resolve()}:/work/db",
         "-v", f"{profiles.resolve()}:/work/profiles:ro",
         "-w", "/work/project",
         IMAGE, "bash", "-c", command,
@@ -97,7 +102,6 @@ def docker_argv(name: str, project: Path, db_dir: Path, profiles: Path, command:
 
 def run_container(
     project: Path,
-    db_dir: Path,
     profiles: Path,
     command: str,
     api_key: str | None,
@@ -111,7 +115,7 @@ def run_container(
         env["ANTHROPIC_API_KEY"] = api_key
     started = time.monotonic()
     try:
-        done = subprocess.run(docker_argv(name, project, db_dir, profiles, command), env=env,
+        done = subprocess.run(docker_argv(name, project, profiles, command), env=env,
                               capture_output=True, text=True, encoding="utf-8",
                               errors="replace", timeout=timeout)  # fmt: skip
         output = done.stdout + done.stderr
@@ -123,7 +127,6 @@ def run_container(
 
 def run_baseline(
     project: Path,
-    db_dir: Path,
     work: Path,
     *,
     task: str,
@@ -135,4 +138,4 @@ def run_baseline(
     """The baseline on one built fault: its stream-json output and its seconds."""
     profiles = write_container_profile(work / "container-profiles")
     command = baseline_command(fault_prompt(task), model, run_cap_usd, max_turns)
-    return run_container(project, db_dir, profiles, command, api_key)
+    return run_container(project, profiles, command, api_key)
