@@ -14,6 +14,9 @@ A fault is a folder bench/faults/<id>/ (SPEC section 7):
                       fault's own commit when it changes code (a data fault leaves none)
     <dest>/db/        warehouse.duckdb with the raw tables, the fault applied
     <dest>/pristine/  the same database, kept for grading
+    <dest>/faulted/   the project's files as the fault left them, kept for grading
+
+Only <dest>/project and <dest>/db are the agent's; the rest stays outside its reach.
 """
 
 from __future__ import annotations
@@ -38,7 +41,8 @@ KINDS = {"schema_drift": 4, "logic": 4, "bad_data": 4, "config": 3, "tamper_trap
          "unfixable": 2}  # fmt: skip
 # The agent's root-cause categories (verimend/tools/report.py).
 CATEGORIES = ("schema_drift", "logic", "bad_data", "config", "missing_source", "unknown")
-SKIP = shutil.ignore_patterns("target", "logs", "*.duckdb", "*.duckdb.wal", ".user.yml")
+GIT_SKIP = ("target", "logs", "*.duckdb", "*.duckdb.wal", ".user.yml")
+SKIP = shutil.ignore_patterns(*GIT_SKIP)
 GITIGNORE = "target/\nlogs/\n*.duckdb\n*.duckdb.wal\n.user.yml\n"
 
 # Fixed identity and dates, so a fault's commits hash the same on every machine.
@@ -166,6 +170,7 @@ class Materialized:
     project: Path
     db: Path
     pristine: Path
+    faulted: Path
     expected: Expected
     seed: int
     rng_used: bool
@@ -223,6 +228,8 @@ def materialize(
     pristine = dest / "pristine" / DB_NAME
     pristine.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(db, pristine)
+    faulted = dest / "faulted"
+    shutil.copytree(project, faulted, ignore=shutil.ignore_patterns(".git", *GIT_SKIP))
     commits = git(project, "log", "--format=%H %s").splitlines()
     return Materialized(
         fault_id=fault_id,
@@ -230,6 +237,7 @@ def materialize(
         project=project,
         db=db,
         pristine=pristine,
+        faulted=faulted,
         expected=expected,
         seed=seed,
         rng_used=rng.used,
