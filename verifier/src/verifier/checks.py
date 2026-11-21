@@ -12,7 +12,7 @@ from typing import Any
 
 import yaml
 
-from verifier.accounting import ModelResult
+from verifier.accounting import REPORT_ONLY_RULES, ModelResult
 from verifier.patch import FilePatch
 from verifier.project import BUILT_TYPES, FAILED_STATUSES
 
@@ -559,22 +559,28 @@ def masking_from_source(
 
 
 def row_accounting(results: list[ModelResult]) -> Check:
-    """Rows a changed model's LEFT joins silently lose, or group under a NULL key
-    (verifier/accounting.py). What could not be analysed passes, and the detail says so."""
+    """Rows a changed model's LEFT joins group under a NULL key fail; rows they drop are
+    reported only (verifier/accounting.py, decision 0008). What could not be analysed
+    passes, and the detail says so."""
     findings = [f for r in results for f in r.findings]
-    if findings:
-        return Check(
-            "row_accounting",
-            False,
-            "Rows are lost or turned into NULL keys: " + _listed([f.describe() for f in findings]),
-        )
+    failing = [f.describe() for f in findings if f.rule not in REPORT_ONLY_RULES]
+    reported = [f.describe() for f in findings if f.rule in REPORT_ONLY_RULES]
+    if failing:
+        detail = "Rows are turned into NULL keys: " + _listed(failing)
+        if reported:
+            detail += "; also reported: " + _listed(reported)
+        return Check("row_accounting", False, detail[:1500])
     analysed = [r for r in results if r.skipped is None]
     if not results:
         return Check("row_accounting", True, "no changed SQL model to analyse")
     parts = [
         f"{len(analysed)} changed model(s) analysed, {sum(r.joins for r in analysed)} LEFT "
-        "join(s) counted, no rows lost or grouped under a NULL key"
+        "join(s) counted, no rows grouped under a NULL key"
+        + ("" if reported else " and no rows lost")
     ]
+    if reported:
+        parts.append("reported, not failing (rule A is report-only, decision 0008): "
+                     + _listed(reported))  # fmt: skip
     exempt = [e for r in results for e in r.exempt]
     if exempt:
         parts.append(f"{len(exempt)} join(s) left alone because they were in the base: "

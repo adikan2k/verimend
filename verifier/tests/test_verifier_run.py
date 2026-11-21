@@ -523,11 +523,35 @@ left join totals t on t.customer_id = k.customer_id
     )
 
 
-def test_row_accounting_rejects_facts_a_spine_drops(snap):
+def test_row_accounting_reports_facts_a_spine_drops_without_failing(snap):
+    """Rule A is report-only (decision 0008): the loss is in the detail, the fix passes."""
     result = run(snap[1], with_fix(revenue_model("(10), (11)")))
-    assert result["failed_check"] == "row_accounting", result
+    assert result["passed"], result
     detail = result["checks"][-1]["detail"]
     assert "customer_revenue" in detail and "revenue 9.99" in detail and "dropped" in detail
+    assert "report-only" in detail
+
+
+def test_row_accounting_rejects_dangling_keys_grouped_under_null(snap):
+    """Rule B fails a fix: order 99 has no order, so its amount lands under a NULL
+    customer in the built model."""
+    model = new_model(
+        "revenue_by_customer",
+        """
+{{ config(materialized='table') }}
+with lines as (
+    select * from (values (1, 5.0), (3, 2.5), (99, 7.0)) as t(order_id, amount)
+)
+select o.customer_id, sum(l.amount) as revenue
+from lines l
+left join {{ ref('stg_orders') }} o on l.order_id = o.order_id
+group by 1
+""",
+    )
+    result = run(snap[1], with_fix(model))
+    assert result["failed_check"] == "row_accounting", result
+    detail = result["checks"][-1]["detail"]
+    assert "revenue_by_customer" in detail and "NULL customer_id" in detail
 
 
 def test_row_accounting_passes_when_no_fact_is_lost(snap):
@@ -547,8 +571,9 @@ def test_replay_measures_every_check_and_leaves_no_trace(snap):
     assert replayed["failed_check"] == "collateral"
     assert [(c["name"], c["passed"]) for c in replayed["checks"]][-2:] == [
         ("collateral", False),
-        ("row_accounting", False),
+        ("row_accounting", True),
     ]
+    assert "report-only" in replayed["checks"][-1]["detail"]
     assert not (work / "runs" / "replay").exists()
 
 

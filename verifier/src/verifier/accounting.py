@@ -11,7 +11,9 @@ Two rules, and nothing else:
 A. Facts the spine drops. A LEFT join whose right side is a CTE or subquery that sums
    something (a rollup of facts). Its rows whose join key is not NULL and that match no
    row of the left side (the spine) are dropped from the output, and their sums with
-   them. Fails if any such row carries a nonzero sum. Explained, so not counted: a spine
+   them. Reported if any such row carries a nonzero sum, never a failure: the replay
+   found a benchmark reference that drops such rows on purpose, and under the stop rule
+   committed before it (decision 0008) rule A is report-only. Explained, so not counted: a spine
    that is filtered (WHERE, QUALIFY, HAVING, LIMIT, DISTINCT, SAMPLE or a non-LEFT join
    along it), and a join the base model already had (the loss is not the fix's doing).
 
@@ -43,6 +45,8 @@ from typing import Any
 
 SUM_FUNCTIONS = frozenset({"sum", "sum_no_overflow", "fsum", "sumkahan", "kahan_sum", "ksum"})
 FILTERING_MODIFIERS = frozenset({"LIMIT_MODIFIER", "LIMIT_PERCENT_MODIFIER", "DISTINCT_MODIFIER"})
+# Rules whose findings are reported in the detail but never fail a fix (decision 0008).
+REPORT_ONLY_RULES = frozenset({"lost_facts"})
 QUERY_TIMEOUT_S = 10.0
 MAX_QUERIES_PER_MODEL = 25
 TOTAL_BUDGET_S = 120.0

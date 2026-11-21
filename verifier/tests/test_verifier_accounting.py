@@ -55,8 +55,10 @@ def test_rule_a_catches_facts_a_spine_drops(con: Any) -> None:
     (finding,) = result.findings
     assert (finding.rule, finding.rows, finding.measures) == ("lost_facts", 1, {"revenue": 7.5})
     assert "left join sales" in finding.join and finding.scope == "final"
+    # Reported, never a failure: rule A is report-only (decision 0008).
     check = checks.row_accounting([result])
-    assert not check.passed and "7.50" in check.detail and "dropped" in check.detail
+    assert check.passed and "7.50" in check.detail and "dropped" in check.detail
+    assert "report-only" in check.detail and "no rows lost" not in check.detail
 
 
 def test_rule_a_passes_when_every_fact_reaches_the_spine(con: Any) -> None:
@@ -138,7 +140,8 @@ def test_rule_b_catches_dangling_keys_grouped_under_null(con: Any, group: str) -
     result = run(con, WRONG_CATEGORY.format(group=group))
     (finding,) = result.findings
     assert (finding.rule, finding.rows, finding.key) == ("null_keys", 1, "month")
-    assert "NULL month" in checks.row_accounting([result]).detail
+    check = checks.row_accounting([result])
+    assert not check.passed and "NULL month" in check.detail
 
 
 def test_rule_b_passes_with_an_explicit_filter(con: Any) -> None:
