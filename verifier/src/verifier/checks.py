@@ -14,10 +14,19 @@ import yaml
 
 from verifier.accounting import REPORT_ONLY_RULES, ModelResult
 from verifier.patch import FilePatch
+from verifier.policy import FIX, Policy
 from verifier.project import BUILT_TYPES, FAILED_STATUSES
 
 MAX_LISTED = 8
 ALWAYS_ALLOWED_FILES = frozenset({"dbt_project.yml", "packages.yml"})
+RESOURCE_PATH_KEYS = (
+    "model-paths",
+    "macro-paths",
+    "seed-paths",
+    "snapshot-paths",
+    "analysis-paths",
+    "test-paths",
+)
 NEVER_ALLOWED_DIRS = ("verifier", "bench", ".github", ".gitlab", ".circleci")
 
 # Test settings that make a test weaker when changed.
@@ -62,9 +71,43 @@ def _listed(items: list[str]) -> str:
 # ---- 1. Tamper ----------------------------------------------------------------------
 
 
-def tamper_paths(patches: list[FilePatch], paths: dict[str, list[str]]) -> Check:
+def outside_dbt(patches: list[FilePatch], paths: dict[str, list[str]]) -> list[str]:
+    """Changed files that are no part of the dbt project: not resources, tests or config."""
+    folders = [f for key in RESOURCE_PATH_KEYS for f in paths.get(key, [])]
+    outside = set()
+    for patch in patches:
+        for path in {p for p in (patch.old_path, patch.new_path) if p}:
+            if path in ALWAYS_ALLOWED_FILES or path.rsplit("/", 1)[-1] == "dependencies.yml":
+                continue
+            if not any(path.startswith(folder + "/") for folder in folders):
+                outside.add(path)
+    return sorted(outside)
+
+
+def touches_dbt(patches: list[FilePatch], paths: dict[str, list[str]]) -> bool:
+    outside = set(outside_dbt(patches, paths))
+    return any(
+        path not in outside
+        for patch in patches
+        for path in (patch.old_path, patch.new_path)
+        if path
+    )
+
+
+def tamper_paths(
+    patches: list[FilePatch], paths: dict[str, list[str]], policy: Policy = FIX
+) -> Check:
     """Every changed file is a model, macro, seed, snapshot or analysis, or the project
-    or package config. Tests, CI, the verifier and the benchmark are never allowed."""
+    or package config. Tests, CI, the verifier and the benchmark are never allowed.
+
+    Under the pr policy nothing is refused here: files outside the dbt project are listed
+    as not checked, and changes to tests are judged by the tests half of tamper."""
+    if policy.is_pr:
+        outside = outside_dbt(patches, paths)
+        detail = f"{len(patches)} changed file(s)"
+        if outside:
+            detail += f"; {len(outside)} outside the dbt project, not checked: {_listed(outside)}"
+        return Check("tamper", True, detail)
     editable = [
         folder
         for key in ("model-paths", "macro-paths", "seed-paths", "snapshot-paths", "analysis-paths")
@@ -113,8 +156,22 @@ def _is_test_macro(uid: str) -> bool:
     return name.startswith("test_") or "__test_" in name
 
 
-def tamper_tests(base: dict[str, Any], new: dict[str, Any]) -> Check:
-    """No test removed, disabled, loosened or re-tagged, and no test macro changed."""
+def _weakened(problems: list[str], policy: Policy, what: str) -> Check:
+    if problems and policy.allow_test_changes:
+        return Check(
+            "tamper",
+            True,
+            f"Test changes allowed by the pull request's label: {_listed(problems)}",
+        )
+    if problems:
+        return Check("tamper", False, "Tests were weakened: " + _listed(problems))
+    return Check("tamper", True, what)
+
+
+def tamper_tests(base: dict[str, Any], new: dict[str, Any], policy: Policy = FIX) -> Check:
+    """No test removed, disabled, loosened or re-tagged, and no test macro changed. Under
+    the pr policy a new test macro is allowed (a new generic test adds a check); a label
+    may allow every test change, and they are still listed."""
     problems: list[str] = []
     new_nodes = new.get("nodes", {})
     for uid, node in base.get("nodes", {}).items():
@@ -135,13 +192,15 @@ def tamper_tests(base: dict[str, Any], new: dict[str, Any]) -> Check:
             problems.append(f"{uid} was removed or disabled")
         elif any(unit.get(k) != after.get(k) for k in ("given", "expect", "overrides")):
             problems.append(f"{uid} changed")
+    old_macros = base.get("macros", {})
     for uid in _changed_macros(base, new):
-        if _is_test_macro(uid):
-            problems.append(f"test macro {uid} was added or changed")
-    if problems:
-        return Check("tamper", False, "Tests were weakened: " + _listed(problems))
+        if not _is_test_macro(uid):
+            continue
+        if policy.is_pr and uid not in old_macros:
+            continue  # a new generic test
+        problems.append(f"test macro {uid} was added or changed")
     tests = sum(1 for n in base.get("nodes", {}).values() if n.get("resource_type") == "test")
-    return Check("tamper", True, f"all {tests} test(s) unchanged")
+    return _weakened(problems, policy, f"all {tests} test(s) unchanged")
 
 
 # ---- 2. Masking ---------------------------------------------------------------------
@@ -161,8 +220,19 @@ def _filtered_lines(patches: list[FilePatch]) -> list[str]:
     return problems
 
 
-def masking(base: dict[str, Any], new: dict[str, Any], patches: list[FilePatch]) -> Check:
+def masking(
+    base: dict[str, Any],
+    new: dict[str, Any],
+    patches: list[FilePatch],
+    policy: Policy = FIX,
+    base_statuses: dict[str, dict[str, str]] | None = None,
+) -> Check:
+    """No model disabled or removed, and no filter that returns nothing. Under the pr
+    policy a removed model fails only when it hides a failure: it, or a node downstream
+    of it, failed in the base build. A clean removal is listed."""
     problems: list[str] = []
+    removed: list[str] = []
+    failed = {uid for uid, s in (base_statuses or {}).items() if s.get("status") in FAILED_STATUSES}
     enabled_names = {
         (node.get("resource_type"), node.get("name"))
         for node in new.get("nodes", {}).values()
@@ -174,10 +244,19 @@ def masking(base: dict[str, Any], new: dict[str, Any], patches: list[FilePatch])
             continue
         if (node.get("resource_type"), node.get("name")) in enabled_names:
             continue  # replaced by an enabled node of the same name (a package override)
+        if policy.is_pr and not (downstream_of({uid}, base) & failed):
+            removed.append(uid)
+            continue
         problems.append(f"{uid} was disabled or removed")
     problems += _filtered_lines(patches)
     if problems:
         return Check("masking", False, "The fix hides the failure: " + _listed(problems))
+    if removed:
+        return Check(
+            "masking",
+            True,
+            f"no rows filtered away; removed, with no failure behind them: {_listed(removed)}",
+        )
     return Check("masking", True, "no model disabled, no rows filtered away")
 
 
@@ -478,7 +557,9 @@ def _test_macros(project: Path, paths: dict[str, list[str]]) -> dict[str, str]:
     return macros
 
 
-def tamper_tests_from_source(base: Path, new: Path, paths: dict[str, list[str]]) -> Check:
+def tamper_tests_from_source(
+    base: Path, new: Path, paths: dict[str, list[str]], policy: Policy = FIX
+) -> Check:
     problems = [
         f"{owner}: a test was removed or changed"
         for owner, _ in sorted(source_tests(base, paths) - source_tests(new, paths))
@@ -487,11 +568,9 @@ def tamper_tests_from_source(base: Path, new: Path, paths: dict[str, list[str]])
     problems += [
         f"test macro {rel} was added or changed"
         for rel in sorted(set(before) | set(after))
-        if before.get(rel) != after.get(rel)
+        if before.get(rel) != after.get(rel) and not (policy.is_pr and rel not in before)
     ]
-    if problems:
-        return Check("tamper", False, "Tests were weakened: " + _listed(problems))
-    return Check("tamper", True, "all tests in the base's properties files unchanged")
+    return _weakened(problems, policy, "all tests in the base's properties files unchanged")
 
 
 def source_nodes(project: Path, paths: dict[str, list[str]]) -> set[tuple[str, str]]:

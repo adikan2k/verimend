@@ -20,6 +20,7 @@ from typing import Any
 
 from verifier import accounting, checks
 from verifier.patch import DiffError, FilePatch, apply_diff, make_diff, parse_diff
+from verifier.policy import FIX, Policy
 from verifier.project import (
     FAILED_STATUSES,
     Dbt,
@@ -87,9 +88,18 @@ def _needs_deps(project: Path) -> bool:
     return has_packages and not (project / "dbt_packages").is_dir()
 
 
+def profile_database(project_dir: Path, profile: Profile) -> Path:
+    """The DuckDB file a profile points at, relative paths taken from the project."""
+    path = str(profile.output.get("path", ""))
+    if not path or "{{" in path or path == ":memory:":
+        raise VerifierError("cannot tell the project's DuckDB file from its profile (pass --db)")
+    candidate = Path(path)
+    return (candidate if candidate.is_absolute() else project_dir / candidate).resolve()
+
+
 def snapshot(
     project_dir: Path,
-    db_path: Path,
+    db_path: Path | None,
     work: Path,
     *,
     profiles_dir: Path | None = None,
@@ -100,6 +110,8 @@ def snapshot(
     started = time.monotonic()
     project_dir = project_dir.resolve()
     profile = read_profile(project_dir, find_profiles_dir(project_dir, profiles_dir), target)
+    if db_path is None:
+        db_path = profile_database(project_dir, profile)
     if work.exists():
         shutil.rmtree(work)
     copy_project(project_dir, work / "base" / "project")
@@ -178,20 +190,31 @@ def _result(found: list[checks.Check], started: float, failed: str | None = None
 
 
 def verify(
-    work: Path, diff_text: str, *, dbt_exe: str, timeout: float = 1500.0, replay: bool = False
+    work: Path,
+    diff_text: str,
+    *,
+    dbt_exe: str,
+    timeout: float = 1500.0,
+    replay: bool = False,
+    policy: Policy = FIX,
 ) -> dict:
     """The verifier's decision on a diff. `replay` is for re-verifying recorded diffs
     (bench/replay.py), never a real run: each diff starts from the snapshot as it was
     (nothing learned is written back), a collateral failure does not stop row accounting,
-    so both are measured, and the build copy is removed afterwards."""
+    so both are measured, and the build copy is removed afterwards. `policy` is `fix` for
+    an agent's fix (every benchmark number) or `pr` for any pull request (policy.py)."""
     try:
-        return _verify(work, diff_text, dbt_exe=dbt_exe, timeout=timeout, replay=replay)
+        return _verify(
+            work, diff_text, dbt_exe=dbt_exe, timeout=timeout, replay=replay, policy=policy
+        )
     finally:
         if replay:
             shutil.rmtree(work / "runs" / "replay", ignore_errors=True)
 
 
-def _verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float, replay: bool) -> dict:
+def _verify(
+    work: Path, diff_text: str, *, dbt_exe: str, timeout: float, replay: bool, policy: Policy
+) -> dict:
     started = time.monotonic()
     state = read_json(work / "state.json")
     base_manifest = read_json(work / "base" / "manifest.json")
@@ -200,6 +223,9 @@ def _verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float, replay:
     base_project = work / "base" / "project"
 
     if not diff_text.strip():
+        if policy.is_pr:
+            nothing = checks.Check("empty_diff", True, "No change to the dbt project to check.")
+            return _result([nothing], started)
         empty = checks.Check("empty_diff", False, "The diff changes nothing.")
         return _result([empty], started)
     try:
@@ -209,9 +235,11 @@ def _verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float, replay:
     if not patches:
         return _result([checks.Check("diff", False, "The diff names no files.")], started)
 
-    found = [checks.tamper_paths(patches, state["paths"])]
+    found = [checks.tamper_paths(patches, state["paths"], policy)]
     if not found[-1].passed:
         return _result(found, started)
+    if policy.is_pr and not checks.touches_dbt(patches, state["paths"]):
+        return _result(found, started)  # nothing in the dbt project changed
 
     runs = work / "runs"
     number = len(list(runs.iterdir())) + 1 if runs.is_dir() else 1
@@ -237,15 +265,19 @@ def _verify(work: Path, diff_text: str, *, dbt_exe: str, timeout: float, replay:
 
     # Tamper has two halves, the paths and the tests; report them as one check.
     if base_manifest is not None:
-        tests = checks.tamper_tests(base_manifest, new_manifest)
+        tests = checks.tamper_tests(base_manifest, new_manifest, policy)
     else:
-        tests = checks.tamper_tests_from_source(base_project, project, state["paths"])
+        tests = checks.tamper_tests_from_source(base_project, project, state["paths"], policy)
     found[0] = checks.Check("tamper", tests.passed, f"{found[0].detail}; {tests.detail}")
     if not tests.passed:
         found[0].detail = tests.detail
         return _result(found, started)
     if base_manifest is not None:
-        found.append(checks.masking(base_manifest, new_manifest, patches))
+        found.append(
+            checks.masking(
+                base_manifest, new_manifest, patches, policy, state.get("statuses") or {}
+            )
+        )
     else:
         found.append(
             checks.masking_from_source(base_project, project, new_manifest, patches, state["paths"])
