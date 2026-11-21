@@ -19,8 +19,9 @@ from typing import Literal
 
 from verimend.config import REPO_ROOT
 
-SetName = Literal["dev", "heldout", "vendor"]
-SET_NAMES: tuple[SetName, ...] = ("dev", "heldout", "vendor")
+SetName = Literal["dev", "heldout", "vendor", "all"]
+# "all" is the fault suite's only set: its twenty faults are ours and are not split.
+SET_NAMES: tuple[SetName, ...] = ("dev", "heldout", "vendor", "all")
 
 # Written by split_bench.py. Its presence means the split exists.
 SPLIT_MARKER = REPO_ROOT / "bench" / "split.json"
@@ -33,8 +34,13 @@ class Source:
     commit: str  # the upstream commit every run must use
     tasks_subdir: str
     task_file: str  # a folder is a task if it has this file
-    runner: Literal["ade", "harbor"]
+    runner: Literal["ade", "harbor", "local"]
     agents: tuple[str, ...]  # agents wired up for this source
+
+    @property
+    def local(self) -> bool:
+        """Ours, in this repository, run on this machine: no checkout, no container."""
+        return self.runner == "local"
 
 
 SOURCES: dict[str, Source] = {
@@ -56,6 +62,16 @@ SOURCES: dict[str, Source] = {
         runner="harbor",
         # The baseline and VeriMend on Harbor come in phase 3.
         agents=("none", "reference", "baseline", "verimend"),
+    ),
+    "faults": Source(
+        name="faults",
+        repo_url="",
+        commit="",
+        tasks_subdir="bench/faults",
+        task_file="expected.json",
+        runner="local",
+        # The baseline needs a container adapter; not built yet (decision 0005).
+        agents=("none", "reference", "verimend"),
     ),
 }
 
@@ -96,7 +112,16 @@ def require_set_allowed(set_name: str, *, env: Mapping[str, str], split_exists: 
     return set_name  # type: ignore[return-value]
 
 
+def require_set_for_source(set_name: SetName, source: Source) -> None:
+    if source.local and set_name != "all":
+        raise TaskSetError(f"{source.name} has one set, all: run it with --set all")
+    if set_name == "all" and not source.local:
+        raise TaskSetError(f"--set all is for the fault suite; {source.name} has dev and heldout")
+
+
 def tasks_root(set_name: SetName, source: Source, home: Path, repo: Path = REPO_ROOT) -> Path:
+    if source.local:
+        return repo / source.tasks_subdir
     if set_name == "vendor":
         return vendor_dir(source, home) / source.tasks_subdir
     return repo / "bench" / set_name / source.name

@@ -20,7 +20,8 @@ from bench.outcomes import Outcome, RunResult, summarize
 REPO = Path(__file__).resolve().parents[1]
 RESULTS = REPO / "bench" / "results"
 AGENT_ORDER = ["none", "reference", "baseline", "verimend"]
-SOURCE_NAMES = {"ade-bench": "ADE-bench", "data-eng-bench": "data-eng-bench"}
+SOURCE_NAMES = {"ade-bench": "ADE-bench", "data-eng-bench": "data-eng-bench",
+                "faults": "Fault suite"}  # fmt: skip
 
 
 def load_batch(name: str, results: Path = RESULTS) -> dict[str, Any]:
@@ -62,6 +63,7 @@ def row(agent: str, source: str, metrics: dict[str, Any], links: list[str]) -> s
         across,
         pct(metrics["false_success_rate"]),
         str(metrics["claimed_fixed"]),
+        escalation_cell(metrics),
         verifier_cell(metrics),
         f"{money(dollars['mean_per_run'])} / {money(dollars['max_per_run'])}",
         number(metrics["mean_seconds"]),
@@ -70,6 +72,15 @@ def row(agent: str, source: str, metrics: dict[str, Any], links: list[str]) -> s
         ", ".join(links),
     ]
     return "| " + " | ".join(cells) + " |"
+
+
+def escalation_cell(metrics: dict[str, Any]) -> str:
+    """Escalations: correct and wrong (on tasks that expect one), and unneeded."""
+    o = metrics["outcomes"]
+    return (
+        f"{o.get('correct_escalation', 0)} / {o.get('wrong_escalation', 0)} / "
+        f"{o.get('unneeded_escalation', 0)}"
+    )
 
 
 def verifier_cell(metrics: dict[str, Any]) -> str:
@@ -87,9 +98,9 @@ def verifier_cell(metrics: dict[str, Any]) -> str:
 
 HEADER = [
     "| Agent | Benchmark | Runs (tasks × trials) | Grader pass rate | Across trials "
-    "| False-success rate | Claimed fixed | Verifier | $ per run (mean / max) "
-    "| Seconds per run | Steps | Hook blocks | Data |",
-    "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+    "| False-success rate | Claimed fixed | Escalations (correct / wrong / unneeded) "
+    "| Verifier | $ per run (mean / max) | Seconds per run | Steps | Hook blocks | Data |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
 ]
 
 
@@ -155,6 +166,10 @@ def main(argv: list[str] | None = None) -> int:
         "section 6), how many runs' last verifier check passed, and the mean number of "
         "verifier runs. "
         "For `none` and `reference` it is a measure of the verifier itself, with no agent.",
+        "- **Escalations:** correct and wrong are escalations on tasks that expect one (the "
+        "fault suite's bad-data and unfixable faults); wrong means the grader failed it, for "
+        "the wrong root cause or hidden bad data. Unneeded is an escalation on a task that "
+        "expects a fix.",
         "- **Across trials:** lowest and highest pass rate of a single trial.",
         *[f"- {note}" for note in args.note],
         "",

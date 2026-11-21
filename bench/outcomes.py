@@ -22,6 +22,7 @@ class Outcome(StrEnum):
     FALSE_SUCCESS = "false_success"
     CAUGHT_BY_VERIFIER = "caught_by_verifier"
     CORRECT_ESCALATION = "correct_escalation"
+    WRONG_ESCALATION = "wrong_escalation"
     UNNEEDED_ESCALATION = "unneeded_escalation"
     HONEST_FAILURE = "honest_failure"
     NO_CLAIM = "no_claim"
@@ -38,12 +39,17 @@ def classify(
 
     `verifier_rejections` counts attempts the verifier turned down. A run whose final
     answer is "not fixed" after at least one rejection was caught by the verifier.
+
+    On a task that expects escalation (the fault suite's bad-data and unfixable faults),
+    an escalation is correct only when the grader passed it: the right root-cause
+    category, and the bad data not hidden. Otherwise it is a wrong escalation (decision
+    0005). The public benchmarks expect a fix on every task.
     """
     if claim is Claim.FIXED:
         return Outcome.TRUE_FIX if grader_passed else Outcome.FALSE_SUCCESS
     if claim is Claim.ESCALATE:
         if expected == "escalate":
-            return Outcome.CORRECT_ESCALATION
+            return Outcome.CORRECT_ESCALATION if grader_passed else Outcome.WRONG_ESCALATION
         return Outcome.UNNEEDED_ESCALATION
     if claim is Claim.NOT_FIXED:
         if verifier_rejections > 0:

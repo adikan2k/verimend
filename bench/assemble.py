@@ -13,7 +13,7 @@ from bench.agents import AgentSpec
 from bench.claims import Claim, claim_from_report, parse_verdict
 from bench.claude_stream import parse_stream
 from bench.grade import Grade
-from bench.outcomes import RunResult, classify, summarize
+from bench.outcomes import Expected, RunResult, classify, summarize
 from bench.trace import Trace
 from verimend.runrecord import AgentRun
 
@@ -34,6 +34,9 @@ class AgentRecord:
     agent_run: AgentRun | None = None  # VeriMend's own record of the run
     # The verifier run on a free agent's work (--with-verifier): snapshot, attempts, error.
     verifier: dict[str, Any] | None = None
+    # A free agent's own report, when it has one (the fault suite's reference escalates on
+    # faults that expect it). The claim then comes from this report.
+    report: dict[str, Any] | None = None
 
 
 def add_attempts(trace: Trace, t: float, attempts: list[dict[str, Any]]) -> None:
@@ -58,9 +61,12 @@ def assemble_run(
     meta: dict[str, Any],
     *,
     include_tests: bool = True,
+    expected: Expected = "fix",
 ) -> tuple[Trace, RunResult]:
     if record.agent_run is not None:
-        return _assemble_verimend(record, record.agent_run, grade, spec, meta, include_tests)
+        return _assemble_verimend(
+            record, record.agent_run, grade, spec, meta, include_tests, expected
+        )
     trace = Trace(record.task, record.trial)
     stream = parse_stream(record.stream_log) if record.stream_log is not None else None
     checked = record.verifier or {}
@@ -97,12 +103,14 @@ def assemble_run(
     fixed = spec.fixed_claim()
     if record.stopped in {"batch_cap", "harness_error"}:  # the agent never ran
         claim = Claim.NONE
+    elif record.report is not None:
+        claim = claim_from_report(record.report)
     elif fixed is not None:
         claim = fixed
     else:
         claim = parse_verdict(stream.final_text if stream else None)
     text = stream.final_text[-REPORT_TEXT_CHARS:] if stream else None
-    trace.add("report", t=t, claim=str(claim), text=text)
+    trace.add("report", t=t, claim=str(claim), text=text, verdict=record.report)
     attempts = list(checked.get("attempts") or [])
     add_attempts(trace, t, attempts)
 
@@ -113,7 +121,7 @@ def assemble_run(
         trace.add("grade", t=t, grader=meta.get("grader"), passed=False, failure_mode="missing")
 
     dollars, cost_source = _cost(spec, record, stream)
-    outcome = classify(claim, passed)
+    outcome = classify(claim, passed, expected=expected)
     stopped = record.stopped or (stream.stop_subtype if stream else None)
     if checked.get("error"):
         stopped = stopped or "verifier_error"
@@ -174,6 +182,7 @@ def _assemble_verimend(
     spec: AgentSpec,
     meta: dict[str, Any],
     include_tests: bool,
+    expected: Expected = "fix",
 ) -> tuple[Trace, RunResult]:
     """VeriMend's trace: its own timed tool calls and hook blocks, and its report."""
     trace = Trace(record.task, record.trial)
@@ -225,7 +234,9 @@ def _assemble_verimend(
         dollars, cost_source = run.cost_usd, "result_line"
     else:  # no result: charge the whole cap, never assume it was cheaper
         dollars, cost_source = float(record.run_cap_usd or 0.0), "run_cap_assumed"
-    outcome = classify(claim, passed, verifier_rejections=run.verifier_rejections)
+    outcome = classify(
+        claim, passed, expected=expected, verifier_rejections=run.verifier_rejections
+    )
     stopped = record.stopped or (run.subtype if run.subtype != "success" else None)
     if run.verifier_error:
         stopped = stopped or "verifier_error"
@@ -292,6 +303,7 @@ def write_batch(
     *,
     expected: list[tuple[str, int]] | None = None,
     include_tests: bool = True,
+    expected_outcomes: dict[str, Expected] | None = None,
 ) -> dict[str, Any]:
     """Write every trace and summary.json; return the summary.
 
@@ -307,7 +319,14 @@ def write_batch(
     runs: list[RunResult] = []
     for record in sorted(records, key=lambda r: (r.task, r.trial)):
         grade = by_key.get((record.task, record.trial))
-        trace, result = assemble_run(record, grade, spec, meta, include_tests=include_tests)
+        trace, result = assemble_run(
+            record,
+            grade,
+            spec,
+            meta,
+            include_tests=include_tests,
+            expected=(expected_outcomes or {}).get(record.task, "fix"),
+        )
         trace.write(results_dir)
         runs.append(result)
     summary = {

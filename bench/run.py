@@ -30,6 +30,7 @@ from bench.tasksets import (
     get_source,
     list_task_ids,
     require_set_allowed,
+    require_set_for_source,
     select_tasks,
     stage_tasks,
     tasks_root,
@@ -189,6 +190,67 @@ def plan_line(
     )
 
 
+def run_local(
+    args: argparse.Namespace,
+    spec: AgentSpec,
+    settings: Settings,
+    set_name: str,
+    source: Source,
+    task_ids: list[str],
+    max_usd: float,
+) -> int:
+    """The fault suite: ours, in this repository, run on this machine (bench/faults/run.py)."""
+    from bench.faults.lib import SUITE_SEED
+    from bench.faults.run import run_batch
+
+    sha, dirty = git_state(REPO_ROOT)
+    batch = args.batch or f"{spec.name}-{source.name}-{datetime.now():%Y-%m-%d-%H%M%S}"
+    stage = settings.verimend_home / "runs" / batch
+    if stage.exists():
+        print(f"bench.run: staging folder already exists: {stage}", file=sys.stderr)
+        return 2
+    payload: dict[str, Any] = {
+        "batch": batch,
+        "agent": spec.name,
+        "set": set_name,
+        "source": source.name,
+        "source_commit": sha,  # the faults live in this repository
+        "git_sha": sha,
+        "git_dirty": dirty,
+        "model": settings.model_default if spec.model_calls else None,
+        "trials": args.trials,
+        "max_usd": max_usd,
+        "per_run_usd": min(settings.max_usd_per_run, max_usd),
+        "max_steps": settings.max_steps,
+        "max_attempts": settings.max_attempts if spec.name == "verimend" else 1,
+        "with_verifier": spec.name == "verimend" or bool(args.with_verifier),
+        "task_ids": task_ids,
+        "seed": SUITE_SEED,
+        "stage_dir": str(stage),
+        "results_dir": str(REPO_ROOT / "bench" / "results" / batch),
+    }
+    stage.mkdir(parents=True)
+    (stage / "batch.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    summary = run_batch(payload, settings)
+    for run in summary["runs"]:
+        grader = "pass" if run["grader_passed"] else "fail"
+        checked = run["failed_check"] or "pass"
+        verifier = f"  verifier={checked} x{run['attempts']}" if run["attempts"] else ""
+        print(
+            f"{run['task']:6} trial {run['trial']}  grader={grader}  claim={run['claim']}"
+            f"  outcome={run['outcome']}  ${run['dollars']:.4f}{verifier}",
+            flush=True,
+        )
+    m = summary["metrics"]
+    spent = summary["spent_usd"]
+    print(
+        f"grader pass rate {m['grader_pass_rate']}, false-success rate "
+        f"{m['false_success_rate']}, spent ${spent:.4f} of ${max_usd:.2f}"
+    )
+    print(f"Results: {payload['results_dir']}")
+    return 0
+
+
 def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None) -> int:
     args = parse_args(argv)
     env = os.environ if env is None else env
@@ -200,6 +262,7 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
         if spec.name not in source.agents:
             raise TaskSetError(f"{spec.name} is not wired up for {source.name} yet.")
         set_name = require_set_allowed(args.set_name, env=env, split_exists=SPLIT_MARKER.exists())
+        require_set_for_source(set_name, source)
         limit, max_usd = require_batch_caps(args.limit, args.max_usd)
         if args.trials < 1:
             raise CapError("--trials must be at least 1")
@@ -225,6 +288,9 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] | None = None
         if set_name != "heldout":
             print("Tasks: " + ", ".join(task_ids))
         return 0
+
+    if source.local:
+        return run_local(args, spec, settings, set_name, source, task_ids, max_usd)
 
     try:
         require_source_commit(source, checkout)
