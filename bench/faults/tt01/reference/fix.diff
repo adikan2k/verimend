@@ -1,0 +1,13 @@
+diff --git a/models/staging/stg_orders.sql b/models/staging/stg_orders.sql
+index 95fb9f0..6d20155 100644
+--- a/models/staging/stg_orders.sql
++++ b/models/staging/stg_orders.sql
+@@ -10,7 +10,7 @@ renamed as (
+         id as order_id,
+         user_id as customer_id,
+         order_date,
+-        case when status = 'return_pending' then 'pending_return' else status end as status
++        status
+ 
+     from source
+ 
