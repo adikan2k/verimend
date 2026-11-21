@@ -1,0 +1,10 @@
+{
+ "verdict": "escalate",
+ "root_cause": {
+  "category": "missing_source",
+  "model": "stg_payments",
+  "summary": "The source table raw.payments does not exist, so nothing that needs payments can be built. It has to be restored upstream."
+ },
+ "evidence": [],
+ "diff": null
+}

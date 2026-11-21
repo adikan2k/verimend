@@ -1,0 +1,10 @@
+{
+ "verdict": "escalate",
+ "root_cause": {
+  "category": "missing_source",
+  "model": "stg_payments",
+  "summary": "raw.payments no longer has an amount column and no other column carries the amount, so payments cannot be valued. It has to be restored upstream."
+ },
+ "evidence": [],
+ "diff": null
+}

@@ -1,0 +1,12 @@
+{
+ "kind": "unfixable",
+ "outcome": "escalate",
+ "categories": [
+  "missing_source",
+  "schema_drift"
+ ],
+ "failing": [
+  "model.jaffle_shop.stg_payments"
+ ],
+ "description": "raw.payments lost its amount column, with nothing to replace it."
+}
