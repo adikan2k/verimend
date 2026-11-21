@@ -105,6 +105,7 @@ def is_code_file(path: str) -> bool:
         return False
     return path.endswith((".sql", ".yml", ".yaml")) and path not in (
         "dbt_project.yml",
+        "packages.yml",  # a case lists vendored packages instead (bench/realworld/lib.py)
         "integration_tests/dbt_project.yml",
         "integration_tests/ci/test_scenarios.yml",
         ".quickstart/quickstart.yml",

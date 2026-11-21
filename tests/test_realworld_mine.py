@@ -62,6 +62,7 @@ def test_code_files_are_package_sql_and_yaml_only():
     assert is_code_file("models/example.yml")
     assert not is_code_file("docs/catalog.json")
     assert not is_code_file("dbt_project.yml")
+    assert not is_code_file("packages.yml")
     assert not is_code_file("integration_tests/dbt_project.yml")
     assert not is_code_file("integration_tests/seeds/thread.csv")
     assert not is_code_file("CHANGELOG.md")
