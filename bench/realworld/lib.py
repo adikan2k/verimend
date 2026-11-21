@@ -150,9 +150,14 @@ def case_ids(cases_dir: Path = CASES_DIR) -> list[str]:
     return sorted(p.parent.name for p in cases_dir.glob("*/case.json"))
 
 
-def _leaks(text: str, case: Case) -> bool:
-    """Whether `text` points at the fix: its PR, its URL or its commit."""
-    pattern = rf"(pull/{case.pr}\b|PR #{case.pr}\b|#{case.pr}\b|{case.fix_sha[:7]})"
+def _leaks(text: str, case: Case, *, own_repo: bool = True) -> bool:
+    """Whether `text` points at the fix: its PR, its URL or its commit. In a file of
+    another project (`own_repo=False`, a vendored package), a bare "#49" is that project's
+    own issue, so only the case's repository URL and the fix commit count."""
+    if own_repo:
+        pattern = rf"(pull/{case.pr}\b|PR #{case.pr}\b|#{case.pr}\b|{case.fix_sha[:7]})"
+    else:
+        pattern = rf"({re.escape(case.repo)}/pull/{case.pr}\b|{case.fix_sha[:7]})"
     return re.search(pattern, text) is not None
 
 
@@ -176,13 +181,20 @@ def git(cwd: Path, *args: str, date: str | None = None, binary: bool = False) ->
     return done.stdout if binary else done.stdout.decode("utf-8", "replace")
 
 
-def write_profile(profile: str, db: Path, out_dir: Path, schema: str = "main") -> Path:
+def write_profile(
+    profile: str, db: Path, out_dir: Path, schema: str = "main", *, deterministic: bool = False
+) -> Path:
+    """profiles.yml for a case. `deterministic` runs DuckDB on one thread: unordered
+    aggregates (string_agg, list) then come out the same on every build, which grading
+    needs. The agent's own profile keeps DuckDB's default."""
     out_dir.mkdir(parents=True, exist_ok=True)
     text = (
         f"{profile}:\n  target: {TARGET}\n  outputs:\n    {TARGET}:\n"
         f"      type: duckdb\n      path: '{db.resolve().as_posix()}'\n"
         f"      schema: {schema}\n      threads: 4\n"
     )
+    if deterministic:
+        text += "      settings:\n        threads: 1\n"
     (out_dir / "profiles.yml").write_text(text, "utf-8")
     return out_dir
 
@@ -512,7 +524,8 @@ def fingerprint(project: Path, db: Path, commits: list[str]) -> str:
 def leaks_in(project: Path, case: Case) -> list[str]:
     """Files, and the git log, that point at the fix. Must be empty."""
     found = [rel for rel, data in project_files(project).items()
-             if _leaks(data.decode("utf-8", "replace"), case)]  # fmt: skip
+             if _leaks(data.decode("utf-8", "replace"), case,
+                       own_repo=not rel.startswith(f"{VENDOR}/"))]  # fmt: skip
     if (project / ".git").is_dir() and _leaks(git(project, "log", "--format=%H %an %s %b"), case):
         found.append("git log")
     return found

@@ -101,7 +101,9 @@ def _section_text(changelog: str, version: str) -> str:
 
 def is_code_file(path: str) -> bool:
     """SQL and YAML that dbt reads, outside docs and the integration tests' seeds."""
-    if path.startswith(("docs/", ".github/", ".buildkite/", "integration_tests/seeds/")):
+    if path.startswith(
+        ("docs/", ".github/", ".buildkite/", ".changes/", "integration_tests/seeds/")
+    ):
         return False
     return path.endswith((".sql", ".yml", ".yaml")) and path not in (
         "dbt_project.yml",

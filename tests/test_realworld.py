@@ -9,7 +9,7 @@ import pytest
 import yaml
 
 from bench.realworld.__main__ import check_case
-from bench.realworld.grade import answer_key, build_copy, grade_case
+from bench.realworld.grade import answer_key, build_copy, downstream_models, grade_case
 from bench.realworld.lib import (
     DB_NAME,
     Case,
@@ -303,3 +303,36 @@ def test_answer_key_fails_when_the_human_fix_does_not_build(tmp_path, case, cach
         answer_key(built.project, built.pristine, "integration_tests", tmp_path / "key")
     build, _ = build_copy(built.project, built.pristine, "integration_tests", tmp_path / "b")
     assert build.failing == ["model.toy.stg_toy__things"]
+
+
+def test_a_vendored_package_naming_its_own_pr_is_not_a_leak(tmp_path: Path, case: Case):
+    project = tmp_path / "p"
+    write(project / "vendor" / "utils" / "CHANGELOG.md", "## v0.4.1\n- Fix from PR #7.\n")
+    assert leaks_in(project, case) == []
+    write(project / "vendor" / "utils" / "README.md",
+          "See https://github.com/example/dbt_toy/pull/7\n")  # fmt: skip
+    assert leaks_in(project, case) == ["vendor/utils/README.md"]
+
+
+def test_models_downstream_of_an_unstable_model_are_unstable():
+    def node(name: str, kind: str = "model") -> dict:
+        return {"name": name, "resource_type": kind}
+
+    manifest = {
+        "nodes": {"model.p.rollup": node("rollup"), "model.p.emails": node("emails"),
+                  "model.p.other": node("other"),
+                  "test.p.unique_emails": node("unique_emails", "test")},
+        "child_map": {"model.p.rollup": ["model.p.emails", "test.p.unique_emails"],
+                      "model.p.emails": [], "model.p.other": []},
+    }  # fmt: skip
+    assert downstream_models(manifest, {"rollup"}) == {"rollup", "emails"}
+    assert downstream_models(manifest, set()) == set()
+
+
+def test_grading_builds_run_duckdb_on_one_thread(tmp_path, case, cache):
+    built = materialize(case, cache, tmp_path / "case")
+    build_copy(built.project, built.pristine, "integration_tests", tmp_path / "b")
+    graded = yaml.safe_load((tmp_path / "b" / "profiles" / "profiles.yml").read_text())
+    assert graded["integration_tests"]["outputs"]["dev"]["settings"] == {"threads": 1}
+    agents = yaml.safe_load((built.profiles / "profiles.yml").read_text())
+    assert "settings" not in agents["integration_tests"]["outputs"]["dev"]

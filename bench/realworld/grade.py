@@ -65,22 +65,43 @@ def build_copy(project: Path, db: Path, profile: str, work: Path) -> tuple[Build
     built_db = work / "db" / DB_NAME
     built_db.parent.mkdir(parents=True)
     shutil.copy2(db, built_db)
-    profiles = write_profile(profile, built_db, work / "profiles")
+    profiles = write_profile(profile, built_db, work / "profiles", deterministic=True)
     return deps_and(copy, profiles, "build"), built_db
 
 
 def answer_key(key_project: Path, pristine: Path, profile: str, work: Path) -> AnswerKey:
-    """The human fix built twice on the case's data; only stable models count."""
+    """The human fix built twice on the case's data; only stable models count. A model
+    downstream of an unstable one is unstable too: two builds agreeing on it can be luck."""
     found: list[dict[str, Table]] = []
+    manifest: dict[str, Any] = {}
     for attempt in ("one", "two"):
         build, built_db = build_copy(key_project, pristine, profile, work / f"key-{attempt}")
         if not build.passed or build.manifest is None:
             raise CaseError(f"the human fix does not build: {build.failing} "
                             f"{build.output[-600:]}")  # fmt: skip
         found.append(model_tables(built_db, build.manifest))
+        manifest = build.manifest
     one, two = found
-    unstable = tuple(sorted(name for name in one if one[name] != two.get(name)))
+    differ = {name for name in one if one[name] != two.get(name)}
+    unstable = tuple(sorted(downstream_models(manifest, differ)))
     return AnswerKey({k: v for k, v in one.items() if k not in unstable}, unstable)
+
+
+def downstream_models(manifest: dict[str, Any], names: set[str]) -> set[str]:
+    """`names` and every model that depends on one of them, by model name."""
+    nodes = manifest.get("nodes", {})
+    children = manifest.get("child_map", {})
+    todo = [uid for uid, n in nodes.items() if n.get("resource_type") == "model"
+            and n.get("name") in names]  # fmt: skip
+    seen: set[str] = set()
+    while todo:
+        uid = todo.pop()
+        if uid in seen:
+            continue
+        seen.add(uid)
+        todo.extend(children.get(uid, []))
+    return {nodes[u]["name"] for u in seen
+            if u in nodes and nodes[u].get("resource_type") == "model"}  # fmt: skip
 
 
 def vendor_files(project: Path) -> dict[str, bytes]:
