@@ -208,3 +208,37 @@ def test_the_check_with_nothing_to_analyse() -> None:
     assert check.passed and check.name == "row_accounting"
     skipped = ModelResult("model.shop.inc", skipped="incremental")
     assert "model.shop.inc (incremental)" in checks.row_accounting([skipped]).detail
+
+
+# ---- v2.1 (decision 0008): defects found by the replay -------------------------------------
+
+
+def test_a_cte_named_after_the_table_it_reads_is_followed_not_looped(con: Any) -> None:
+    # `with products as (select * from main.products)`: the CTE reads the table. v2.0 took
+    # main.products for the CTE itself, looped, and passed it as unknown.
+    sql = """
+    with products as (select * from main.products),
+    sales as (select product_id, sum(amount) as revenue from lines group by 1)
+    select p.product_id, s.revenue from products p left join sales s on s.product_id = p.product_id
+    """
+    result = run(con, sql)
+    assert result.unknown == [] and [f.rule for f in result.findings] == ["lost_facts"]
+
+
+def test_an_unreadable_built_model_is_unknown_not_a_pass(con: Any) -> None:
+    sql = WRONG_CATEGORY.format(group="1")
+    con.execute(f"create or replace table out as {sql}")
+    result = analyse(con, "model.shop.m", sql, None, '"no_such_table"', time.monotonic() + 60)
+    assert result.findings == []
+    assert any("could not be read" in u for u in result.unknown)
+    assert "not analysed" in checks.row_accounting([result]).detail
+
+
+def test_rule_b_says_when_rows_found_no_partner_but_no_key_is_null(con: Any) -> None:
+    sql = WRONG_CATEGORY.format(group="1").replace(
+        "o.month,", "coalesce(o.month, 'none') as month,"
+    )
+    result = run(con, sql)
+    assert result.findings == []
+    detail = checks.row_accounting([result]).detail
+    assert "1 row(s) found no partner" in detail and "month is never NULL" in detail

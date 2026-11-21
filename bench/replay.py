@@ -213,6 +213,10 @@ def summarise(collected: dict[str, Any], lines: list[dict[str, Any]]) -> dict[st
     }
 
 
+def write_lf(path: Path, text: str) -> None:
+    path.write_text(text + "\n", encoding="utf-8", newline="\n")
+
+
 def read_lines(path: Path) -> list[dict[str, Any]]:
     if not path.is_file():
         return []
@@ -278,14 +282,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f"bench.replay: {out_dir} already exists", file=sys.stderr)
             return 2
         out_dir.mkdir(parents=True)
-        (out_dir / "diffs.json").write_text(json.dumps(collected, indent=1) + "\n", "utf-8")
+        write_lf(out_dir / "diffs.json", json.dumps(collected, indent=1))
         if args.source == "faults":
             run_faults(diffs, args.batch, lines_path)
         else:
             from bench.run import main as bench_run
 
             diffs_path = out_dir / "replay-diffs.json"
-            diffs_path.write_text(json.dumps(diffs) + "\n", "utf-8")
+            write_lf(diffs_path, json.dumps(diffs))
             code = bench_run(["--agent", "replay", "--set", "dev", "--source", args.source,
                               "--tasks", ",".join(diffs), "--limit", str(len(diffs)),
                               "--max-usd", "0.01", "--batch", args.batch,
@@ -294,7 +298,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             if code != 0:
                 print(f"bench.replay: bench.run exited {code}", file=sys.stderr)
     summary = summarise(collected, read_lines(lines_path))
-    (out_dir / "replay-summary.json").write_text(json.dumps(summary, indent=1) + "\n", "utf-8")
+    write_lf(out_dir / "replay-summary.json", json.dumps(summary, indent=1))
     print(json.dumps({k: summary[k] for k in ("reproduced", "gate_four_checks",
                                               "gate_with_row_accounting")}, indent=1))  # fmt: skip
     print(f"Results: {out_dir}")

@@ -83,6 +83,7 @@ class ModelResult:
     findings: list[Finding] = field(default_factory=list)
     exempt: list[str] = field(default_factory=list)
     unknown: list[str] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
     joins: int = 0
     skipped: str | None = None  # why the model was not analysed at all
 
@@ -134,6 +135,17 @@ def _relation(table: dict[str, Any]) -> str:
     if table.get("type") == "BASE_TABLE":
         return _lower(table.get("table_name"))
     return f"({_lower(table.get('type'))} {_alias(table)})"
+
+
+def _cte_ref(table: dict[str, Any], ctes: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
+    """The CTE a table reference names, or None. A reference qualified by a schema or a
+    catalog (`main.customers`) is a relation of the project even when a CTE has its name:
+    `with customers as (select * from main.customers)` reads the table, not itself."""
+    if table.get("type") != "BASE_TABLE":
+        return None
+    if table.get("schema_name") or table.get("catalog_name"):
+        return None
+    return ctes.get(_lower(table.get("table_name")))
 
 
 def _leftmost(table: dict[str, Any]) -> dict[str, Any]:
@@ -248,8 +260,8 @@ def _filtered(table: dict[str, Any], ctes: dict[str, dict[str, Any]], depth: int
     first = _leftmost(table)
     if first.get("type") == "SUBQUERY":
         body = first["subquery"]["node"]
-    elif first.get("type") == "BASE_TABLE" and _lower(first.get("table_name")) in ctes:
-        body = ctes[_lower(first["table_name"])]
+    elif _cte_ref(first, ctes) is not None:
+        body = _cte_ref(first, ctes) or {}
     else:
         return bool(first.get("sample"))  # a relation of the project: taken as it is
     if body.get("type") != "SELECT_NODE":
@@ -405,8 +417,8 @@ def _measures(right: dict[str, Any], ctes: dict[str, dict[str, Any]]) -> list[st
     """The summed output columns of a LEFT join's right side, if it is a rollup."""
     if right.get("type") == "SUBQUERY":
         body = right["subquery"]["node"]
-    elif right.get("type") == "BASE_TABLE" and _lower(right.get("table_name")) in ctes:
-        body = ctes[_lower(right["table_name"])]
+    elif _cte_ref(right, ctes) is not None:
+        body = _cte_ref(right, ctes) or {}
     else:
         return []
     if body.get("type") != "SELECT_NODE":
@@ -484,7 +496,7 @@ def _group_keys(select: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
 
 def _null_keys(
     s: Session, model: str, scope: str, select: dict, join: dict, pairs: list,
-    nullable: set[str], prefix: str, output: str | None, columns: set[str],
+    nullable: set[str], prefix: str, output: str | None, columns: set[str], result: ModelResult,
 ) -> Finding | None:  # fmt: skip
     affected = [
         name for name, item in _group_keys(select)
@@ -502,14 +514,22 @@ def _null_keys(
     )
     row = s.count(sql)
     dangling = int(row[0]) if row and row[0] else 0
-    if not dangling or output is None:
+    if not dangling:
         return None
-    for name in affected:
-        if name not in columns:
-            continue
+    if output is None:
+        raise Unknown(f"{dangling} row(s) found no partner, but the built model could not be read")
+    readable = [name for name in affected if name in columns]
+    if not readable:
+        raise Unknown(f"{dangling} row(s) found no partner, but no group key column is in the "
+                      "built model under its own name")  # fmt: skip
+    for name in readable:
         nulls = s.count(f"SELECT count(*) FROM {output} WHERE {_q(name)} IS NULL")
         if nulls and nulls[0]:
             return Finding("null_keys", model, scope, _join_text(s, join), dangling, key=name)
+    result.notes.append(
+        f"{scope}: {dangling} row(s) found no partner in `{_join_text(s, join)}`, but "
+        f"{', '.join(readable)} is never NULL in the built model"
+    )
     return None
 
 
@@ -547,7 +567,8 @@ def analyse(
         try:
             described = s.con.execute(f"SELECT * FROM {output} LIMIT 0").description or []
             columns = {_lower(d[0]) for d in described}
-        except Exception:
+        except Exception as error:
+            result.unknown.append(f"the built model could not be read: {type(error).__name__}")
             output = None
     for scope, select in all_selects(top):
         if (select.get("cte_map") or {}).get("map") and select is not top:
@@ -579,7 +600,7 @@ def analyse(
                 if grouped:
                     nullable = _nullable_through(right_alias, joins[index + 1 :])
                     found = _null_keys(s, model, scope, select, join, pairs, nullable, prefix,
-                                       output, columns)  # fmt: skip
+                                       output, columns, result)  # fmt: skip
                     if found:
                         result.findings.append(found)
             except Unknown as why:

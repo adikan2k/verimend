@@ -579,6 +579,9 @@ def row_accounting(results: list[ModelResult]) -> Check:
     if exempt:
         parts.append(f"{len(exempt)} join(s) left alone because they were in the base: "
                      + _listed(exempt))  # fmt: skip
+    notes = [n for r in results for n in r.notes]
+    if notes:
+        parts.append(f"noted: {_listed(notes)}")
     unknown = [f"{r.model}: {u}" for r in results for u in r.unknown]
     unknown += [f"{r.model} ({r.skipped})" for r in results if r.skipped is not None]
     if unknown:

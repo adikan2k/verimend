@@ -18,7 +18,7 @@ def load_replay_diffs(batch: dict[str, Any]) -> dict[str, list[dict[str, str]]]:
 
 def _append(out: Path, line: dict[str, Any]) -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
-    with out.open("a", encoding="utf-8") as handle:
+    with out.open("a", encoding="utf-8", newline="\n") as handle:
         handle.write(json.dumps(line) + "\n")
 
 
