@@ -1,0 +1,12 @@
+{
+ "kind": "logic",
+ "outcome": "fix",
+ "categories": [
+  "logic"
+ ],
+ "failing": [
+  "test.jaffle_shop.unique_daily_revenue_order_date.059107fd56"
+ ],
+ "description": "daily_revenue groups by date and status, so a day can appear more than once.",
+ "commit_message": "Update daily_revenue"
+}

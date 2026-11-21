@@ -1,0 +1,13 @@
+diff --git a/models/staging/stg_payments.sql b/models/staging/stg_payments.sql
+index 1719cd7..d4feafd 100644
+--- a/models/staging/stg_payments.sql
++++ b/models/staging/stg_payments.sql
+@@ -12,7 +12,7 @@ renamed as (
+         payment_method,
+ 
+         -- `amount` is stored in cents, so we convert it to dollars
+-        amount::numeric(16, 2) as amount
++        {{ cents_to_dollars('amount') }} as amount
+ 
+     from source
+ 

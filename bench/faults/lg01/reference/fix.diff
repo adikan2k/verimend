@@ -1,0 +1,21 @@
+diff --git a/models/marts/customers.sql b/models/marts/customers.sql
+index 7e51961..016a004 100644
+--- a/models/marts/customers.sql
++++ b/models/marts/customers.sql
+@@ -34,13 +34,15 @@ customer_payments as (
+ 
+     select
+         orders.customer_id,
+-        payments.amount as total_amount
++        sum(amount) as total_amount
+ 
+     from payments
+ 
+     left join orders on
+          payments.order_id = orders.order_id
+ 
++    group by orders.customer_id
++
+ ),
+ 
+ final as (

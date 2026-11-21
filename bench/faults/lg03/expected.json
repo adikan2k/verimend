@@ -1,0 +1,12 @@
+{
+ "kind": "logic",
+ "outcome": "fix",
+ "categories": [
+  "logic"
+ ],
+ "failing": [
+  "test.jaffle_shop.assert_payment_totals_match_raw"
+ ],
+ "description": "stg_payments casts the amount in cents instead of converting it to dollars.",
+ "commit_message": "Cast payment amounts in stg_payments"
+}

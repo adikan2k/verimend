@@ -1,0 +1,12 @@
+{
+ "kind": "logic",
+ "outcome": "fix",
+ "categories": [
+  "logic"
+ ],
+ "failing": [
+  "test.jaffle_shop.unique_customers_customer_id.c5af1ff4b1"
+ ],
+ "description": "customers no longer aggregates payments per customer, so the join fans out.",
+ "commit_message": "Refactor the customers model"
+}

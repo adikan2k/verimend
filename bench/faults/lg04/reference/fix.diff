@@ -1,0 +1,13 @@
+diff --git a/models/marts/daily_revenue.sql b/models/marts/daily_revenue.sql
+index 81f4313..cc2e931 100644
+--- a/models/marts/daily_revenue.sql
++++ b/models/marts/daily_revenue.sql
+@@ -13,7 +13,7 @@ daily as (
+ 
+     from orders
+ 
+-    group by order_date, status
++    group by order_date
+ 
+ )
+ 
