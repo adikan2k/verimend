@@ -45,4 +45,56 @@ On the 22 development false successes: **5 caught, 17 missed.**
 
 ## Measured
 
-To be filled from `bench/results/replay-*/replay-summary.json`.
+Three versions ran, each a new version named here, none tuned to a particular task. v2.0 is the version the predictions above were made for.
+
+| Version | What changed | Replay |
+| --- | --- | --- |
+| v2.0 (`f3a421e`, `a33bb82`) | As planned, minus the dropped A2 variant | All three sources: [faults](../../bench/results/replay-faults-2026-11-21/replay-summary.json), [ADE-bench](../../bench/results/replay-ade-2026-11-21/replay-summary.json), [data-eng-bench](../../bench/results/replay-deb-2026-11-21/replay-summary.json) |
+| v2.1 (`6a6a767`) | Three defects the v2.0 replay showed: a schema-qualified table taken for the CTE of the same name, which looped and passed as unknown; a built model it could not read passed silently; rule B said nothing when unmatched rows existed but no key was NULL. No new rule | The two affected tasks: [focus](../../bench/results/replay-deb-v21-focus-2026-11-21/replay-summary.json) |
+| v2.2 (`305e273`) | Rule A report-only, because the stop rule says so (below) | All three sources: [faults](../../bench/results/replay-faults-v22-2026-11-21/replay-summary.json), [ADE-bench](../../bench/results/replay-ade-v22-2026-11-21/replay-summary.json), [data-eng-bench](../../bench/results/replay-deb-v22-2026-11-21/replay-summary.json) |
+
+### Against the predictions (v2.0)
+
+| Prediction | Measured |
+| --- | --- |
+| Four checks reproduce their recorded verdicts on at least 95% | **146 of 146** (faults 99, ADE-bench 25, data-eng-bench 22) |
+| `product-metrics` false successes ×4 fail rule A, 12 order lines, 2,482.90 | **All four fail rule A, 12 lines each.** Two lose 2,482.90 of revenue as predicted; two lose 2,720.87, because their rollup reads a different revenue column. I checked each by hand against the diff |
+| `category-revenue` dev6/3 fails rule B, 18 lines under a NULL month | **Missed.** The 18 order lines with no order exist, but this fix takes the month from the order lines, so no key is NULL in the built model and rule B has nothing to fail. v2.1 says so in the detail: "18 row(s) found no partner in `left join orders AS o`, but sales_month is never NULL in the built model" |
+| The 17 others pass, so missed | All passed row accounting |
+| References and right fixes pass | All passed. **But the `dbt-customer-ltv-fix` reference passed by a bug:** its CTE `customers` reads `main.customers`, v2.0 followed the name back into itself, gave up, and passed it as unknown |
+| At most 20% of analysed diffs have something not analysed | **18 of 116 (16%) overall.** By source: faults 0 of 27, data-eng-bench 4 of 60, ADE-bench 14 of 29 (48%): 13 of those are incremental models, skipped by design, and one is a `USING` join. The bar was written for the whole replay; per source, ADE-bench is over it |
+
+On data-eng-bench, v2.0 as a gate moved wrong fixes let through from 22 to 18 and wrong fixes stopped from 6 to 10. Right fixes blocked stayed at 18, all blocked by the older checks on the tasks the verifier already cannot judge (decision 0007). Faults and ADE-bench: no change.
+
+### The stop rule, applied
+
+With the loop fixed, v2.1 counts the `dbt-customer-ltv-fix` reference: **16 customers, 4,677.38 of lifetime value, dropped by its LEFT join onto the customers spine.** The rows really are dropped; the grader passes the reference, so the task wants them dropped. Rule A cannot tell a deliberate exclusion from a lost fact, and the risk was named above before any replay. The stop rule then says rule A is report-only, so **v2.2 reports rule A's findings in the detail and fails only on rule B.**
+
+Rule B is judged on its own by the same test. It failed no diff in any replay, right or wrong, so it stays a gate, and it catches nothing on the development set.
+
+So as a gate, the fifth check catches **0 of the 5 targets**, under the bar of 4: by the stop rule, I stop and report. Nothing is added for a task and nothing is tuned. What stays:
+- rule A's report, which names the four product-metrics losses with their rows and sums in the verifier's detail, where a reviewer reads it;
+- rule B as a gate, with no false rejection measured;
+- the replay harness, which re-verifies every recorded diff for free and found v2.0's defects before they shipped.
+
+### v2.2, the version that ships
+
+Replayed on all three sources, every recorded claimed fix (116 unique diffs, 245 runs):
+
+| Source | Four checks reproduced (recorded with them as now) | Row accounting rejects | Rule A reports | Not fully analysed |
+| --- | --- | --- | --- | --- |
+| Faults | 99 of 99 | none | none | 0 of 27 |
+| ADE-bench | 25 of 25 | none | none | 14 of 29 |
+| data-eng-bench | 22 of 22 | none | 5 diffs: the 4 `product-metrics` false successes and the `customer-ltv-fix` reference | 3 of 60 |
+
+As a gate, row accounting v2.2 changes no verdict anywhere. What it adds is the report: on the four wrong `product-metrics` fixes the verifier's detail now says that 12 order lines and their revenue are dropped, which is the bug, and on the reference it says the same of 16 customers, which is the intent.
+
+### Also found
+
+- **Collateral (check 4) is not fully reproducible on data-eng-bench's 2,870-node project.** In the v2.1 focus, one diff recorded as passing with the four checks failed collateral on replay, and one more diff did too: models outside the fix's lineage (`rpt_cannibalization_analysis` 214 → 215 rows, `rpt_rfm_analysis` contents) moved, though five rebuilds of the unchanged base did not. Both are wrong fixes, so the flip happened to land right, but it is noise, not a catch. The v2.0 replay had reproduced both, so the same diff gave different verdicts on two replays: 5 of the 6 four-check diffs in the focus reproduced. The v2.2 replay shows how far it goes: of data-eng-bench's 60 unique diffs, 5 got a different collateral verdict from the v2.0 replay, 3 flipping to pass and 2 to fail, all on the same three report models (`rpt_cannibalization_analysis`, `rpt_rfm_analysis`, `rpt_product_affinity_analysis`), which move only now and then, so the snapshot's two builds do not mark them unstable. Weighted by runs, the four-check gate on that source reads 22 wrong fixes let through and 6 stopped in one replay, 25 and 3 in the other, with right fixes blocked at 18 and 23. The runs recorded with today's four checks all reproduced (22 of 22), so this is noise in check 4 on one large project, not a change in the checks. A follow-up for check 4, not part of this check.
+- **Dropped before any replay:** the A2 variant (above), and the optional paid VeriMend ×3 run on data-eng-bench, because a replay of recorded diffs measures the check without one.
+
+## Rejected
+
+- **Tuning rule A to pass the `customer-ltv-fix` reference,** for example by exempting a spine named `customers`. That is a rule written for one task, which the stop rule forbids, and it would pass the same shape when the loss is a bug.
+- **Rule A as a gate with a label to override it.** That is what the inspector's `pr` policy does for test changes (decision 0009), but here it would fail right fixes by default, and the benchmark has no label.
