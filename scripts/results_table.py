@@ -5,7 +5,8 @@
 
 Every number in the table is computed from the runs listed in those summary.json files and
 links to them (CLAUDE.md rule 8). Batches of the same agent are also combined into one
-row over both benchmarks, recomputed from the runs, never averaged from averages.
+row over both benchmarks, recomputed from the runs, never averaged from averages. Real-world
+batches are labelled by their kind of case and never combined (decision 0011).
 """
 
 import argparse
@@ -21,7 +22,7 @@ REPO = Path(__file__).resolve().parents[1]
 RESULTS = REPO / "bench" / "results"
 AGENT_ORDER = ["none", "reference", "baseline", "verimend"]
 SOURCE_NAMES = {"ade-bench": "ADE-bench", "data-eng-bench": "data-eng-bench",
-                "faults": "Fault suite"}  # fmt: skip
+                "faults": "Fault suite", "realworld": "Real-world"}  # fmt: skip
 
 
 def load_batch(name: str, results: Path = RESULTS) -> dict[str, Any]:
@@ -104,6 +105,13 @@ HEADER = [
 ]
 
 
+def label(summary: dict[str, Any]) -> str:
+    """A batch's row label: its benchmark, and for real-world cases its kind."""
+    raw = str(summary.get("source") or "?")
+    name = SOURCE_NAMES.get(raw, raw)
+    return f"{name}, {summary['group']}" if summary.get("group") else name
+
+
 def build_table(batches: dict[str, dict[str, Any]], link_prefix: str) -> str:
     by_agent: dict[str, list[tuple[str, dict[str, Any]]]] = {}
     for name, summary in batches.items():
@@ -116,10 +124,8 @@ def build_table(batches: dict[str, dict[str, Any]], link_prefix: str) -> str:
         for name, summary in entries:
             link = f"[{name}]({link_prefix}{name}/summary.json)"
             links.append(link)
-            raw = str(summary.get("source") or "?")
-            source = SOURCE_NAMES.get(raw, raw)
-            lines.append(row(agent, source, summary["metrics"], [link]))
-        if len(entries) > 1:
+            lines.append(row(agent, label(summary), summary["metrics"], [link]))
+        if len(entries) > 1 and not any(s.get("source") == "realworld" for _, s in entries):
             runs = [run_from_dict(r) for _, s in entries for r in s["runs"]]
             lines.append(row(agent, "**both**", summarize(runs), links))
     return "\n".join(lines)
@@ -156,14 +162,21 @@ def build_gate_table(batches: dict[str, dict[str, Any]], link_prefix: str) -> st
         gate = summary["metrics"].get("verifier_vs_grader")
         if summary["agent"] not in WATCHED_AGENTS or not gate:
             continue
-        raw = str(summary.get("source") or "?")
         link = f"[{name}]({link_prefix}{name}/summary.json)"
-        rows.append(gate_row(summary["agent"], SOURCE_NAMES.get(raw, raw), gate, link))
+        rows.append(gate_row(summary["agent"], label(summary), gate, link))
     return "\n".join([*GATE_HEADER, *rows]) if rows else None
 
 
 def banner(batches: dict[str, dict[str, Any]]) -> str:
-    """What the numbers are: the development set, or our own fault suite."""
+    """What the numbers are: the development set, our own fault suite, or real breakages."""
+    if batches and all(s.get("source") == "realworld" for s in batches.values()):
+        return (
+            "**Real breakages, not tuned on (decision 0011).** Each case is a Fivetran dbt "
+            "package at the parent of a merged fix, graded against the human's fix. Bug "
+            "fixes and DuckDB ports are separate rows, never combined; the bug fixes are 4 "
+            "cases, under the bar of 8. The fixes merged between 2026-08-18 and 2026-11-04, "
+            "which lowers but does not rule out that a model has seen them."
+        )
     if batches and all(s.get("source") == "faults" for s in batches.values()):
         return (
             "**Our own fault suite (SPEC section 7).** VeriMend was not tuned on these faults, "

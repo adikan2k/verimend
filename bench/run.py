@@ -209,9 +209,20 @@ def run_local(
     task_ids: list[str],
     max_usd: float,
 ) -> int:
-    """The fault suite: ours, in this repository, run on this machine (bench/faults/run.py)."""
+    """Our fault suite (bench/faults/run.py) or the real-world cases (bench/realworld/run.py):
+    in this repository, run on this machine."""
     from bench.faults.lib import SUITE_SEED
-    from bench.faults.run import run_batch
+
+    if source.name == "realworld":
+        from bench.realworld.run import MixedKinds, group_of, run_batch
+
+        try:
+            group_of(task_ids)
+        except MixedKinds as error:
+            print(error, file=sys.stderr)
+            return 2
+    else:
+        from bench.faults.run import run_batch
 
     sha, dirty = git_state(REPO_ROOT)
     batch = args.batch or f"{spec.name}-{source.name}-{datetime.now():%Y-%m-%d-%H%M%S}"
@@ -224,7 +235,7 @@ def run_local(
         "agent": spec.name,
         "set": set_name,
         "source": source.name,
-        "source_commit": sha,  # the faults live in this repository
+        "source_commit": sha,  # the faults and the real-world cases live in this repository
         "git_sha": sha,
         "git_dirty": dirty,
         "model": settings.model_default if spec.model_calls else None,

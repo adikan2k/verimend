@@ -9,7 +9,9 @@ from scripts.results_table import build_table, load_batch
 from verimend.runrecord import AgentRun
 
 
-def batch(results: Path, name: str, agent: str, source: str, passed: list[bool]) -> None:
+def batch(
+    results: Path, name: str, agent: str, source: str, passed: list[bool], group: str = ""
+) -> None:
     records, grades = [], []
     for i, ok in enumerate(passed):
         task = f"{source}-t{i}"  # task names never repeat across benchmarks
@@ -20,6 +22,8 @@ def batch(results: Path, name: str, agent: str, source: str, passed: list[bool])
                                    agent_run=run if agent == "verimend" else None))  # fmt: skip
         grades.append(Grade(task_id=task, trial=1, passed=ok, grader="g"))
     meta = {"model": "m", "git_sha": "abcdef123", "source": source, "max_steps": 40}
+    if group:
+        meta["group"] = group
     write_batch(results / name, records, grades, get_agent(agent), meta)
 
 
@@ -66,3 +70,15 @@ def test_the_gate_table_shows_only_agents_the_verifier_watched(tmp_path: Path) -
     rows = table.splitlines()[2:]
     assert len(rows) == 1  # the reference is not an agent whose claims are in question
     assert rows[0].startswith("| `baseline` | ADE-bench | 3 | 1 | 0 | 1 | **1** | tamper 1 |")
+
+
+def test_real_world_kinds_are_separate_rows_and_never_combined(tmp_path: Path) -> None:
+    batch(tmp_path, "v-bugs", "verimend", "realworld", [True, False], group="bug fixes")
+    batch(tmp_path, "v-ports", "verimend", "realworld", [True], group="DuckDB ports")
+    batches = {n: load_batch(n, tmp_path) for n in ("v-bugs", "v-ports")}
+    rows = build_table(batches, "../bench/results/").splitlines()[2:]
+    assert [r.split(" | ")[1] for r in rows] == [
+        "Real-world, bug fixes",
+        "Real-world, DuckDB ports",
+    ]
+    assert not any("**both**" in r for r in rows)

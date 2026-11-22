@@ -72,6 +72,16 @@ SOURCES: dict[str, Source] = {
         # The baseline runs in a container of its own (bench/faults/container.py).
         agents=("none", "reference", "baseline", "verimend"),
     ),
+    "realworld": Source(
+        name="realworld",
+        repo_url="",
+        commit="",
+        tasks_subdir="bench/realworld",
+        task_file="case.json",
+        runner="local",
+        # Fivetran's dbt packages at the parent of a fix (decision 0011); one kind a batch.
+        agents=("none", "reference", "baseline", "verimend"),
+    ),
 }
 
 
