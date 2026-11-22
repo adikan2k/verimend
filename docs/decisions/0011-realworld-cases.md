@@ -76,10 +76,57 @@ Caveats for the scored runs:
 
 **Go, with the two kinds reported apart.** 17 cases pass the bar of 8, but only 4 are bug fixes. Every real-world result is reported as two rows, never pooled: the 4 bug fixes (a regression in shipped code, fixed by a human) and the 13 DuckDB ports (shipped code that never ran on DuckDB until a human adapted it). The pre-registration states its predictions per kind. With bug fixes alone it would have been a no-go, so their row is labelled as below the bar of 8.
 
+## The runner, and a grader fix before any paid run (2026-11-22)
+
+`bench.run --source realworld` runs each case in the fault suite's shape (`bench/realworld/run.py`). One batch holds one kind of case, and the harness refuses a mix. The baseline runs in the fault suite's container, with the case's own profile and the task VeriMend gets, and no category line. Packages are installed as real folders so they resolve inside it.
+
+**Step A, free.**
+- Doing nothing fails all 17 ([bugs](../../bench/results/realworld-none-bugs-2026-11-22/summary.json), [ports](../../bench/results/realworld-none-ports-2026-11-22/summary.json)).
+- The human reference fix failed 2 of the 4 bug fixes ([first pass](../../bench/results/realworld-reference-bugs-2026-11-22/summary.json)), both on grader noise the free check had missed, because there the key and the grade were built seconds apart:
+  - `zendesk-290`'s `int_zendesk__ticket_historical_status` measures a duration up to `current_timestamp`;
+  - `shopify-167`'s `int_shopify__customer_email_rollup` has an unordered `string_agg` that agreed twice by luck.
+- **Grader fix, chosen with Aditya** (`e625613`). Two kinds of model are now left out of the comparison, each with everything downstream of it:
+  - a model whose SQL reads the clock;
+  - a model that differs in a third build of the human fix made at grading time.
+
+  Each trial's key is written to `grade-keys.json`.
+- After the fix, the reference passes 17 of 17, twice, and the watching verifier passes all 34 ([bugs r2](../../bench/results/realworld-reference-bugs-r2-2026-11-22/summary.json), [ports r2](../../bench/results/realworld-reference-ports-r2-2026-11-22/summary.json), [bugs r3](../../bench/results/realworld-reference-bugs-r3-2026-11-22/summary.json), [ports r3](../../bench/results/realworld-reference-ports-r3-2026-11-22/summary.json)). The keys were the same size in both passes.
+
+**What the grade can and cannot see.** On 6 cases the model that failed at the parent is itself not compared row for row, because it reads the clock or sits downstream of a model that does. On those, a fix passes when it builds, keeps the tests and leaves the other models equal to the human fix's:
+
+| Case | Kind | Not compared |
+| --- | --- | --- |
+| `zendesk-290` | bug fix | `int_zendesk__field_history_pivot` |
+| `fivetran_log-203` | port | `fivetran_platform__connection_status` |
+| `jira-195` | port | `jira__daily_sprint_issue_history` |
+| `marketo-59` | port | `marketo__calendar_spine` |
+| `recurly-49` | port | `int_recurly__transactions_date_spine` |
+| `stripe-157` | port | `int_stripe__account_daily`, `stripe__customer_overview` |
+
+So 3 of the 4 bug fixes have their failing model compared, and 8 of the 13 ports.
+
+## Predicted, before any paid run (2026-11-22)
+
+The agents are frozen at `agent-v1`, with VeriMend's verifier as on `main` (row accounting v2.2). Both use `claude-haiku-5-5`, 3 trials a case, and the same task text. "Pass" means the grader passes.
+
+| Group | Agent | Grader pass rate | False-success rate | Notes |
+| --- | --- | --- | --- | --- |
+| Ports (13 × 3) | baseline | 45% to 70% | 20% to 45% | Each port fails with a DuckDB error that names the problem, so most runs build. They fail the grade by casting or parsing differently from the human, which changes rows. Hardest: `hubspot-211` (18 files) |
+| Ports | VeriMend | 35% to 65% | 10% to 30% | No better than the baseline at fixing (as in decision 0007). Its verifier catches some wrong fixes that change a model outside the lineage, so its false-success rate is lower |
+| Bug fixes (4 × 3) | baseline | 25% to 50% | 25% to 60% | `hubspot-215` (overflow) and `zendesk-290` (compile error) are the likeliest passes. `quickbooks-225` and `shopify-167` fail a `unique` test, and the right fix is a join or a key, so wrong fixes that dedupe will be common |
+| Bug fixes | VeriMend | 25% to 50% | 10% to 40% | Same fixing skill, fewer false successes |
+
+**The verifier, watching the baseline:**
+- It stops at least one baseline run that weakens or removes the `unique` test on `quickbooks-225` or `shopify-167`, at tamper.
+- It rejects no grader-passed baseline fix, except possibly on collateral in the larger projects (`hubspot-211`, `hubspot-215`, `shopify-167`), where rebuild noise was seen on data-eng-bench (decision 0008).
+
+**Cost and time:**
+- Each run costs $0.005 to $0.03 and takes 3 to 10 minutes, in both agents.
+- If the smoke run's mean cost, times the 98 runs left, is over $2.80, I stop and ask before the scored batches.
+
 ## Open, for Aditya
 
 - **History**: a case has one commit, so `inspect_history` finds nothing. The fault suite has a baseline and a fault commit.
-- **Runner wiring**: `bench.run --source realworld` is not built. A case's dbt project is the git root (`<dest>/project`), its profile is `<dest>/profiles/profiles.yml` (profile `integration_tests`, target `dev`), and the grader needs `broken/`, `pristine/` and `key/`. `grade_case` returns rules in the fault suite's shape.
 - **Contamination**: the fixes merged between 2026-08-18 and 2026-11-04, which lowers the risk that a model has seen them. The packages themselves are public and older.
 - **Tag `realworld-v1`** before the first scored run.
 
