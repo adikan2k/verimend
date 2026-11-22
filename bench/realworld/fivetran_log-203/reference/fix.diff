@@ -1,0 +1,18 @@
+diff --git a/macros/fivetran_log_json_parse.sql b/macros/fivetran_log_json_parse.sql
+index ba59d1d..b5b54bd 100644
+--- a/macros/fivetran_log_json_parse.sql
++++ b/macros/fivetran_log_json_parse.sql
+@@ -41,4 +41,12 @@
+     then json_value({{ string }}, '$.{%- for s in string_path -%}{{ s }}{%- if not loop.last -%}.{%- endif -%}{%- endfor -%} ')
+     else null end
+ 
++{% endmacro %}
++
++{% macro duckdb__fivetran_log_json_parse(string, string_path) %}
++
++  case when json_valid({{ string }}) -- check if json string is valid
++    then json_extract_string({{ string }}, '$.{%- for s in string_path -%}{{ s }}{%- if not loop.last -%}.{%- endif -%}{%- endfor -%}')
++    else null end
++
+ {% endmacro %}
+\ No newline at end of file

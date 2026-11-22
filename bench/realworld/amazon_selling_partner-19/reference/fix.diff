@@ -1,0 +1,14 @@
+diff --git a/macros/convert_string_to_numeric.sql b/macros/convert_string_to_numeric.sql
+index e342dcc..889a7f0 100644
+--- a/macros/convert_string_to_numeric.sql
++++ b/macros/convert_string_to_numeric.sql
+@@ -26,4 +26,8 @@ cast(REGEXP_SUBSTR(REPLACE({{ column }}, ',', ''),'(-?[0-9]+(\.[0-9]+)?)') as {{
+ 
+ {%- macro spark__convert_string_to_numeric(column) -%}
+ cast(regexp_extract(replace({{ column }}, ',', ''), '(-?\\d+(\\.\\d+)?)', 0) as {{ dbt.type_numeric() }})
++{%- endmacro -%}
++
++{%- macro duckdb__convert_string_to_numeric(column) -%}
++cast(regexp_extract(replace({{ column }}, ',', ''), '-?[0-9]+(\.[0-9]+)?') as {{ dbt.type_numeric() }})
+ {%- endmacro -%}
+\ No newline at end of file

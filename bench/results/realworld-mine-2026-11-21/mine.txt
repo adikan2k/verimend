@@ -1,0 +1,275 @@
+89 packages, 62 record DuckDB support
+bug_fix     dbt_ad_reporting v2.8.1 PR #190 merged 2026-10-15 (6 code files)
+    - Fixes `ad_reporting__keyword_report` returning `null` for `account_id`, `account_name`, `campaign_id`, `campaign_name`, `ad_group_id`, and `ad_group_name` on 
+bug_fix     dbt_ad_reporting v2.8.0 PR #187 merged 2026-09-30 (0 code files)
+    | `ad_reporting__ad_report`, `ad_reporting__advertiser_report`, `ad_reporting__url_report` | Bug Fix | For TikTok Smart+ ads, `ad_id`, `ad_name`, `account_id`, 
+    | `stg_tiktok_ads__creative_history`<br>`stg_tiktok_ads__creative_history_tmp` | New Staging Models | | | Adds `advertiser_id`, `adgroup_id`, `campaign_id`, and
+bug_fix     dbt_ad_reporting v2.8.0 PR #189 merged 2026-09-30 (0 code files)
+    | `ad_reporting__ad_report`, `ad_reporting__advertiser_report`, `ad_reporting__url_report` | Bug Fix | For TikTok Smart+ ads, `ad_id`, `ad_name`, `account_id`, 
+    | `stg_tiktok_ads__creative_history`<br>`stg_tiktok_ads__creative_history_tmp` | New Staging Models | | | Adds `advertiser_id`, `adgroup_id`, `campaign_id`, and
+duckdb_port dbt_ad_reporting v2.7.3 PR #185 merged - (14 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_amazon_ads v1.3.1 PR #51 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_amazon_selling_partner v0.5.1 PR #19 merged 2026-08-18 (1 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_amplitude v1.4.1 PR #44 merged 2026-08-18 (3 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_app_reporting v1.3.2 PR #40 merged 2026-08-19 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_apple_search_ads v1.3.1 PR #50 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_apple_store v1.3.2 PR #52 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_asana v1.4.2 PR #69 merged 2026-11-12 (2 code files)
+    - `dbt compile` fails on a new schema because the `asana__daily_metrics` model queries `asana__task` before it exists. The model now runs this query only during
+duckdb_port dbt_asana v1.4.1 PR #58 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_aws_cloud_cost v0.4.1 PR #20 merged 2026-08-18 (3 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_dynamics_365_crm v0.5.0 PR #27 merged 2026-11-20 (2 code files)
+    - Adds a `unique` test on the primary key of each model. If a test fails, please [open an issue](https://github.com/fivetran/dbt_dynamics_365_crm/issues/new/cho
+duckdb_port dbt_dynamics_365_crm v0.4.1 PR #24 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_facebook_ads v1.5.1 PR #72 merged 2026-08-18 (1 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_facebook_pages v1.4.0 PR #36 merged 2026-11-20 (3 code files)
+    - Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_facebo
+duckdb_port dbt_facebook_pages v1.3.1 PR #34 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_fivetran_log v2.6.0 PR #194 merged 2026-11-03 (25 code files)
+    | [fivetran_platform__transformation_run_log](https://fivetran.github.io/dbt_fivetran_log/#!/model/model.fivetran_log.fivetran_platform__transformation_run_log)
+    | [fivetran_platform__connection_errors_and_warnings](https://fivetran.github.io/dbt_fivetran_log/#!/model/model.fivetran_log.fivetran_platform__connection_erro
+duckdb_port dbt_fivetran_log v2.5.3 PR #203 merged 2026-08-18 (1 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_ga4_export v0.8.0 PR #30 merged 2026-11-21 (3 code files)
+    - Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_ga4_ex
+duckdb_port dbt_ga4_export v0.7.2 PR #25 merged 2026-08-18 (6 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_github v1.4.1 PR #82 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_google_ads v1.4.1 PR #103 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_google_play v1.3.1 PR #36 merged 2026-08-18 (2 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_greenhouse v1.6.0 PR #51 merged 2026-10-22 (76 code files)
+    | `greenhouse__interview_enhanced`<br>`greenhouse__interview_scorecard_detail`<br>(Breaking) | Key change | `interview_scorecard_key` hashed on `scheduled_inter
+    | `greenhouse__interview_scorecard_detail` | Columns added |  | `attribute_name`, `sort_order` | Resolves the previously-opaque `job_candidate_attribute_id` FK 
+    - Fixes `job_stage` and `interview_name` returning `null` for most interviews in `greenhouse__interview_enhanced` and `greenhouse__interview_scorecard_detail`, 
+    - Fixes `scorecard_id`, `candidate_rating`, `scorecard_submitted_at`, and `interviewer_name` returning `null` for ad-hoc scorecards in `greenhouse__interview_sc
+    - Fixes duplicate rows in `greenhouse__application_enhanced`, `greenhouse__application_history`, and `greenhouse__job_enhanced` for applications with more than 
+bug_fix     dbt_greenhouse v1.6.0-a2 PR #50 merged - (13 code files)
+    | `greenhouse__job_enhanced`<br>`stg_greenhouse__office`<br>(Breaking) | Bug fix | `location`, `primary_in_house_contact_user_id` | `location_name`, `primary_co
+bug_fix     dbt_greenhouse v1.6.0-a1 PR #48 merged - (6 code files)
+    - Fixes `referrer_name` (and the downstream credited-user value) on `greenhouse__application_enhanced`, which was incorrect whenever `application.referrer_id` d
+duckdb_port dbt_greenhouse v1.4.1 PR #47 merged 2026-08-18 (1 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_hubspot v1.10.1 PR #220 merged 2026-10-17 (7 code files)
+    - [@acrahen](https://github.com/acrahen) ([PR #220](https://github.com/fivetran/dbt_hubspot/pull/220)) — Fixed the inconsistent column data types when `hubspot_
+bug_fix     dbt_hubspot v1.10.1 PR #221 merged 2026-10-17 (2 code files)
+    - [@acrahen](https://github.com/acrahen) ([PR #220](https://github.com/fivetran/dbt_hubspot/pull/220)) — Fixed the inconsistent column data types when `hubspot_
+bug_fix     dbt_hubspot v1.10.1 PR #224 merged 2026-10-23 (10 code files)
+    - [@acrahen](https://github.com/acrahen) ([PR #220](https://github.com/fivetran/dbt_hubspot/pull/220)) — Fixed the inconsistent column data types when `hubspot_
+bug_fix     dbt_hubspot v1.10.0 PR #213 merged 2026-09-17 (1 code files)
+    | `hubspot__deals`, `hubspot__tickets`, `hubspot__conversations` | Bug Fix | `owner_primary_team_id`, `owner_primary_team_name`, `owner_all_team_ids`, and `owne
+bug_fix     dbt_hubspot v1.10.0 PR #214 merged 2026-09-24 (3 code files)
+    | `hubspot__deals`, `hubspot__tickets`, `hubspot__conversations` | Bug Fix | `owner_primary_team_id`, `owner_primary_team_name`, `owner_all_team_ids`, and `owne
+bug_fix     dbt_hubspot v1.9.3 PR #215 merged 2026-09-22 (2 code files)
+    - Fixes a type mismatch error in `hubspot__marketing_event_performance` by casting relevant join keys as strings.
+    - Fixes an integer overflow error in `stg_hubspot__conversation_thread` by casting `associated_contact_id` and `associated_ticket_id` as `bigint` instead of `in
+duckdb_port dbt_hubspot v1.9.2 PR #211 merged 2026-08-18 (18 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_instagram_business v1.3.0 PR #35 merged 2026-11-20 (3 code files)
+    - Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_instag
+duckdb_port dbt_instagram_business v1.2.1 PR #33 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_intercom v1.8.1 PR #91 merged 2026-11-03 (3 code files)
+    - Fixes a runtime error in `stg_intercom__conversation_history` when `assignee_id` arrives from the source as a string. The conversion of `0` to null added in v
+duckdb_port dbt_intercom v1.7.1 PR #87 merged 2026-08-18 (1 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_iterable v1.6.1 PR #86 merged 2026-10-20 (other-warehouse)
+    - Fixes `iterable__users` failing on BigQuery with large list data by removing a full-table sort that exceeded BigQuery's memory limit. ([#85](https://github.co
+bug_fix     dbt_iterable v1.6.1 PR #87 merged 2026-10-21 (other-warehouse)
+    - Fixes `iterable__users` failing on BigQuery with large list data by removing a full-table sort that exceeded BigQuery's memory limit. ([#85](https://github.co
+duckdb_port dbt_iterable v1.5.1 PR #83 merged 2026-08-18 (2 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_jira v1.10.2 PR #195 merged 2026-08-18 (4 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_klaviyo v1.5.0 PR #65 merged 2026-09-11 (other-warehouse)
+    | `klaviyo__person_campaign_flow`, `klaviyo__campaigns`, `klaviyo__flows` | Fixed value | `sum_revenue_*` columns return `0` for decimal revenue values on Redsh
+duckdb_port dbt_klaviyo v1.4.1 PR #64 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_lever v1.3.1 PR #38 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_linkedin v1.3.2 PR #67 merged 2026-10-19 (2 code files)
+    - Fixes inflated `cost`, `clicks`, `impressions`, and conversion metrics in the `linkedin_ads__monthly_campaign_country_report` and `linkedin_ads__monthly_campa
+bug_fix     dbt_linkedin v1.3.2 PR #68 merged 2026-10-19 (2 code files)
+    - Fixes inflated `cost`, `clicks`, `impressions`, and conversion metrics in the `linkedin_ads__monthly_campaign_country_report` and `linkedin_ads__monthly_campa
+duckdb_port dbt_linkedin v1.3.1 PR #65 merged 2026-08-18 (1 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_linkedin_pages v1.6.0 PR #36 merged 2026-11-20 (3 code files)
+    - Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_linked
+duckdb_port dbt_linkedin_pages v1.5.1 PR #34 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_mailchimp v1.3.2 PR #66 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_marketo v1.4.3 PR #68 merged 2026-11-12 (3 code files)
+    - The `marketo__change_data_details` and `marketo__change_data_pivot` models no longer fail `dbt compile` on a new schema. They now query `stg_marketo__lead_des
+duckdb_port dbt_marketo v1.4.1 PR #59 merged 2026-08-18 (6 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_microsoft_ads v1.3.1 PR #60 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_mixpanel v0.17.1 PR #70 merged 2026-08-18 (5 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_netsuite v1.8.0 PR #210 merged 2026-08-31 (11 code files)
+    - Fixes null conversion amounts for top-level subsidiaries missing a self-conversion exchange rate; rate now defaults to 1. Updates `converted_amount` values in
+duckdb_port dbt_netsuite v1.7.1 PR #208 merged 2026-08-18 (5 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_pardot v1.4.1 PR #34 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_pendo v1.4.2 PR #52 merged 2026-11-12 (4 code files)
+    - `dbt compile` fails on a new schema because the `int_pendo__guide_daily_metrics`, `int_pendo__guide_alltime_metrics`, and `int_pendo__calendar_spine` models q
+duckdb_port dbt_pendo v1.4.1 PR #46 merged 2026-08-18 (1 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_pinterest v1.3.2 PR #61 merged 2026-10-14 (1 code files)
+    - Fixes `pinterest_ads__keyword_report` returning `null` account, campaign, and ad group IDs and names for keywords missing from `keyword_history`, for example 
+duckdb_port dbt_pinterest v1.3.1 PR #60 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_qualtrics v1.4.0 PR #37 merged 2026-11-21 (4 code files)
+    - Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_qualtr
+bug_fix     dbt_qualtrics v1.3.3 PR #36 merged 2026-11-12 (2 code files)
+    - Fixes `dbt compile` on a new schema for `qualtrics__daily_breakdown`. The model queried `stg_qualtrics__distribution_contact` at compile time, which failed wh
+bug_fix     dbt_qualtrics v1.3.2 PR #32 merged 2026-10-28 (2 code files)
+    - Fixes the `sub_question_key` join between responses and questions in `qualtrics__response`. A `null` key never matched another `null` key, so responses to que
+duckdb_port dbt_qualtrics v1.3.1 PR #31 merged 2026-08-18 (1 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_quickbooks v1.11.0 PR #225 merged 2026-10-15 (2 code files)
+    | `quickbooks__general_ledger`<br>`int_quickbooks__invoice_double_entry` | Changed model | Bundle components join to every line on the invoice | Bundle componen
+bug_fix     dbt_quickbooks v1.11.0 PR #227 merged 2026-10-19 (1 code files)
+    | `quickbooks__general_ledger`<br>`int_quickbooks__invoice_double_entry` | Changed model | Bundle components join to every line on the invoice | Bundle componen
+bug_fix     dbt_quickbooks v1.10.0 PR #223 merged 2026-09-16 (8 code files)
+    - Adds the `using_report_date_fx_conversion` variable (default `false`) to opt into revaluing foreign-currency balance sheet accounts (Bank, AR, AP, Credit Card
+bug_fix     dbt_quickbooks v1.9.2 PR #216 merged 2026-08-05 (2 code files)
+    - Fixes an issue in `int_quickbooks__payment_double_entry` and `int_quickbooks__bill_payment_double_entry` where payments cleared against a Journal Entry (rathe
+bug_fix     dbt_quickbooks v1.9.2 PR #220 merged 2026-09-01 (7 code files)
+    - Fixes an issue in `int_quickbooks__payment_double_entry` and `int_quickbooks__bill_payment_double_entry` where payments cleared against a Journal Entry (rathe
+duckdb_port dbt_quickbooks v1.9.1 PR #221 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_recharge v1.5.2 PR #51 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_recurly v1.5.1 PR #49 merged 2026-08-18 (1 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_reddit_ads v1.5.1 PR #40 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_sage_intacct v1.4.2 PR #46 merged 2026-08-24 (5 code files)
+    - Fixes a union type mismatch error in `sage_intacct__ap_ar_enhanced` by explicitly casting:
+    - Previously, these columns could be inferred as different data types, causing the model to fail.
+duckdb_port dbt_sage_intacct v1.4.1 PR #45 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_salesforce v2.4.1 PR #88 merged 2026-08-18 (4 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_salesforce_formula_utils v0.13.1 PR #140 merged 2026-09-15 (other-warehouse)
+    - Fixes a Redshift-specific compilation error where `sfdc_formula_view` emits the literal string `None` when `fivetran_formula_model.model_large` is a plain `VA
+bug_fix     dbt_salesforce_formula_utils v0.13.0 PR #138 merged 2026-09-01 (1 code files)
+    - Reduces the `sfdc_formula_view` macro from up to five warehouse queries per model down to one, addressing the potential for intermittent failures when leverag
+duckdb_port dbt_salesforce_formula_utils v0.12.1 PR #137 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_salesforce_marketing_cloud v0.6.1 PR #21 merged 2026-08-18 (1 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_sap v0.8.2 PR #54 merged 2026-09-24 (6 code files)
+    - Fixes a compile error in [`stg_sap__coep`](https://fivetran.github.io/dbt_sap/#!/model/model.sap.stg_sap__coep) and [`stg_sap__prps`](https://fivetran.github.
+    - Fixes a BigQuery query error in [`bsad`](https://fivetran.github.io/dbt_sap/#!/model/model.sap.bsad), [`bsak`](https://fivetran.github.io/dbt_sap/#!/model/mod
+    - Fixes a BigQuery query error in [`coss`](https://fivetran.github.io/dbt_sap/#!/model/model.sap.coss). A hardcoded `decimal(16, 0)` cast made the view unreadab
+duckdb_port dbt_sap v0.8.1 PR #51 merged - (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_servicenow v1.0.2 PR #32 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_shopify v1.11.1 PR #187 merged 2026-11-12 (2 code files)
+    - `dbt compile` fails on a new schema because the `get_metafields` macro queries `stg_shopify__metafield` before it exists. The macro now queries metafield keys
+    - dbt v2 strict compile (`--static-analysis strict`) fails on DuckDB because `shopify__calendar` compares a timestamp to a date. `shopify__calendar.date_day` is
+bug_fix     dbt_shopify v1.11.1 PR #190 merged 2026-11-12 (3 code files)
+    - `dbt compile` fails on a new schema because the `get_metafields` macro queries `stg_shopify__metafield` before it exists. The macro now queries metafield keys
+    - dbt v2 strict compile (`--static-analysis strict`) fails on DuckDB because `shopify__calendar` compares a timestamp to a date. `shopify__calendar.date_day` is
+bug_fix     dbt_shopify v1.11.0 PR #183 merged 2026-11-05 (other-warehouse)
+    | `shopify__customer_cohorts`<br>`shopify__customer_email_cohorts`<br>`shopify_gql__customer_cohorts`<br>`shopify_gql__customer_email_cohorts`<br>(Breaking) | M
+bug_fix     dbt_shopify v1.10.0 PR #166 merged 2026-08-24 (0 code files)
+    | [`shopify_gql__orders`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__orders), [`shopify_gql__daily_shop`](https://fivetran.githu
+    | [`shopify_gql__line_item_enhanced`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__line_item_enhanced) | Column value | `total_amo
+    | [`stg_shopify_gql__metafield`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.stg_shopify_gql__metafield) | Deduplication logic and `unique_key
+bug_fix     dbt_shopify v1.10.0 PR #167 merged 2026-08-24 (3 code files)
+    | [`shopify_gql__orders`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__orders), [`shopify_gql__daily_shop`](https://fivetran.githu
+    | [`shopify_gql__line_item_enhanced`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__line_item_enhanced) | Column value | `total_amo
+    | [`stg_shopify_gql__metafield`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.stg_shopify_gql__metafield) | Deduplication logic and `unique_key
+bug_fix     dbt_shopify v1.10.0 PR #172 merged 2026-08-24 (2 code files)
+    | [`shopify_gql__orders`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__orders), [`shopify_gql__daily_shop`](https://fivetran.githu
+    | [`shopify_gql__line_item_enhanced`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.shopify_gql__line_item_enhanced) | Column value | `total_amo
+    | [`stg_shopify_gql__metafield`](https://fivetran.github.io/dbt_shopify/#!/model/model.shopify.stg_shopify_gql__metafield) | Deduplication logic and `unique_key
+duckdb_port dbt_shopify v1.9.2 PR #164 merged 2026-08-18 (6 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_shopify_holistic_reporting v1.5.0 PR #49 merged 2026-11-06 (other-warehouse)
+    | `shopify__customer_cohorts`<br>`shopify__customer_email_cohorts`<br>`shopify_gql__customer_cohorts`<br>`shopify_gql__customer_email_cohorts`<br>(Breaking) | M
+bug_fix     dbt_shopify_holistic_reporting v1.4.0 PR #45 merged 2026-09-14 (other-warehouse)
+    | `int__daily_klaviyo_user_metrics` | Fixed value | `sum_revenue_*` columns return `0` for decimal revenue values on Redshift/Postgres, or round them to whole n
+    - Replaces the local `fivetran_utils.try_cast` call with `klaviyo.safe_numeric_cast`, the same fix shipped in [dbt_klaviyo v1.5.0](https://github.com/fivetran/d
+duckdb_port dbt_shopify_holistic_reporting v1.3.1 PR #44 merged 2026-08-19 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_snapchat_ads v1.3.1 PR #53 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_social_media_reporting v1.6.2 PR #42 merged 2026-08-19 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_stackadapt v0.2.1 PR #3 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_stripe v1.10.1 PR #157 merged 2026-08-18 (1 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_tiktok_ads v1.5.1 PR #55 merged 2026-11-09 (other-warehouse)
+    - Previously, `modify_time` filled in as `null` for every record. On Redshift, this caused the error `constant expressions are not supported in order by clauses
+    - **Redshift support for `landing_page_url_list` synced as SUPER**: `stg_tiktok_ads__smart_plus_ad_history` no longer calls `json_parse()` on `landing_page_url_
+bug_fix     dbt_tiktok_ads v1.5.0 PR #48 merged 2026-09-29 (13 code files)
+    | `tiktok_ads__ad_report`, `tiktok_ads__advertiser_report` | Bug Fix | `ad_name`, `advertiser_id`, `advertiser_name`, `campaign_id`, and `ad_group_id` were `nul
+    | `tiktok_ads__url_report` | Bug Fix, New Column | `ad_name`, `base_url`, `url_host`, `url_path`, and `utm_*` were `null` for Smart+ ads | These fields now popu
+duckdb_port dbt_tiktok_ads v1.4.1 PR #46 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_twilio v1.4.1 PR #25 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_twitter v1.3.1 PR #52 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_twitter_organic v1.3.0 PR #32 merged 2026-11-20 (4 code files)
+    - Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_twitte
+duckdb_port dbt_twitter_organic v1.2.1 PR #29 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_unified_rag v0.3.1 PR #42 merged 2026-08-18 (1 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_workday v1.0.3 PR #38 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_xero v1.6.2 PR #86 merged 2026-11-12 (4 code files)
+    - `dbt compile` no longer fails on a new schema. The `int_xero__journal_line_pivoted_tracking_categories`, `int_xero__journal_cash_line_pivoted_tracking_categor
+duckdb_port dbt_xero v1.6.1 PR #83 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_youtube_analytics v1.3.0 PR #41 merged 2026-11-21 (3 code files)
+    - Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_youtub
+bug_fix     dbt_youtube_analytics v1.2.2 PR #40 merged 2026-11-12 (5 code files)
+    - Fixes `dbt compile` on a new schema for the `int_youtube__age_pivot`, `int_youtube__gender_pivot`, `youtube__age_demographics_pivot`, and `youtube__gender_dem
+duckdb_port dbt_youtube_analytics v1.2.1 PR #37 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+bug_fix     dbt_zendesk v1.10.0 PR #290 merged 2026-11-04 (3 code files)
+    | `zendesk__ticket_field_history`<br>`zendesk__ticket_backlog`<br>`int_zendesk__field_history_pivot`<br>(Breaking) | Changed column | `status_status` | `status`
+    - Fixes `zendesk__ticket_backlog` failing when a custom ticket field shares a title with a standard field (for example, `Status`). Standard fields now retain th
+    - Fixes failures when custom ticket field titles contain no Latin letters or numbers (for example, `購入段階`). These fields can be tracked regardless of title usin
+bug_fix     dbt_zendesk v1.9.1 PR #288 merged 2026-10-28 (4 code files)
+    - Fixes `internal_user_criteria` not applying to comments from users whose historical support role was `not set` or `end-user`. Affects `zendesk__ticket_metrics
+    - Fixes inflated `first_reply_time` and `next_reply_time` values and missed SLA breaches in `zendesk__sla_policies` for tickets that were solved and then reopen
+bug_fix     dbt_zendesk v1.9.0 PR #278 merged 2026-10-09 (4 code files)
+    - Fixes false `first_reply_time` SLA breaches in `zendesk__sla_policies`. `sla_applied_at` for `first_reply_time` now uses the application time Zendesk logs in 
+    - Fixes a related false breach when Zendesk re-applies the `first_reply_time` target to a ticket that was already replied to, such as after a priority change. `
+    - As above, `sla_event_id` also changes for the `first_reply_time` events affected by this fix.
+bug_fix     dbt_zendesk v1.9.0-a2 PR #277 merged - (2 code files)
+    - Fixes false `first_reply_time` SLA breaches for tickets with no real external requester (e.g. an agent filing a ticket on their own behalf). The a1 fix below 
+bug_fix     dbt_zendesk v1.9.0-a1 PR #273 merged - (4 code files)
+    - Fixes false `first_reply_time` SLA breaches in `zendesk__sla_policies` for tickets created on a customer's behalf via private/internal comments. For these tic
+bug_fix     dbt_zendesk v1.8.0 PR #270 merged 2026-09-01 (8 code files)
+    - Resolves custom ticket field IDs in the `ticket_field_history_columns` variable to their actual field titles, so `int_zendesk__field_history_pivot` and `zende
+duckdb_port dbt_zendesk v1.7.1 PR #268 merged 2026-08-18 (5 code files)
+    - Adds DuckDB as a supported destination.
+duckdb_port dbt_zuora v1.4.1 PR #44 merged 2026-08-18 (0 code files)
+    - Adds DuckDB as a supported destination.
+123 candidate PRs. Wrote bench/results/realworld-mine-2026-11-21/candidates.json

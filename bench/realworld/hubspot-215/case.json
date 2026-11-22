@@ -1,0 +1,29 @@
+{
+ "kind": "bug_fix",
+ "repo": "fivetran/dbt_hubspot",
+ "pr": 215,
+ "parent_sha": "439facd0cddafc1835ca7fe960e83c3a66e8f3f4",
+ "fix_sha": "8c09171614041caea1e3617ce3e52af1ce8b86d6",
+ "merged_at": "2026-09-22T20:36:07Z",
+ "versions": [
+  "1.9.3"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_hubspot (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "- Fixes a type mismatch error in `hubspot__marketing_event_performance` by casting relevant join keys as strings.",
+  "- Fixes an integer overflow error in `stg_hubspot__conversation_thread` by casting `associated_contact_id` and `associated_ticket_id` as `bigint` instead of `int`."
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "models/marketing/hubspot__marketing_event_performance.sql",
+  "models/staging/stg_hubspot__conversation_thread.sql"
+ ],
+ "failing": [
+  "model.hubspot.stg_hubspot__conversation_thread"
+ ],
+ "commit_message": "Hubspot models",
+ "description": "Conversation threads carry contact ids too large for a 32-bit integer; the staging model casts them to `int`.",
+ "parent_error": "Conversion Error: Could not convert string '206856291513' to INT32 when casting from source column associated_contact_id"
+}

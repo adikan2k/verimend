@@ -1,0 +1,28 @@
+{
+ "kind": "duckdb_port",
+ "repo": "fivetran/dbt_fivetran_log",
+ "pr": 203,
+ "parent_sha": "0da7ac69669322de4b4c9ea88b5a0071b60b23e7",
+ "fix_sha": "113a36b4b327b913ed576e115546ee5104b9130c",
+ "merged_at": "2026-08-18T23:05:51Z",
+ "versions": [
+  "2.5.3"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_fivetran_log (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "- Adds DuckDB as a supported destination."
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "macros/fivetran_log_json_parse.sql"
+ ],
+ "failing": [
+  "model.fivetran_log.fivetran_platform__audit_user_activity",
+  "model.fivetran_log.fivetran_platform__connection_status"
+ ],
+ "commit_message": "Fivetran Log models",
+ "description": "The JSON-parsing macro has no DuckDB branch; DuckDB's JSON functions raise on a log message that is not JSON, where other warehouses return null.",
+ "parent_error": "Invalid Input Error: Malformed JSON at byte 0 of input: unexpected character. Input: \"says actor but not a json\""
+}

@@ -1,0 +1,42 @@
+{
+ "kind": "duckdb_port",
+ "repo": "fivetran/dbt_stripe",
+ "pr": 157,
+ "parent_sha": "3b8df885a61b1b0f53f05e564652c1060bdf3859",
+ "fix_sha": "42687a212832b7a2f735e0d4cf0ddf0aa00b6211",
+ "merged_at": "2026-08-18T18:45:20Z",
+ "versions": [
+  "1.10.1"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_stripe (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "- Adds DuckDB as a supported destination."
+ ],
+ "scenario": "features disabled",
+ "vars": {
+  "stripe__using_payouts": false,
+  "stripe__using_transfers": false,
+  "stripe__using_invoices": false,
+  "stripe__using_payment_method": false,
+  "stripe__using_subscriptions": false,
+  "stripe__using_coupons": false,
+  "stripe__using_subscription_discounts": false,
+  "stripe_timezone": "America/New_York",
+  "stripe__using_subscription_history": false,
+  "stripe__using_price": false,
+  "stripe__convert_values": true,
+  "stripe__using_credit_notes": true,
+  "stripe__standardized_billing_model_enabled": false
+ },
+ "files": [
+  "macros/date_timezone.sql"
+ ],
+ "failing": [
+  "model.stripe.int_stripe__account_daily",
+  "model.stripe.stripe__customer_overview"
+ ],
+ "commit_message": "Stripe models",
+ "description": "With payouts, transfers, invoices and payment methods disabled, the daily account and customer models truncate timestamps to days with a timezone macro that has no DuckDB branch.",
+ "parent_error": "int_stripe__account_daily and stripe__customer_overview fail at runtime on DuckDB in the features-disabled scenario"
+}

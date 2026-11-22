@@ -1,0 +1,27 @@
+{
+ "kind": "duckdb_port",
+ "repo": "fivetran/dbt_greenhouse",
+ "pr": 47,
+ "parent_sha": "96b2814be124d3ed037c446f84b6d9c7426de207",
+ "fix_sha": "d3109e97ac653c4e03db66a8ed0b8babd5bfbce8",
+ "merged_at": "2026-08-18T18:24:14Z",
+ "versions": [
+  "1.4.1"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_greenhouse (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "- Adds DuckDB as a supported destination."
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "models/staging/stg_greenhouse__scheduled_interview.sql"
+ ],
+ "failing": [
+  "model.greenhouse.stg_greenhouse__scheduled_interview"
+ ],
+ "commit_message": "Greenhouse models",
+ "description": "The scheduled-interview staging model reads a column named `end`, quoting it per warehouse; DuckDB falls through to the unquoted name, a reserved word.",
+ "parent_error": "Parser Error: syntax error at or near \"end\""
+}

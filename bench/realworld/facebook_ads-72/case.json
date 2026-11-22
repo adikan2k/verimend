@@ -1,0 +1,27 @@
+{
+ "kind": "duckdb_port",
+ "repo": "fivetran/dbt_facebook_ads",
+ "pr": 72,
+ "parent_sha": "27180ace3c72d43f14292cd79b6d3d1134a9a42b",
+ "fix_sha": "7a879e95387de83d95d21ba42342344751a54590",
+ "merged_at": "2026-08-18T18:04:55Z",
+ "versions": [
+  "1.5.1"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_facebook_ads (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "- Adds DuckDB as a supported destination."
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "macros/get_url_tag_query.sql"
+ ],
+ "failing": [
+  "model.facebook_ads.facebook_ads__url_tags"
+ ],
+ "commit_message": "Facebook Ads models",
+ "description": "The macro that unnests a creative's URL tags has no DuckDB branch; the default branch reads a CTE named `unnested` that it never defines on DuckDB.",
+ "parent_error": "Catalog Error: Table with name unnested does not exist!"
+}

@@ -1,0 +1,27 @@
+{
+ "kind": "bug_fix",
+ "repo": "fivetran/dbt_quickbooks",
+ "pr": 225,
+ "parent_sha": "6b44f490cf6ae274756f5baf883df20a002895b4",
+ "fix_sha": "aa95e895ef56da2431834e1c24258c5c0f44f575",
+ "merged_at": "2026-10-15T18:04:31Z",
+ "versions": [
+  "1.11.0"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_quickbooks (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "| `quickbooks__general_ledger`<br>`int_quickbooks__invoice_double_entry` | Changed model | Bundle components join to every line on the invoice | Bundle components join only to their own parent line | Fixes duplicated component amounts and dropped lines on invoices that mix bundles and other lines ([#224](https://github.com/fivetran/dbt_quickbooks/issues/224)). Components whose `invoice_line_index` doesn’t match an invoice line are no longer posted.|"
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "models/double_entry_transactions/int_quickbooks__invoice_double_entry.sql"
+ ],
+ "failing": [
+  "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+ ],
+ "commit_message": "Quickbooks models",
+ "description": "Bundle components join to every line of their invoice instead of their own parent line, so the general ledger repeats entries and its `unique_id` test fails.",
+ "parent_error": "unique_quickbooks__general_ledger_unique_id: Got 8 results, configured to fail if != 0"
+}

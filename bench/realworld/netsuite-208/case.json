@@ -1,0 +1,31 @@
+{
+ "kind": "duckdb_port",
+ "repo": "fivetran/dbt_netsuite",
+ "pr": 208,
+ "parent_sha": "986fb90aab6ea658bf15c532a094e4f9d8ada1be",
+ "fix_sha": "5cd03022085ee85e57724153bf735405b8c57986",
+ "merged_at": "2026-08-18T18:37:37Z",
+ "versions": [
+  "1.7.1"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_netsuite (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "- Adds DuckDB as a supported destination."
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "macros/date_from_parts.sql",
+  "models/netsuite2/netsuite2__balance_sheet.sql",
+  "models/netsuite2/netsuite2__income_statement.sql",
+  "models/netsuite2/netsuite2__transaction_details.sql",
+  "models/netsuite2/staging/stg_netsuite2__account_types.sql"
+ ],
+ "failing": [
+  "model.netsuite.stg_netsuite2__account_types"
+ ],
+ "commit_message": "Netsuite models",
+ "description": "The account-types staging model selects `balancesheet = 'T' as is_balancesheet, left = 'T' as is_leftside`; `left` is a keyword in DuckDB.",
+ "parent_error": "Parser Error: syntax error at or near \"=\""
+}

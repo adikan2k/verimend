@@ -1,0 +1,32 @@
+{
+ "kind": "duckdb_port",
+ "repo": "fivetran/dbt_marketo",
+ "pr": 59,
+ "parent_sha": "d1c5853aa73195457713988d6d0b285bb6977b34",
+ "fix_sha": "4473d382e34feb23bb37808a2366c965fb07131d",
+ "merged_at": "2026-08-18T18:36:26Z",
+ "versions": [
+  "1.4.1"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_marketo (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "- Adds DuckDB as a supported destination."
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "models/intermediate/marketo__change_data_details.sql",
+  "models/intermediate/marketo__change_data_pivot.sql",
+  "models/intermediate/marketo__change_data_scd.sql",
+  "models/intermediate/marketo__lead_calendar_spine.sql",
+  "models/marketo__lead_history.sql",
+  "models/utils/marketo__calendar_spine.sql"
+ ],
+ "failing": [
+  "model.marketo.marketo__calendar_spine"
+ ],
+ "commit_message": "Marketo models",
+ "description": "The calendar spine builds its first date as text and adds an interval to it, which DuckDB cannot resolve without a cast. The same PR also changed the incremental models' partition settings for DuckDB, which the default scenario does not reach.",
+ "parent_error": "Binder Error: Could not choose a best candidate function for the function call \"+(STRING_LITERAL, INTERVAL)\""
+}

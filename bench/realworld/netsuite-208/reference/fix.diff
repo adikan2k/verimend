@@ -1,0 +1,72 @@
+diff --git a/macros/date_from_parts.sql b/macros/date_from_parts.sql
+index 7a8cab4..683c31c 100644
+--- a/macros/date_from_parts.sql
++++ b/macros/date_from_parts.sql
+@@ -20,4 +20,8 @@
+ 
+ {% macro databricks__date_from_parts(year, month, day) %}
+     make_date({{ year }}, lpad({{ month }}, 2, '0'), lpad({{ day }}, 2, '0'))
++{% endmacro %}
++
++{% macro duckdb__date_from_parts(year, month, day) %}
++    make_date({{ year }}, {{ month }}, {{ day }})
+ {% endmacro %}
+\ No newline at end of file
+diff --git a/models/netsuite2/netsuite2__balance_sheet.sql b/models/netsuite2/netsuite2__balance_sheet.sql
+index e9aa182..9149baf 100644
+--- a/models/netsuite2/netsuite2__balance_sheet.sql
++++ b/models/netsuite2/netsuite2__balance_sheet.sql
+@@ -16,7 +16,7 @@
+         enabled=var('netsuite_data_model', 'netsuite') == var('netsuite_data_model_override','netsuite2'),
+         materialized='incremental' if using_incremental else 'table',
+         partition_by = {'field': partition_by_field, 'data_type': 'date', 'granularity': 'month'} 
+-            if target.type not in ['spark', 'databricks'] else [partition_by_field],
++            if target.type not in ('spark', 'databricks', 'duckdb') else [partition_by_field],
+         cluster_by = ['transaction_id'] if transaction_level else ['account_id', 'accounting_period_id'],
+         unique_key='balance_sheet_id',
+         incremental_strategy = 'merge' if target.type in ('bigquery', 'databricks', 'spark') else 'delete+insert',
+diff --git a/models/netsuite2/netsuite2__income_statement.sql b/models/netsuite2/netsuite2__income_statement.sql
+index 87c3679..a792c8e 100644
+--- a/models/netsuite2/netsuite2__income_statement.sql
++++ b/models/netsuite2/netsuite2__income_statement.sql
+@@ -19,7 +19,7 @@
+         enabled=var('netsuite_data_model', 'netsuite') == var('netsuite_data_model_override','netsuite2'),
+         materialized='incremental' if using_incremental else 'table',
+         partition_by = {'field': partition_by_field, 'data_type': 'date', 'granularity': 'month'}
+-            if target.type not in ['spark', 'databricks'] else [partition_by_field],
++            if target.type not in ('spark', 'databricks', 'duckdb') else [partition_by_field],
+         cluster_by = ['transaction_id'] if transaction_level else ['account_id', 'accounting_period_id'],
+         unique_key='income_statement_id',
+         incremental_strategy = 'merge' if target.type in ('bigquery', 'databricks', 'spark') else 'delete+insert',
+diff --git a/models/netsuite2/netsuite2__transaction_details.sql b/models/netsuite2/netsuite2__transaction_details.sql
+index 6865b0a..9a658f0 100644
+--- a/models/netsuite2/netsuite2__transaction_details.sql
++++ b/models/netsuite2/netsuite2__transaction_details.sql
+@@ -17,7 +17,7 @@
+         enabled=var('netsuite_data_model', 'netsuite') == var('netsuite_data_model_override','netsuite2'),
+         materialized='table' if target.type in ('bigquery', 'databricks', 'spark') else 'incremental',
+         partition_by = {'field': 'transaction_line_fivetran_synced_date', 'data_type': 'date', 'granularity': 'month'}
+-            if target.type not in ['spark', 'databricks'] else ['transaction_line_fivetran_synced_date'],
++            if target.type not in ('spark', 'databricks', 'duckdb') else ['transaction_line_fivetran_synced_date'],
+         cluster_by = ['transaction_id'],
+         unique_key='transaction_details_id',
+         incremental_strategy = 'merge' if target.type in ('bigquery', 'databricks', 'spark') else 'delete+insert',
+diff --git a/models/netsuite2/staging/stg_netsuite2__account_types.sql b/models/netsuite2/staging/stg_netsuite2__account_types.sql
+index 7778cbf..f141c76 100644
+--- a/models/netsuite2/staging/stg_netsuite2__account_types.sql
++++ b/models/netsuite2/staging/stg_netsuite2__account_types.sql
+@@ -29,11 +29,11 @@ final as (
+         id as account_type_id,
+         balancesheet = 'T' as is_balancesheet,
+         {%- if target.type == 'bigquery' -%}
+-        `left` 
++        `left`
+         {%- elif target.type == 'snowflake' -%}
+         "LEFT"
+-        {%- elif target.type in ('redshift', 'postgres') -%}
+-        "left" 
++        {%- elif target.type in ('redshift', 'postgres', 'duckdb') -%}
++        "left"
+         {%- else -%}
+         left
+         {%- endif -%} = 'T' as is_leftside,

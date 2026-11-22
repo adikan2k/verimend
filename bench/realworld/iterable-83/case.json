@@ -1,0 +1,28 @@
+{
+ "kind": "duckdb_port",
+ "repo": "fivetran/dbt_iterable",
+ "pr": 83,
+ "parent_sha": "0b65c481a984f8f0e63829366dae317bae955e63",
+ "fix_sha": "ad835b838cbddf1836eee0b425a821829ea14663",
+ "merged_at": "2026-08-18T18:27:23Z",
+ "versions": [
+  "1.5.1"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_iterable (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "- Adds DuckDB as a supported destination."
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "models/intermediate/int_iterable__list_user_unnest.sql",
+  "models/iterable__events.sql"
+ ],
+ "failing": [
+  "model.iterable.int_iterable__list_user_unnest"
+ ],
+ "commit_message": "Iterable models",
+ "description": "Unnesting a user's list ids falls through to Postgres's `json_array_elements_text`, which DuckDB does not have.",
+ "parent_error": "Catalog Error: Table Function with name json_array_elements_text does not exist!"
+}

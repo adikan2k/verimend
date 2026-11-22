@@ -1,0 +1,15 @@
+diff --git a/macros/staging/date_from_month_string.sql b/macros/staging/date_from_month_string.sql
+index 83f0445..f85b81c 100644
+--- a/macros/staging/date_from_month_string.sql
++++ b/macros/staging/date_from_month_string.sql
+@@ -18,3 +18,10 @@
+         concat(split({{ month_str }}, '-')[0], '-', lpad(split({{ month_str }}, '-')[1], 2, '0'), '-01')
+     )
+ {% endmacro %}
++
++{% macro duckdb__date_from_month_string(month_str) %}
++    cast(
++        split_part({{ month_str }}, '-', 1) || '-' || lpad(split_part({{ month_str }}, '-', 2), 2, '0') || '-01'
++        as date
++    )
++{% endmacro %}

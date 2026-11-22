@@ -1,0 +1,27 @@
+{
+ "kind": "duckdb_port",
+ "repo": "fivetran/dbt_recurly",
+ "pr": 49,
+ "parent_sha": "b8b545c7fe0e2078a6c946b20c0ed01d5905e332",
+ "fix_sha": "994b33a3459a83c84622b8d660fe536459ebf1d6",
+ "merged_at": "2026-08-18T18:39:56Z",
+ "versions": [
+  "1.5.1"
+ ],
+ "license": "Apache-2.0",
+ "attribution": "From fivetran/dbt_recurly (Apache License 2.0; the repository has no NOTICE file). The case is the package at parent_sha, changed only to run offline on DuckDB as bench/realworld/lib.py describes.",
+ "changelog": [
+  "- Adds DuckDB as a supported destination."
+ ],
+ "scenario": "Default",
+ "vars": {},
+ "files": [
+  "models/intermediate/int_recurly__transactions_date_spine.sql"
+ ],
+ "failing": [
+  "model.recurly.int_recurly__transactions_date_spine"
+ ],
+ "commit_message": "Recurly models",
+ "description": "The transactions date spine adds an interval to a string literal date; DuckDB cannot choose an overload without an explicit cast.",
+ "parent_error": "Binder Error: Could not choose a best candidate function for the function call \"+(STRING_LITERAL, INTERVAL)\""
+}

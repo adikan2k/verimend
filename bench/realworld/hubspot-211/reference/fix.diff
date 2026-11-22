@@ -1,0 +1,244 @@
+diff --git a/macros/merge_contacts.sql b/macros/merge_contacts.sql
+index 90bbdb8..6172e28 100644
+--- a/macros/merge_contacts.sql
++++ b/macros/merge_contacts.sql
+@@ -66,3 +66,15 @@
+     lateral view explode(split(merged_object_ids, ';')) merges_view as merges
+ 
+ {% endmacro %}
++
++{% macro duckdb__merge_contacts() %}
++    select
++        contacts.source_relation,
++        contacts.contact_id,
++        merges as vid_to_merge
++
++    from contacts
++    cross join
++        unnest(string_split(merged_object_ids, ';')) as t(merges)
++
++{% endmacro %}
+diff --git a/models/marketing/history/hubspot__daily_contact_history.sql b/models/marketing/history/hubspot__daily_contact_history.sql
+index 1b4d1e7..2affd5a 100644
+--- a/models/marketing/history/hubspot__daily_contact_history.sql
++++ b/models/marketing/history/hubspot__daily_contact_history.sql
+@@ -3,7 +3,7 @@
+         enabled=fivetran_utils.enabled_vars(['hubspot_marketing_enabled', 'hubspot_contact_property_enabled', 'hubspot_contact_property_history_enabled']),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ['spark', 'databricks', 'duckdb'] else ['date_day'],
+         unique_key='contact_day_id',
+         incremental_strategy = 'insert_overwrite' if target.type not in ('snowflake', 'postgres', 'redshift') else 'delete+insert',
+         file_format = 'delta'
+diff --git a/models/marketing/intermediate/int_hubspot__contact_calendar_spine.sql b/models/marketing/intermediate/int_hubspot__contact_calendar_spine.sql
+index d0b6e4e..d2e83d7 100644
+--- a/models/marketing/intermediate/int_hubspot__contact_calendar_spine.sql
++++ b/models/marketing/intermediate/int_hubspot__contact_calendar_spine.sql
+@@ -3,7 +3,7 @@
+         enabled=fivetran_utils.enabled_vars(['hubspot_marketing_enabled', 'hubspot_contact_property_enabled', 'hubspot_contact_property_history_enabled']),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ['spark', 'databricks', 'duckdb'] else ['date_day'],
+         unique_key='id',
+         incremental_strategy = 'insert_overwrite' if target.type not in ('snowflake', 'postgres', 'redshift') else 'delete+insert',
+         file_format = 'delta'
+diff --git a/models/marketing/intermediate/int_hubspot__daily_contact_history.sql b/models/marketing/intermediate/int_hubspot__daily_contact_history.sql
+index fc57c5b..37529bf 100644
+--- a/models/marketing/intermediate/int_hubspot__daily_contact_history.sql
++++ b/models/marketing/intermediate/int_hubspot__daily_contact_history.sql
+@@ -3,7 +3,7 @@
+         enabled=fivetran_utils.enabled_vars(['hubspot_marketing_enabled', 'hubspot_contact_property_enabled', 'hubspot_contact_property_history_enabled']),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ['spark', 'databricks', 'duckdb'] else ['date_day'],
+         unique_key='id',
+         incremental_strategy='insert_overwrite' if target.type in ('bigquery', 'spark', 'databricks') else 'delete+insert',
+         file_format='delta'
+diff --git a/models/marketing/intermediate/int_hubspot__pivot_daily_contact_history.sql b/models/marketing/intermediate/int_hubspot__pivot_daily_contact_history.sql
+index a0c6734..9709c8d 100644
+--- a/models/marketing/intermediate/int_hubspot__pivot_daily_contact_history.sql
++++ b/models/marketing/intermediate/int_hubspot__pivot_daily_contact_history.sql
+@@ -3,7 +3,7 @@
+         enabled=fivetran_utils.enabled_vars(['hubspot_marketing_enabled', 'hubspot_contact_property_enabled', 'hubspot_contact_property_history_enabled']),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ['spark', 'databricks', 'duckdb'] else ['date_day'],
+         unique_key='id',
+         incremental_strategy = 'insert_overwrite' if target.type not in ('snowflake', 'postgres', 'redshift') else 'delete+insert',
+         file_format = 'delta'
+diff --git a/models/sales/history/hubspot__daily_company_history.sql b/models/sales/history/hubspot__daily_company_history.sql
+index 9b82312..2b7b336 100644
+--- a/models/sales/history/hubspot__daily_company_history.sql
++++ b/models/sales/history/hubspot__daily_company_history.sql
+@@ -3,7 +3,7 @@
+         enabled=fivetran_utils.enabled_vars(['hubspot_sales_enabled', 'hubspot_company_enabled', 'hubspot_company_property_history_enabled']),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ['spark', 'databricks', 'duckdb'] else ['date_day'],
+         unique_key='company_day_id',
+         incremental_strategy = 'insert_overwrite' if target.type not in ('snowflake', 'postgres', 'redshift') else 'delete+insert',
+         file_format = 'delta'
+diff --git a/models/sales/history/hubspot__daily_deal_history.sql b/models/sales/history/hubspot__daily_deal_history.sql
+index a839579..078eb89 100644
+--- a/models/sales/history/hubspot__daily_deal_history.sql
++++ b/models/sales/history/hubspot__daily_deal_history.sql
+@@ -3,7 +3,7 @@
+         enabled=fivetran_utils.enabled_vars(['hubspot_sales_enabled','hubspot_deal_enabled','hubspot_deal_property_history_enabled']),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ['spark', 'databricks', 'duckdb'] else ['date_day'],
+         unique_key='deal_day_id',
+         incremental_strategy = 'insert_overwrite' if target.type not in ('snowflake', 'postgres', 'redshift') else 'delete+insert',
+         file_format = 'delta'
+diff --git a/models/sales/intermediate/int_hubspot__company_calendar_spine.sql b/models/sales/intermediate/int_hubspot__company_calendar_spine.sql
+index 7ab2a09..cadd0cc 100644
+--- a/models/sales/intermediate/int_hubspot__company_calendar_spine.sql
++++ b/models/sales/intermediate/int_hubspot__company_calendar_spine.sql
+@@ -3,7 +3,7 @@
+         enabled=fivetran_utils.enabled_vars(['hubspot_sales_enabled', 'hubspot_company_enabled', 'hubspot_company_property_history_enabled']),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ['spark', 'databricks', 'duckdb'] else ['date_day'],
+         unique_key='id',
+         incremental_strategy = 'insert_overwrite' if target.type not in ('snowflake', 'postgres', 'redshift') else 'delete+insert',
+         file_format = 'delta'
+diff --git a/models/sales/intermediate/int_hubspot__daily_company_history.sql b/models/sales/intermediate/int_hubspot__daily_company_history.sql
+index 7029619..836dbd0 100644
+--- a/models/sales/intermediate/int_hubspot__daily_company_history.sql
++++ b/models/sales/intermediate/int_hubspot__daily_company_history.sql
+@@ -3,7 +3,7 @@
+         enabled=fivetran_utils.enabled_vars(['hubspot_sales_enabled', 'hubspot_company_enabled', 'hubspot_company_property_history_enabled']),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ['spark', 'databricks', 'duckdb'] else ['date_day'],
+         unique_key='id',
+         incremental_strategy='insert_overwrite' if target.type in ('bigquery', 'spark', 'databricks') else 'delete+insert',
+         file_format='delta'
+diff --git a/models/sales/intermediate/int_hubspot__daily_deal_history.sql b/models/sales/intermediate/int_hubspot__daily_deal_history.sql
+index f171099..c66b2fd 100644
+--- a/models/sales/intermediate/int_hubspot__daily_deal_history.sql
++++ b/models/sales/intermediate/int_hubspot__daily_deal_history.sql
+@@ -3,7 +3,7 @@
+         enabled=fivetran_utils.enabled_vars(['hubspot_sales_enabled','hubspot_deal_enabled','hubspot_deal_property_history_enabled']),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ['spark', 'databricks', 'duckdb'] else ['date_day'],
+         unique_key='id',
+         incremental_strategy='insert_overwrite' if target.type in ('bigquery', 'spark', 'databricks') else 'delete+insert',
+         file_format='delta'
+diff --git a/models/sales/intermediate/int_hubspot__deal_calendar_spine.sql b/models/sales/intermediate/int_hubspot__deal_calendar_spine.sql
+index e0134ba..dae89cc 100644
+--- a/models/sales/intermediate/int_hubspot__deal_calendar_spine.sql
++++ b/models/sales/intermediate/int_hubspot__deal_calendar_spine.sql
+@@ -3,7 +3,7 @@
+         enabled=fivetran_utils.enabled_vars(['hubspot_sales_enabled','hubspot_deal_enabled','hubspot_deal_property_history_enabled']),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ['spark', 'databricks', 'duckdb'] else ['date_day'],
+         unique_key='id',
+         incremental_strategy = 'insert_overwrite' if target.type not in ('snowflake', 'postgres', 'redshift') else 'delete+insert',
+         file_format = 'delta'
+diff --git a/models/sales/intermediate/int_hubspot__pivot_daily_company_history.sql b/models/sales/intermediate/int_hubspot__pivot_daily_company_history.sql
+index ad18c1f..7b410b8 100644
+--- a/models/sales/intermediate/int_hubspot__pivot_daily_company_history.sql
++++ b/models/sales/intermediate/int_hubspot__pivot_daily_company_history.sql
+@@ -3,7 +3,7 @@
+         enabled=fivetran_utils.enabled_vars(['hubspot_sales_enabled', 'hubspot_company_enabled', 'hubspot_company_property_history_enabled']),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ['spark', 'databricks', 'duckdb'] else ['date_day'],
+         unique_key='id',
+         incremental_strategy = 'insert_overwrite' if target.type not in ('snowflake', 'postgres', 'redshift') else 'delete+insert',
+         file_format = 'delta'
+diff --git a/models/sales/intermediate/int_hubspot__pivot_daily_deal_history.sql b/models/sales/intermediate/int_hubspot__pivot_daily_deal_history.sql
+index 69a5f38..35a8b9e 100644
+--- a/models/sales/intermediate/int_hubspot__pivot_daily_deal_history.sql
++++ b/models/sales/intermediate/int_hubspot__pivot_daily_deal_history.sql
+@@ -3,7 +3,7 @@
+         enabled=fivetran_utils.enabled_vars(['hubspot_sales_enabled','hubspot_deal_enabled','hubspot_deal_property_history_enabled']),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ['spark', 'databricks', 'duckdb'] else ['date_day'],
+         unique_key='id',
+         incremental_strategy = 'insert_overwrite' if target.type not in ('snowflake', 'postgres', 'redshift') else 'delete+insert',
+         file_format = 'delta'
+diff --git a/models/service/hubspot__daily_ticket_history.sql b/models/service/hubspot__daily_ticket_history.sql
+index ad4250f..bf23aae 100644
+--- a/models/service/hubspot__daily_ticket_history.sql
++++ b/models/service/hubspot__daily_ticket_history.sql
+@@ -3,7 +3,7 @@
+         enabled=var('hubspot_service_enabled', False),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ('spark', 'databricks', 'duckdb') else ['date_day'],
+         unique_key='ticket_day_id',
+         incremental_strategy = 'insert_overwrite' if target.type not in ('snowflake', 'postgres', 'redshift') else 'delete+insert',
+         file_format = 'delta'
+diff --git a/models/service/intermediate/int_hubspot__daily_ticket_history.sql b/models/service/intermediate/int_hubspot__daily_ticket_history.sql
+index d469f34..95b8d7b 100644
+--- a/models/service/intermediate/int_hubspot__daily_ticket_history.sql
++++ b/models/service/intermediate/int_hubspot__daily_ticket_history.sql
+@@ -3,7 +3,7 @@
+         enabled=var('hubspot_service_enabled', False),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ('spark', 'databricks', 'duckdb') else ['date_day'],
+         unique_key='id',
+         incremental_strategy='insert_overwrite' if target.type in ('bigquery', 'spark', 'databricks') else 'delete+insert',
+         file_format='delta'
+diff --git a/models/service/intermediate/int_hubspot__pivot_daily_ticket_history.sql b/models/service/intermediate/int_hubspot__pivot_daily_ticket_history.sql
+index 49e1b7b..c15bc52 100644
+--- a/models/service/intermediate/int_hubspot__pivot_daily_ticket_history.sql
++++ b/models/service/intermediate/int_hubspot__pivot_daily_ticket_history.sql
+@@ -3,7 +3,7 @@
+         enabled=var('hubspot_service_enabled', False),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ('spark', 'databricks', 'duckdb') else ['date_day'],
+         unique_key='id',
+         incremental_strategy = 'insert_overwrite' if target.type not in ('snowflake', 'postgres', 'redshift') else 'delete+insert',
+         file_format = 'delta'
+diff --git a/models/service/intermediate/int_hubspot__ticket_calendar_spine.sql b/models/service/intermediate/int_hubspot__ticket_calendar_spine.sql
+index d5df581..9bf366c 100644
+--- a/models/service/intermediate/int_hubspot__ticket_calendar_spine.sql
++++ b/models/service/intermediate/int_hubspot__ticket_calendar_spine.sql
+@@ -3,7 +3,7 @@
+         enabled=var('hubspot_service_enabled', False),
+         materialized='incremental' if hubspot.is_incremental_compatible() else 'table',
+         partition_by = {'field': 'date_day', 'data_type': 'date'}
+-            if target.type not in ['spark', 'databricks'] else ['date_day'],
++            if target.type not in ('spark', 'databricks', 'duckdb') else ['date_day'],
+         unique_key='id',
+         incremental_strategy = 'insert_overwrite' if target.type not in ('snowflake', 'postgres', 'redshift') else 'delete+insert',
+         file_format = 'delta'
+diff --git a/models/staging/stg_hubspot__submission_response.sql b/models/staging/stg_hubspot__submission_response.sql
+index 81e096a..81b1fc9 100644
+--- a/models/staging/stg_hubspot__submission_response.sql
++++ b/models/staging/stg_hubspot__submission_response.sql
+@@ -26,7 +26,11 @@ with base as (
+         field_name,
+         field_value,
+         submitted_at,
++        {% if target.type == 'duckdb' %}
++        epoch_ms(submitted_at) as submitted_timestamp,
++        {% else %}
+         {{ dbt.dateadd(datepart='millisecond',interval='submitted_at', from_date_or_timestamp="cast('1970-01-01' as " ~ dbt.type_timestamp() ~ ")") }} as submitted_timestamp,
++        {% endif %}
+         page_url,
+         object_type_id,
+         cast(_fivetran_synced as {{ dbt.type_timestamp() }}) as _fivetran_synced

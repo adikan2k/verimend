@@ -1,0 +1,478 @@
+{
+ "cases": 17,
+ "ok": 17,
+ "results": {
+  "amazon_selling_partner-19": {
+   "kind": "duckdb_port",
+   "pr": "https://github.com/fivetran/dbt_amazon_selling_partner/pull/19",
+   "merged_at": "2026-08-18T17:48:13Z",
+   "fingerprint": "ea3d7c61c8acd012",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.amazon_selling_partner.amazon_selling_partner__order_items",
+    "model.amazon_selling_partner.amazon_selling_partner__orders"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 31,
+   "unstable_models": [],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 59.9
+  },
+  "facebook_ads-72": {
+   "kind": "duckdb_port",
+   "pr": "https://github.com/fivetran/dbt_facebook_ads/pull/72",
+   "merged_at": "2026-08-18T18:04:55Z",
+   "fingerprint": "b60c13502f5ecac8",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/spark_utils": "0.3.5",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.facebook_ads.facebook_ads__url_tags"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 24,
+   "unstable_models": [],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 56.5
+  },
+  "fivetran_log-203": {
+   "kind": "duckdb_port",
+   "pr": "https://github.com/fivetran/dbt_fivetran_log/pull/203",
+   "merged_at": "2026-08-18T23:05:51Z",
+   "fingerprint": "6a9c61293c973a6e",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/spark_utils": "0.3.5",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.fivetran_log.fivetran_platform__audit_user_activity",
+    "model.fivetran_log.fivetran_platform__connection_status"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 20,
+   "unstable_models": [],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 55.1
+  },
+  "google_play-36": {
+   "kind": "duckdb_port",
+   "pr": "https://github.com/fivetran/dbt_google_play/pull/36",
+   "merged_at": "2026-08-18T18:23:26Z",
+   "fingerprint": "f27da527631d325a",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/spark_utils": "0.3.5",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.google_play.stg_google_play__earnings"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 41,
+   "unstable_models": [],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 64.4
+  },
+  "greenhouse-47": {
+   "kind": "duckdb_port",
+   "pr": "https://github.com/fivetran/dbt_greenhouse/pull/47",
+   "merged_at": "2026-08-18T18:24:14Z",
+   "fingerprint": "8b9bc1ba9c89aaa0",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.greenhouse.stg_greenhouse__scheduled_interview"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 68,
+   "unstable_models": [],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 68.5
+  },
+  "hubspot-211": {
+   "kind": "duckdb_port",
+   "pr": "https://github.com/fivetran/dbt_hubspot/pull/211",
+   "merged_at": "2026-08-18T18:25:45Z",
+   "fingerprint": "c6194038ee9a9c83",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/spark_utils": "0.3.5",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.hubspot.int_hubspot__contact_merge_adjust",
+    "model.hubspot.stg_hubspot__submission_response"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 167,
+   "unstable_models": [],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 111.7
+  },
+  "hubspot-215": {
+   "kind": "bug_fix",
+   "pr": "https://github.com/fivetran/dbt_hubspot/pull/215",
+   "merged_at": "2026-09-22T20:36:07Z",
+   "fingerprint": "6a621891806a2ab8",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/spark_utils": "0.3.5",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.hubspot.stg_hubspot__conversation_thread"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 167,
+   "unstable_models": [],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 108.8
+  },
+  "iterable-83": {
+   "kind": "duckdb_port",
+   "pr": "https://github.com/fivetran/dbt_iterable/pull/83",
+   "merged_at": "2026-08-18T18:27:23Z",
+   "fingerprint": "56a644cbefa0b22f",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.iterable.int_iterable__list_user_unnest"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 45,
+   "unstable_models": [],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 59.0
+  },
+  "jira-195": {
+   "kind": "duckdb_port",
+   "pr": "https://github.com/fivetran/dbt_jira/pull/195",
+   "merged_at": "2026-08-18T18:29:07Z",
+   "fingerprint": "3cfd41ac269a98a7",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/spark_utils": "0.3.5",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.jira.jira__daily_sprint_issue_history"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 41,
+   "unstable_models": [
+    "int_jira__project_metrics",
+    "int_jira__user_metrics",
+    "jira__daily_sprint_issue_history",
+    "jira__issue_enhanced",
+    "jira__issue_status_transitions",
+    "jira__project_enhanced",
+    "jira__sprint_enhanced",
+    "jira__timestamp_issue_field_history",
+    "jira__user_enhanced"
+   ],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 69.4
+  },
+  "linkedin-65": {
+   "kind": "duckdb_port",
+   "pr": "https://github.com/fivetran/dbt_linkedin/pull/65",
+   "merged_at": "2026-08-18T18:30:59Z",
+   "fingerprint": "cd9f8ad32fff35ab",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/spark_utils": "0.3.5",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.linkedin.stg_linkedin_ads__monthly_ad_analytics_by_country",
+    "model.linkedin.stg_linkedin_ads__monthly_ad_analytics_by_region"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 25,
+   "unstable_models": [],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 56.7
+  },
+  "marketo-59": {
+   "kind": "duckdb_port",
+   "pr": "https://github.com/fivetran/dbt_marketo/pull/59",
+   "merged_at": "2026-08-18T18:36:26Z",
+   "fingerprint": "146dba8b538e5b76",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/spark_utils": "0.3.5",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.marketo.marketo__calendar_spine"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 40,
+   "unstable_models": [],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 65.5
+  },
+  "netsuite-208": {
+   "kind": "duckdb_port",
+   "pr": "https://github.com/fivetran/dbt_netsuite/pull/208",
+   "merged_at": "2026-08-18T18:37:37Z",
+   "fingerprint": "c054c319004e911a",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/spark_utils": "0.3.5",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.netsuite.stg_netsuite2__account_types"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 95,
+   "unstable_models": [],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 81.5
+  },
+  "quickbooks-225": {
+   "kind": "bug_fix",
+   "pr": "https://github.com/fivetran/dbt_quickbooks/pull/225",
+   "merged_at": "2026-10-15T18:04:31Z",
+   "fingerprint": "a23f153181486b62",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "test.quickbooks.unique_quickbooks__general_ledger_unique_id.df148e7545"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 96,
+   "unstable_models": [],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 113.5
+  },
+  "recurly-49": {
+   "kind": "duckdb_port",
+   "pr": "https://github.com/fivetran/dbt_recurly/pull/49",
+   "merged_at": "2026-08-18T18:39:56Z",
+   "fingerprint": "ca5c229b430d0d99",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/spark_utils": "0.3.5",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.recurly.int_recurly__transactions_date_spine"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 49,
+   "unstable_models": [],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 69.0
+  },
+  "shopify-167": {
+   "kind": "bug_fix",
+   "pr": "https://github.com/fivetran/dbt_shopify/pull/167",
+   "merged_at": "2026-08-24T19:40:10Z",
+   "fingerprint": "138c22fc559a9277",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/spark_utils": "0.3.5",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "test.shopify.unique_stg_shopify_gql__metafield_unique_key.23fe28f679"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 205,
+   "unstable_models": [
+    "int_shopify__customer_email_rollup",
+    "int_shopify_gql__customer_email_rollup",
+    "shopify__customer_email_cohorts",
+    "shopify__customer_emails",
+    "shopify_gql__customer_email_cohorts",
+    "shopify_gql__customer_emails"
+   ],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 127.6
+  },
+  "stripe-157": {
+   "kind": "duckdb_port",
+   "pr": "https://github.com/fivetran/dbt_stripe/pull/157",
+   "merged_at": "2026-08-18T18:45:20Z",
+   "fingerprint": "5a27be3bf4722cbe",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/spark_utils": "0.3.5",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.stripe.int_stripe__account_daily",
+    "model.stripe.stripe__customer_overview"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 36,
+   "unstable_models": [],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 67.6
+  },
+  "zendesk-290": {
+   "kind": "bug_fix",
+   "pr": "https://github.com/fivetran/dbt_zendesk/pull/290",
+   "merged_at": "2026-11-04T00:30:47Z",
+   "fingerprint": "0083051f90c45bad",
+   "same_build_twice": true,
+   "leaks": [],
+   "packages": {
+    "../": "local",
+    "fivetran/fivetran_utils": "0.4.14",
+    "dbt-labs/spark_utils": "0.3.5",
+    "dbt-labs/dbt_utils": "1.4.1"
+   },
+   "failing": [
+    "model.zendesk.int_zendesk__field_history_pivot"
+   ],
+   "fails_as_expected": true,
+   "fix_passes": true,
+   "key_models": 65,
+   "unstable_models": [
+    "int_zendesk__agent_work_time_business_hours",
+    "int_zendesk__reply_time_business_hours",
+    "int_zendesk__reply_time_combined",
+    "int_zendesk__requester_wait_time_business_hours",
+    "int_zendesk__ticket_first_reply_time_business",
+    "int_zendesk__ticket_resolution_time_business_combined",
+    "int_zendesk__ticket_schedules",
+    "int_zendesk__ticket_work_time_business",
+    "zendesk__sla_policies",
+    "zendesk__ticket_metrics",
+    "zendesk__ticket_summary"
+   ],
+   "none_fails": true,
+   "reference_passes": true,
+   "reference_rules": "all pass",
+   "ok": true,
+   "seconds": 73.4
+  }
+ }
+}
