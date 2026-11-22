@@ -1,10 +1,10 @@
-# 0010: A public template to try the inspector
+# 0010: A template to try the inspector
 
 Status: draft by Claude Code for Aditya to rewrite. Date: 2026-11-22.
 
 ## Why
 
-The inspector (decision 0009) had only run on this machine. A reader of the README cannot see it work without wiring it into a project of their own. A template with pull requests already open lets anyone see real stamps from GitHub Actions in one click, and try their own change in a minute.
+The inspector (decision 0009) had only run on this machine. A reader of the README cannot see it work without wiring it into a project of their own. A template with pull requests already open shows real stamps from GitHub Actions, and anyone can build one with a change of their own in a minute.
 
 ## Chosen (with Aditya)
 
@@ -19,7 +19,7 @@ The inspector (decision 0009) had only run on this machine. A reader of the READ
 
    A test (`tests/test_demo_repo.py`) runs what the Action runs on each branch and checks these three stamps, so the README's promises are tested.
 3. **The fixer is opt-in.** `fix.yml` builds on pushes to `main` and calls VeriMend only when the copy has its own `ANTHROPIC_API_KEY` secret: `HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}` gates the step. The template has no secret, so it can never spend anyone's key, and the fixer never runs on pull requests.
-4. **Private first** (Aditya): created private, checked on its three runs, then made public by Aditya.
+4. **Kept private** (Aditya, 2026-11-22). It was created private and checked on its three runs, then left private. So the public docs point to the builder and to the recorded runs, not to the repository. Making it public later needs no code change: the README already says "Use this template", and the template flag is set.
 5. **The commits use the GitHub noreply address,** set when building, because a fresh repository takes the global git identity.
 
 ## Changed from the plan

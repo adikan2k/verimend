@@ -9,4 +9,4 @@
 | [#3](https://github.com/adikan2k/verimend-inspector-demo/pull/3) `try/good-change` | Pass | [success](https://github.com/adikan2k/verimend-inspector-demo/actions/runs/44984813145) | Passed all five checks ([comment](pr3-comment.md)) |
 | `main` push, `fix.yml` | Build green, no fixer | [success](https://github.com/adikan2k/verimend-inspector-demo/actions/runs/44984796508) | `dbt build` passed and the VeriMend step was skipped. The build was green, so this run does not exercise the key gate; `tests/test_demo_repo.py` checks it in the workflow file |
 
-Each inspection took 3 to 8 seconds once dbt was installed. The repository was private for these runs; Aditya makes it public.
+Each inspection took 3 to 8 seconds once dbt was installed. The repository is private, so the links to its pull requests and runs open only for its owner; the comments are copied here in full.
