@@ -103,6 +103,20 @@ select k.customer_id, t.revenue from known k left join totals t on t.customer_id
 """,
 )
 
+NULL_KEYS = new_file(
+    "models/marts/revenue_by_customer.sql",
+    """
+{{ config(materialized='table') }}
+with lines as (
+    select * from (values (1, 5.0), (3, 2.5), (99, 7.0)) as t(order_id, amount)
+)
+select o.customer_id, sum(l.amount) as revenue
+from lines l
+left join {{ ref('stg_orders') }} o on l.order_id = o.order_id
+group by 1
+""",
+)
+
 
 def check(work: Path, diff: str, policy: Policy) -> dict:
     return verify(work, diff, dbt_exe=DBT, policy=policy)
@@ -154,8 +168,15 @@ def test_removing_a_failing_model_still_hides_a_failure(red: Path) -> None:
 
 
 def test_row_accounting_applies_to_pull_requests(green: Path) -> None:
-    result = check(green, DROPS_ROWS, PR)
+    # Rule B fails a pull request as it fails a fix: order 99 has no order, so its amount
+    # is grouped under a NULL customer.
+    result = check(green, NULL_KEYS, PR)
     assert result["failed_check"] == "row_accounting", result
+    assert "NULL customer_id" in result["checks"][-1]["detail"]
+    # Rule A is report-only (decision 0008): dropped rows are listed, the pull request passes.
+    dropped = check(green, DROPS_ROWS, PR)
+    assert dropped["passed"], dropped
+    assert "report-only" in dropped["checks"][-1]["detail"]
 
 
 def test_the_cli_takes_the_policy_and_refuses_a_label_without_it(
