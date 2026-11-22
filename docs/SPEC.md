@@ -163,6 +163,9 @@ Checks, in order. The first failure stops the run.
 2. **Masking.** The fix does not make the failure disappear without fixing it: no model disabled unless an enabled model of the same name replaces it (overriding a broken package model is a real fix), no `limit 0`, no always-false filter, no failing node excluded from the build.
 3. **Clean rebuild.** `dbt build` passes for the failed node and everything downstream of it.
 4. **No collateral damage.** Models outside the lineage of the changed files have the same row counts and checksums as the last good build.
+5. **Row accounting** ([decision 0008](decisions/0008-row-accounting.md)). For each changed SQL model, its compiled SQL is parsed with DuckDB's own parser and its LEFT joins counted in the database the fix built. Rule B fails the fix: rows whose join key found no partner and that end up grouped under a NULL key. Rule A only reports: rows of a summed rollup that match no row of the spine and are dropped, with their sums. What it cannot read or count passes, and the detail says so. Incremental, ephemeral and Python models are not analysed.
+
+`verify --replay` re-verifies a recorded diff against an existing snapshot: it leaves the snapshot as it was and runs row accounting even after a collateral failure. `python -m bench.replay` uses it to re-verify every recorded claimed fix, with no model calls.
 
 Output:
 
@@ -342,7 +345,7 @@ The eight tools, the system prompt and the structured report.
 
 ### Phase 4: guards and the verifier loop (Fri Nov 27 to Sun Nov 29)
 
-The hooks, the read-only SQL connection, the `verifier/` package with its four checks, up to three attempts with feedback, and the escalation path.
+The hooks, the read-only SQL connection, the `verifier/` package with its four checks (a fifth came in phase 6c), up to three attempts with feedback, and the escalation path.
 
 **Done when** every guard has a test proving it blocks, `verimend verify` works on a hand-written diff, and the false-success rate is reported for the development set. Tag `agent-v1`.
 

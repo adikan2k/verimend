@@ -1,0 +1,858 @@
+{
+ "source": "ade-bench",
+ "batches": [
+  "dev-baseline-ade-bench-2026-11-19",
+  "dev-reference-ade-bench-2026-11-19",
+  "dev-verimend-ade-bench-2026-11-19",
+  "dev4-verimend-ade-bench-2026-11-20",
+  "gate-baseline-ade-2026-11-21",
+  "iter1-verimend-ade-2026-11-19",
+  "iter2-verimend-ade-2026-11-19",
+  "smoke-verimend-ade-2026-11-19",
+  "smoke4-verimend-ade-2026-11-20",
+  "smoke6b-baseline-ade-2026-11-21",
+  "verifier-reference-ade-2026-11-19",
+  "verifier2-reference-ade-2026-11-19",
+  "verifier4-reference-ade-2026-11-20",
+  "verifier6-reference-ade-2026-11-20"
+ ],
+ "tasks": {
+  "airbnb002": {
+   "aff1e3dbea118b678ce046f22c0ad200c4369191ef7b87c33be90693de94c85b": {
+    "diff": "diff --git a/dbt_project.yml b/dbt_project.yml\n--- a/dbt_project.yml\n+++ b/dbt_project.yml\n@@ -40,4 +40,7 @@\n       +column_types:\n         caught_bug: \"boolean\"\n flags:\n-  require_generic_test_arguments_property: true\n\\ No newline at end of file\n+  require_generic_test_arguments_property: true\n+\n+vars:\n+  surrogate_key_treat_nulls_as_empty_strings: true\n\\ No newline at end of file\ndiff --git a/models/agg/daily_agg_reviews.sql b/models/agg/daily_agg_reviews.sql\n--- a/models/agg/daily_agg_reviews.sql\n+++ b/models/agg/daily_agg_reviews.sql\n@@ -16,7 +16,7 @@\n \tCOUNT(*) AS REVIEW_TOTALS ,\n \tREVIEW_SENTIMENT ,\n \tREVIEW_DATE::DATE AS REVIEW_DATE ,\n-\t{{dbt_utils.surrogate_key(['REVIEW_SENTIMENT','REVIEW_DATE::DATE'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['REVIEW_SENTIMENT','REVIEW_DATE::DATE'])}} AS DATE_SENTIMENT_ID\n FROM review_cte\n \n {% if is_incremental() %}\ndiff --git a/models/agg/mom_agg_reviews.sql b/models/agg/mom_agg_reviews.sql\n--- a/models/agg/mom_agg_reviews.sql\n+++ b/models/agg/mom_agg_reviews.sql\n@@ -48,5 +48,5 @@\n \t/*using LAG with 29 days as offset to calculate month over month metrics */\n \tROUND(((REVIEW_TOTALS * 100) / LAG(REVIEW_TOTALS,29) OVER (PARTITION BY REVIEW_SENTIMENT\n \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tORDER BY AGGREGATION_DATE ASC) - 100),2) AS MOM,\n-\t{{dbt_utils.surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM final_cte\n\\ No newline at end of file\ndiff --git a/models/agg/monthly_agg_reviews.sql b/models/agg/monthly_agg_reviews.sql\n--- a/models/agg/monthly_agg_reviews.sql\n+++ b/models/agg/monthly_agg_reviews.sql\n@@ -18,7 +18,7 @@\n \tSTRFTIME('%m-%Y', REVIEW_DATE) AS MONTH_YEAR,\n \tEXTRACT(MONTH FROM REVIEW_DATE) AS MONTH,\n \tEXTRACT(YEAR FROM REVIEW_DATE) AS YEAR,\n-\t{{dbt_utils.surrogate_key(['CAST(EXTRACT(MONTH FROM REVIEW_DATE) AS TEXT)',\n+\t{{dbt_utils.generate_surrogate_key(['CAST(EXTRACT(MONTH FROM REVIEW_DATE) AS TEXT)',\n \t\t\t\t\t\t\t   'CAST(EXTRACT(YEAR FROM REVIEW_DATE) AS TEXT)',\n \t\t\t\t\t\t\t   'REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM review_cte\ndiff --git a/models/agg/wow_agg_reviews.sql b/models/agg/wow_agg_reviews.sql\n--- a/models/agg/wow_agg_reviews.sql\n+++ b/models/agg/wow_agg_reviews.sql\n@@ -48,5 +48,5 @@\n \t/*using LAG with 6 days as offset to calculate month over month metrics */\n \tROUND(((REVIEW_TOTALS * 100) / LAG(REVIEW_TOTALS,6) OVER (PARTITION BY REVIEW_SENTIMENT\n \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tORDER BY AGGREGATION_DATE ASC) - 100),2) AS WOW,\n-\t{{dbt_utils.surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM final_cte\n\\ No newline at end of file\ndiff --git a/models/dim/dim_listings_hosts.sql b/models/dim/dim_listings_hosts.sql\n--- a/models/dim/dim_listings_hosts.sql\n+++ b/models/dim/dim_listings_hosts.sql\n@@ -28,7 +28,7 @@\n \tlistings_cte.HOST_ID ,\n \thosts_cte.HOST_NAME ,\n \thosts_cte.IS_SUPERHOST ,\n-\t{{dbt_utils.surrogate_key(['listings_cte.LISTING_ID','hosts_cte.HOST_ID'])}} AS LISTING_HOST_ID\n+\t{{dbt_utils.generate_surrogate_key(['listings_cte.LISTING_ID','hosts_cte.HOST_ID'])}} AS LISTING_HOST_ID\n FROM listings_cte\n LEFT JOIN hosts_cte\n \tON listings_cte.HOST_ID = hosts_cte.HOST_ID\n\\ No newline at end of file\n",
+    "occurrences": [
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "airbnb002",
+      "trial": 1,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     }
+    ]
+   },
+   "dff67e828da0669113ea24e940d40650a062373c7a599498ac05abdb6fc9a238": {
+    "diff": "diff --git a/dbt_project.yml b/dbt_project.yml\n--- a/dbt_project.yml\n+++ b/dbt_project.yml\n@@ -39,5 +39,8 @@\n     broken_model_results:\n       +column_types:\n         caught_bug: \"boolean\"\n+vars:\n+  surrogate_key_treat_nulls_as_empty_strings: true\n+\n flags:\n   require_generic_test_arguments_property: true\n\\ No newline at end of file\ndiff --git a/models/agg/daily_agg_reviews.sql b/models/agg/daily_agg_reviews.sql\n--- a/models/agg/daily_agg_reviews.sql\n+++ b/models/agg/daily_agg_reviews.sql\n@@ -16,7 +16,7 @@\n \tCOUNT(*) AS REVIEW_TOTALS ,\n \tREVIEW_SENTIMENT ,\n \tREVIEW_DATE::DATE AS REVIEW_DATE ,\n-\t{{dbt_utils.surrogate_key(['REVIEW_SENTIMENT','REVIEW_DATE::DATE'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['REVIEW_SENTIMENT','REVIEW_DATE::DATE'])}} AS DATE_SENTIMENT_ID\n FROM review_cte\n \n {% if is_incremental() %}\ndiff --git a/models/agg/mom_agg_reviews.sql b/models/agg/mom_agg_reviews.sql\n--- a/models/agg/mom_agg_reviews.sql\n+++ b/models/agg/mom_agg_reviews.sql\n@@ -48,5 +48,5 @@\n \t/*using LAG with 29 days as offset to calculate month over month metrics */\n \tROUND(((REVIEW_TOTALS * 100) / LAG(REVIEW_TOTALS,29) OVER (PARTITION BY REVIEW_SENTIMENT\n \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tORDER BY AGGREGATION_DATE ASC) - 100),2) AS MOM,\n-\t{{dbt_utils.surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM final_cte\n\\ No newline at end of file\ndiff --git a/models/agg/monthly_agg_reviews.sql b/models/agg/monthly_agg_reviews.sql\n--- a/models/agg/monthly_agg_reviews.sql\n+++ b/models/agg/monthly_agg_reviews.sql\n@@ -18,7 +18,7 @@\n \tSTRFTIME('%m-%Y', REVIEW_DATE) AS MONTH_YEAR,\n \tEXTRACT(MONTH FROM REVIEW_DATE) AS MONTH,\n \tEXTRACT(YEAR FROM REVIEW_DATE) AS YEAR,\n-\t{{dbt_utils.surrogate_key(['CAST(EXTRACT(MONTH FROM REVIEW_DATE) AS TEXT)',\n+\t{{dbt_utils.generate_surrogate_key(['CAST(EXTRACT(MONTH FROM REVIEW_DATE) AS TEXT)',\n \t\t\t\t\t\t\t   'CAST(EXTRACT(YEAR FROM REVIEW_DATE) AS TEXT)',\n \t\t\t\t\t\t\t   'REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM review_cte\ndiff --git a/models/agg/wow_agg_reviews.sql b/models/agg/wow_agg_reviews.sql\n--- a/models/agg/wow_agg_reviews.sql\n+++ b/models/agg/wow_agg_reviews.sql\n@@ -48,5 +48,5 @@\n \t/*using LAG with 6 days as offset to calculate month over month metrics */\n \tROUND(((REVIEW_TOTALS * 100) / LAG(REVIEW_TOTALS,6) OVER (PARTITION BY REVIEW_SENTIMENT\n \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tORDER BY AGGREGATION_DATE ASC) - 100),2) AS WOW,\n-\t{{dbt_utils.surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM final_cte\n\\ No newline at end of file\ndiff --git a/models/dim/dim_listings_hosts.sql b/models/dim/dim_listings_hosts.sql\n--- a/models/dim/dim_listings_hosts.sql\n+++ b/models/dim/dim_listings_hosts.sql\n@@ -28,7 +28,7 @@\n \tlistings_cte.HOST_ID ,\n \thosts_cte.HOST_NAME ,\n \thosts_cte.IS_SUPERHOST ,\n-\t{{dbt_utils.surrogate_key(['listings_cte.LISTING_ID','hosts_cte.HOST_ID'])}} AS LISTING_HOST_ID\n+\t{{dbt_utils.generate_surrogate_key(['listings_cte.LISTING_ID','hosts_cte.HOST_ID'])}} AS LISTING_HOST_ID\n FROM listings_cte\n LEFT JOIN hosts_cte\n \tON listings_cte.HOST_ID = hosts_cte.HOST_ID\n\\ No newline at end of file\n",
+    "occurrences": [
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "airbnb002",
+      "trial": 2,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "airbnb002",
+      "trial": 3,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     }
+    ]
+   },
+   "466db374c63d54fea8e9224cd8cfa2dd66e9755b7d0e3ef21859215e27859d42": {
+    "diff": "diff --git a/dbt_project.yml b/dbt_project.yml\n--- a/dbt_project.yml\n+++ b/dbt_project.yml\n@@ -30,6 +30,9 @@\n models:\n   +materialized: table\n \n+vars:\n+  surrogate_key_treat_nulls_as_empty_strings: True\n+\n \n seeds:\n   airbnb:\ndiff --git a/models/agg/daily_agg_reviews.sql b/models/agg/daily_agg_reviews.sql\n--- a/models/agg/daily_agg_reviews.sql\n+++ b/models/agg/daily_agg_reviews.sql\n@@ -16,7 +16,7 @@\n \tCOUNT(*) AS REVIEW_TOTALS ,\n \tREVIEW_SENTIMENT ,\n \tREVIEW_DATE::DATE AS REVIEW_DATE ,\n-\t{{dbt_utils.surrogate_key(['REVIEW_SENTIMENT','REVIEW_DATE::DATE'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['REVIEW_SENTIMENT','REVIEW_DATE::DATE'])}} AS DATE_SENTIMENT_ID\n FROM review_cte\n \n {% if is_incremental() %}\ndiff --git a/models/agg/mom_agg_reviews.sql b/models/agg/mom_agg_reviews.sql\n--- a/models/agg/mom_agg_reviews.sql\n+++ b/models/agg/mom_agg_reviews.sql\n@@ -48,5 +48,5 @@\n \t/*using LAG with 29 days as offset to calculate month over month metrics */\n \tROUND(((REVIEW_TOTALS * 100) / LAG(REVIEW_TOTALS,29) OVER (PARTITION BY REVIEW_SENTIMENT\n \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tORDER BY AGGREGATION_DATE ASC) - 100),2) AS MOM,\n-\t{{dbt_utils.surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM final_cte\n\\ No newline at end of file\ndiff --git a/models/agg/monthly_agg_reviews.sql b/models/agg/monthly_agg_reviews.sql\n--- a/models/agg/monthly_agg_reviews.sql\n+++ b/models/agg/monthly_agg_reviews.sql\n@@ -18,7 +18,7 @@\n \tSTRFTIME('%m-%Y', REVIEW_DATE) AS MONTH_YEAR,\n \tEXTRACT(MONTH FROM REVIEW_DATE) AS MONTH,\n \tEXTRACT(YEAR FROM REVIEW_DATE) AS YEAR,\n-\t{{dbt_utils.surrogate_key(['CAST(EXTRACT(MONTH FROM REVIEW_DATE) AS TEXT)',\n+\t{{dbt_utils.generate_surrogate_key(['CAST(EXTRACT(MONTH FROM REVIEW_DATE) AS TEXT)',\n \t\t\t\t\t\t\t   'CAST(EXTRACT(YEAR FROM REVIEW_DATE) AS TEXT)',\n \t\t\t\t\t\t\t   'REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM review_cte\ndiff --git a/models/agg/wow_agg_reviews.sql b/models/agg/wow_agg_reviews.sql\n--- a/models/agg/wow_agg_reviews.sql\n+++ b/models/agg/wow_agg_reviews.sql\n@@ -48,5 +48,5 @@\n \t/*using LAG with 6 days as offset to calculate month over month metrics */\n \tROUND(((REVIEW_TOTALS * 100) / LAG(REVIEW_TOTALS,6) OVER (PARTITION BY REVIEW_SENTIMENT\n \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tORDER BY AGGREGATION_DATE ASC) - 100),2) AS WOW,\n-\t{{dbt_utils.surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM final_cte\n\\ No newline at end of file\ndiff --git a/models/dim/dim_listings_hosts.sql b/models/dim/dim_listings_hosts.sql\n--- a/models/dim/dim_listings_hosts.sql\n+++ b/models/dim/dim_listings_hosts.sql\n@@ -28,7 +28,7 @@\n \tlistings_cte.HOST_ID ,\n \thosts_cte.HOST_NAME ,\n \thosts_cte.IS_SUPERHOST ,\n-\t{{dbt_utils.surrogate_key(['listings_cte.LISTING_ID','hosts_cte.HOST_ID'])}} AS LISTING_HOST_ID\n+\t{{dbt_utils.generate_surrogate_key(['listings_cte.LISTING_ID','hosts_cte.HOST_ID'])}} AS LISTING_HOST_ID\n FROM listings_cte\n LEFT JOIN hosts_cte\n \tON listings_cte.HOST_ID = hosts_cte.HOST_ID\n\\ No newline at end of file\n",
+    "occurrences": [
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "airbnb002",
+      "trial": 1,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   },
+   "26a7c799e460de96599b54303c9f1509ff756971f0f2caa2212ec41c30d0db77": {
+    "diff": "diff --git a/dbt_project.yml b/dbt_project.yml\n--- a/dbt_project.yml\n+++ b/dbt_project.yml\n@@ -27,6 +27,9 @@\n # In this example config, we tell dbt to build all models in the example/ directory\n # as tables. These settings can be overridden in the individual model files\n # using the `{{ config(...) }}` macro.\n+vars:\n+  surrogate_key_treat_nulls_as_empty_strings: true\n+\n models:\n   +materialized: table\n \ndiff --git a/models/agg/daily_agg_reviews.sql b/models/agg/daily_agg_reviews.sql\n--- a/models/agg/daily_agg_reviews.sql\n+++ b/models/agg/daily_agg_reviews.sql\n@@ -16,7 +16,7 @@\n \tCOUNT(*) AS REVIEW_TOTALS ,\n \tREVIEW_SENTIMENT ,\n \tREVIEW_DATE::DATE AS REVIEW_DATE ,\n-\t{{dbt_utils.surrogate_key(['REVIEW_SENTIMENT','REVIEW_DATE::DATE'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['REVIEW_SENTIMENT','REVIEW_DATE::DATE'])}} AS DATE_SENTIMENT_ID\n FROM review_cte\n \n {% if is_incremental() %}\ndiff --git a/models/agg/mom_agg_reviews.sql b/models/agg/mom_agg_reviews.sql\n--- a/models/agg/mom_agg_reviews.sql\n+++ b/models/agg/mom_agg_reviews.sql\n@@ -48,5 +48,5 @@\n \t/*using LAG with 29 days as offset to calculate month over month metrics */\n \tROUND(((REVIEW_TOTALS * 100) / LAG(REVIEW_TOTALS,29) OVER (PARTITION BY REVIEW_SENTIMENT\n \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tORDER BY AGGREGATION_DATE ASC) - 100),2) AS MOM,\n-\t{{dbt_utils.surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM final_cte\n\\ No newline at end of file\ndiff --git a/models/agg/monthly_agg_reviews.sql b/models/agg/monthly_agg_reviews.sql\n--- a/models/agg/monthly_agg_reviews.sql\n+++ b/models/agg/monthly_agg_reviews.sql\n@@ -18,7 +18,7 @@\n \tSTRFTIME('%m-%Y', REVIEW_DATE) AS MONTH_YEAR,\n \tEXTRACT(MONTH FROM REVIEW_DATE) AS MONTH,\n \tEXTRACT(YEAR FROM REVIEW_DATE) AS YEAR,\n-\t{{dbt_utils.surrogate_key(['CAST(EXTRACT(MONTH FROM REVIEW_DATE) AS TEXT)',\n+\t{{dbt_utils.generate_surrogate_key(['CAST(EXTRACT(MONTH FROM REVIEW_DATE) AS TEXT)',\n \t\t\t\t\t\t\t   'CAST(EXTRACT(YEAR FROM REVIEW_DATE) AS TEXT)',\n \t\t\t\t\t\t\t   'REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM review_cte\ndiff --git a/models/agg/wow_agg_reviews.sql b/models/agg/wow_agg_reviews.sql\n--- a/models/agg/wow_agg_reviews.sql\n+++ b/models/agg/wow_agg_reviews.sql\n@@ -48,5 +48,5 @@\n \t/*using LAG with 6 days as offset to calculate month over month metrics */\n \tROUND(((REVIEW_TOTALS * 100) / LAG(REVIEW_TOTALS,6) OVER (PARTITION BY REVIEW_SENTIMENT\n \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tORDER BY AGGREGATION_DATE ASC) - 100),2) AS WOW,\n-\t{{dbt_utils.surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM final_cte\n\\ No newline at end of file\ndiff --git a/models/dim/dim_listings_hosts.sql b/models/dim/dim_listings_hosts.sql\n--- a/models/dim/dim_listings_hosts.sql\n+++ b/models/dim/dim_listings_hosts.sql\n@@ -28,7 +28,7 @@\n \tlistings_cte.HOST_ID ,\n \thosts_cte.HOST_NAME ,\n \thosts_cte.IS_SUPERHOST ,\n-\t{{dbt_utils.surrogate_key(['listings_cte.LISTING_ID','hosts_cte.HOST_ID'])}} AS LISTING_HOST_ID\n+\t{{dbt_utils.generate_surrogate_key(['listings_cte.LISTING_ID','hosts_cte.HOST_ID'])}} AS LISTING_HOST_ID\n FROM listings_cte\n LEFT JOIN hosts_cte\n \tON listings_cte.HOST_ID = hosts_cte.HOST_ID\n\\ No newline at end of file\n",
+    "occurrences": [
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "airbnb002",
+      "trial": 2,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   },
+   "435ea75415fb45a37214c700e81a8dcbe3e15d3caaad42c151418fbefa60a40e": {
+    "diff": "diff --git a/dbt_project.yml b/dbt_project.yml\n--- a/dbt_project.yml\n+++ b/dbt_project.yml\n@@ -39,5 +39,8 @@\n     broken_model_results:\n       +column_types:\n         caught_bug: \"boolean\"\n+vars:\n+  surrogate_key_treat_nulls_as_empty_strings: True\n+\n flags:\n   require_generic_test_arguments_property: true\n\\ No newline at end of file\ndiff --git a/models/agg/daily_agg_reviews.sql b/models/agg/daily_agg_reviews.sql\n--- a/models/agg/daily_agg_reviews.sql\n+++ b/models/agg/daily_agg_reviews.sql\n@@ -16,7 +16,7 @@\n \tCOUNT(*) AS REVIEW_TOTALS ,\n \tREVIEW_SENTIMENT ,\n \tREVIEW_DATE::DATE AS REVIEW_DATE ,\n-\t{{dbt_utils.surrogate_key(['REVIEW_SENTIMENT','REVIEW_DATE::DATE'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['REVIEW_SENTIMENT','REVIEW_DATE::DATE'])}} AS DATE_SENTIMENT_ID\n FROM review_cte\n \n {% if is_incremental() %}\ndiff --git a/models/agg/mom_agg_reviews.sql b/models/agg/mom_agg_reviews.sql\n--- a/models/agg/mom_agg_reviews.sql\n+++ b/models/agg/mom_agg_reviews.sql\n@@ -48,5 +48,5 @@\n \t/*using LAG with 29 days as offset to calculate month over month metrics */\n \tROUND(((REVIEW_TOTALS * 100) / LAG(REVIEW_TOTALS,29) OVER (PARTITION BY REVIEW_SENTIMENT\n \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tORDER BY AGGREGATION_DATE ASC) - 100),2) AS MOM,\n-\t{{dbt_utils.surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM final_cte\n\\ No newline at end of file\ndiff --git a/models/agg/monthly_agg_reviews.sql b/models/agg/monthly_agg_reviews.sql\n--- a/models/agg/monthly_agg_reviews.sql\n+++ b/models/agg/monthly_agg_reviews.sql\n@@ -18,7 +18,7 @@\n \tSTRFTIME('%m-%Y', REVIEW_DATE) AS MONTH_YEAR,\n \tEXTRACT(MONTH FROM REVIEW_DATE) AS MONTH,\n \tEXTRACT(YEAR FROM REVIEW_DATE) AS YEAR,\n-\t{{dbt_utils.surrogate_key(['CAST(EXTRACT(MONTH FROM REVIEW_DATE) AS TEXT)',\n+\t{{dbt_utils.generate_surrogate_key(['CAST(EXTRACT(MONTH FROM REVIEW_DATE) AS TEXT)',\n \t\t\t\t\t\t\t   'CAST(EXTRACT(YEAR FROM REVIEW_DATE) AS TEXT)',\n \t\t\t\t\t\t\t   'REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM review_cte\ndiff --git a/models/agg/wow_agg_reviews.sql b/models/agg/wow_agg_reviews.sql\n--- a/models/agg/wow_agg_reviews.sql\n+++ b/models/agg/wow_agg_reviews.sql\n@@ -48,5 +48,5 @@\n \t/*using LAG with 6 days as offset to calculate month over month metrics */\n \tROUND(((REVIEW_TOTALS * 100) / LAG(REVIEW_TOTALS,6) OVER (PARTITION BY REVIEW_SENTIMENT\n \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tORDER BY AGGREGATION_DATE ASC) - 100),2) AS WOW,\n-\t{{dbt_utils.surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM final_cte\n\\ No newline at end of file\ndiff --git a/models/dim/dim_listings_hosts.sql b/models/dim/dim_listings_hosts.sql\n--- a/models/dim/dim_listings_hosts.sql\n+++ b/models/dim/dim_listings_hosts.sql\n@@ -28,7 +28,7 @@\n \tlistings_cte.HOST_ID ,\n \thosts_cte.HOST_NAME ,\n \thosts_cte.IS_SUPERHOST ,\n-\t{{dbt_utils.surrogate_key(['listings_cte.LISTING_ID','hosts_cte.HOST_ID'])}} AS LISTING_HOST_ID\n+\t{{dbt_utils.generate_surrogate_key(['listings_cte.LISTING_ID','hosts_cte.HOST_ID'])}} AS LISTING_HOST_ID\n FROM listings_cte\n LEFT JOIN hosts_cte\n \tON listings_cte.HOST_ID = hosts_cte.HOST_ID\n\\ No newline at end of file\n",
+    "occurrences": [
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "airbnb002",
+      "trial": 3,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   },
+   "9477c72a350fbd41385dd637a2083d6101bcbede8a5079ea505597ed02a1c8ed": {
+    "diff": "diff --git a/dbt_project.yml b/dbt_project.yml\n--- a/dbt_project.yml\n+++ b/dbt_project.yml\n@@ -4,10 +4,8 @@\n name: 'airbnb'\n version: '1.0.0'\n config-version: 2\n-\n # This setting configures which \"profile\" dbt uses for this project.\n profile: 'airbnb-duckdb'\n-\n # These configurations specify where dbt should look for different types of files.\n # The `model-paths` config, for example, states that models in this project can be\n # found in the \"models/\" directory. You probably won't need to change these!\n@@ -16,11 +14,9 @@\n seed-paths: [\"seeds\"]\n macro-paths: [\"macros\"]\n snapshot-paths: [\"snapshots\"]\n-clean-targets:         # directories to be removed by `dbt clean`\n+clean-targets: # directories to be removed by `dbt clean`\n   - \"target\"\n   - \"dbt_packages\"\n-\n-\n # Configuring models\n # Full documentation: https://docs.getdbt.com/docs/configuring-models\n \n@@ -29,8 +25,6 @@\n # using the `{{ config(...) }}` macro.\n models:\n   +materialized: table\n-\n-\n seeds:\n   airbnb:\n     RAW_LISTINGS:\n@@ -40,4 +34,6 @@\n       +column_types:\n         caught_bug: \"boolean\"\n flags:\n-  require_generic_test_arguments_property: true\n\\ No newline at end of file\n+  require_generic_test_arguments_property: true\n+vars:\n+  surrogate_key_treat_nulls_as_empty_strings: true\ndiff --git a/models/agg/daily_agg_reviews.sql b/models/agg/daily_agg_reviews.sql\n--- a/models/agg/daily_agg_reviews.sql\n+++ b/models/agg/daily_agg_reviews.sql\n@@ -16,7 +16,7 @@\n \tCOUNT(*) AS REVIEW_TOTALS ,\n \tREVIEW_SENTIMENT ,\n \tREVIEW_DATE::DATE AS REVIEW_DATE ,\n-\t{{dbt_utils.surrogate_key(['REVIEW_SENTIMENT','REVIEW_DATE::DATE'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['REVIEW_SENTIMENT','REVIEW_DATE::DATE'])}} AS DATE_SENTIMENT_ID\n FROM review_cte\n \n {% if is_incremental() %}\ndiff --git a/models/agg/mom_agg_reviews.sql b/models/agg/mom_agg_reviews.sql\n--- a/models/agg/mom_agg_reviews.sql\n+++ b/models/agg/mom_agg_reviews.sql\n@@ -48,5 +48,5 @@\n \t/*using LAG with 29 days as offset to calculate month over month metrics */\n \tROUND(((REVIEW_TOTALS * 100) / LAG(REVIEW_TOTALS,29) OVER (PARTITION BY REVIEW_SENTIMENT\n \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tORDER BY AGGREGATION_DATE ASC) - 100),2) AS MOM,\n-\t{{dbt_utils.surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n+\t{{dbt_utils.generate_surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM final_cte\n\\ No newline at end of file\ndiff --git a/models/agg/monthly_agg_reviews.sql b/models/agg/monthly_agg_reviews.sql\n--- a/models/agg/monthly_agg_reviews.sql\n+++ b/models/agg/monthly_agg_reviews.sql\n@@ -18,7 +18,7 @@\n \tSTRFTIME('%m-%Y', REVIEW_DATE) AS MONTH_YEAR,\n \tEXTRACT(MONTH FROM REVIEW_DATE) AS MONTH,\n \tEXTRACT(YEAR FROM REVIEW_DATE) AS YEAR,\n-\t{{dbt_utils.surrogate_key(['CAST(EXTRACT(MONTH FROM REVIEW_DATE) AS TEXT)',\n+\t{{dbt_utils.generate_surrogate_key(['CAST(EXTRACT(MONTH FROM REVIEW_DATE) AS TEXT)',\n \t\t\t\t\t\t\t   'CAST(EXTRACT(YEAR FROM REVIEW_DATE) AS TEXT)',\n \t\t\t\t\t\t\t   'REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n FROM review_cte\ndiff --git a/models/agg/wow_agg_reviews.sql b/models/agg/wow_agg_reviews.sql\n--- a/models/agg/wow_agg_reviews.sql\n+++ b/models/agg/wow_agg_reviews.sql\n@@ -48,5 +48,5 @@\n \t/*using LAG with 6 days as offset to calculate month over month metrics */\n \tROUND(((REVIEW_TOTALS * 100) / LAG(REVIEW_TOTALS,6) OVER (PARTITION BY REVIEW_SENTIMENT\n \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tORDER BY AGGREGATION_DATE ASC) - 100),2) AS WOW,\n-\t{{dbt_utils.surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n-FROM final_cte\n\\ No newline at end of file\n+\t{{dbt_utils.generate_surrogate_key(['AGGREGATION_DATE::DATE','REVIEW_SENTIMENT'])}} AS DATE_SENTIMENT_ID\n+FROM final_cte\ndiff --git a/models/dim/dim_listings_hosts.sql b/models/dim/dim_listings_hosts.sql\n--- a/models/dim/dim_listings_hosts.sql\n+++ b/models/dim/dim_listings_hosts.sql\n@@ -28,7 +28,7 @@\n \tlistings_cte.HOST_ID ,\n \thosts_cte.HOST_NAME ,\n \thosts_cte.IS_SUPERHOST ,\n-\t{{dbt_utils.surrogate_key(['listings_cte.LISTING_ID','hosts_cte.HOST_ID'])}} AS LISTING_HOST_ID\n+\t{{dbt_utils.generate_surrogate_key(['listings_cte.LISTING_ID','hosts_cte.HOST_ID'])}} AS LISTING_HOST_ID\n FROM listings_cte\n LEFT JOIN hosts_cte\n-\tON listings_cte.HOST_ID = hosts_cte.HOST_ID\n\\ No newline at end of file\n+\tON listings_cte.HOST_ID = hosts_cte.HOST_ID\n",
+    "occurrences": [
+     {
+      "batch": "verifier2-reference-ade-2026-11-19",
+      "task": "airbnb002",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier4-reference-ade-2026-11-20",
+      "task": "airbnb002",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier6-reference-ade-2026-11-20",
+      "task": "airbnb002",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   }
+  },
+  "airbnb009": {
+   "458419565ad2e2952f75d37fc82cce208bcbaf93ec3865e31eb3fca34ba2c1b0": {
+    "diff": "diff --git a/models/agg/mom_agg_reviews.sql b/models/agg/mom_agg_reviews.sql\n--- a/models/agg/mom_agg_reviews.sql\n+++ b/models/agg/mom_agg_reviews.sql\n@@ -18,28 +18,36 @@\n ),\n \n dates_cte AS (\n+\t/* every calendar day in the review date range, including days with no reviews */\n \tSELECT DATE_ACTUAL\n \tFROM {{ ref('dim_dates') }}\n-\tWHERE DATE_ACTUAL IN (SELECT DISTINCT REVIEW_DATE::DATE\n-\t\t\t\t\t\t  FROM review_cte)\n+\tWHERE DATE_ACTUAL BETWEEN (SELECT MIN(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n+\t\t\t\t\t\t  AND (SELECT MAX(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n \n \t{% if is_incremental() %}\n \t\tAND DATE_ACTUAL = (SELECT MAX(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n \t{% endif %}\n ),\n \n+sentiment_cte AS (\n+\tSELECT DISTINCT REVIEW_SENTIMENT\n+\tFROM {{ ref('fct_reviews') }}\n+),\n+\n final_cte AS (\n SELECT\n-\tCOUNT(*) AS REVIEW_TOTALS ,\n-\treview_cte.REVIEW_SENTIMENT ,\n+\tCOUNT(review_cte.REVIEW_SENTIMENT) AS REVIEW_TOTALS ,\n+\tsentiment_cte.REVIEW_SENTIMENT ,\n \tdates_cte.DATE_ACTUAL AS AGGREGATION_DATE\n FROM dates_cte\n+CROSS JOIN sentiment_cte\n LEFT JOIN review_cte\n \t/* joining by last 30 days range so we can get the last 30 days aggregation for each date */\n-\tON review_cte.REVIEW_DATE::DATE BETWEEN dates_cte.DATE_ACTUAL::DATE - 29\n+\tON review_cte.REVIEW_SENTIMENT = sentiment_cte.REVIEW_SENTIMENT\n+\tAND review_cte.REVIEW_DATE::DATE BETWEEN dates_cte.DATE_ACTUAL::DATE - 29\n \t\t\t\t  \t\t      AND dates_cte.DATE_ACTUAL::DATE\n GROUP BY\n-\tREVIEW_SENTIMENT ,\n+\tsentiment_cte.REVIEW_SENTIMENT ,\n \tAGGREGATION_DATE\n )\n \n",
+    "occurrences": [
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "airbnb009",
+      "trial": 1,
+      "agent": "verimend",
+      "grader_passed": false,
+      "outcome": "false_success",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     }
+    ]
+   },
+   "bb3b650e7a8f279a5fc5449d36224187bb4293fcf2441fb22bc4b4cabc265587": {
+    "diff": "diff --git a/models/agg/mom_agg_reviews.sql b/models/agg/mom_agg_reviews.sql\n--- a/models/agg/mom_agg_reviews.sql\n+++ b/models/agg/mom_agg_reviews.sql\n@@ -20,8 +20,8 @@\n dates_cte AS (\n \tSELECT DATE_ACTUAL\n \tFROM {{ ref('dim_dates') }}\n-\tWHERE DATE_ACTUAL IN (SELECT DISTINCT REVIEW_DATE::DATE\n-\t\t\t\t\t\t  FROM review_cte)\n+\tWHERE DATE_ACTUAL BETWEEN (SELECT MIN(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n+\t\t\t\t\t\t  AND (SELECT MAX(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n \n \t{% if is_incremental() %}\n \t\tAND DATE_ACTUAL = (SELECT MAX(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n@@ -30,7 +30,7 @@\n \n final_cte AS (\n SELECT\n-\tCOUNT(*) AS REVIEW_TOTALS ,\n+\tCOUNT(review_cte.REVIEW_DATE) AS REVIEW_TOTALS ,\n \treview_cte.REVIEW_SENTIMENT ,\n \tdates_cte.DATE_ACTUAL AS AGGREGATION_DATE\n FROM dates_cte\n",
+    "occurrences": [
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "airbnb009",
+      "trial": 2,
+      "agent": "verimend",
+      "grader_passed": false,
+      "outcome": "false_success",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "airbnb009",
+      "trial": 1,
+      "agent": "baseline",
+      "grader_passed": false,
+      "outcome": "false_success",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     },
+     {
+      "batch": "smoke4-verimend-ade-2026-11-20",
+      "task": "airbnb009",
+      "trial": 1,
+      "agent": "verimend",
+      "grader_passed": false,
+      "outcome": "false_success",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     }
+    ]
+   },
+   "4526ccb50caaefca2037c0b18426185820d233e5fba5f45c26e81bd4c0480588": {
+    "diff": "diff --git a/models/agg/mom_agg_reviews.sql b/models/agg/mom_agg_reviews.sql\n--- a/models/agg/mom_agg_reviews.sql\n+++ b/models/agg/mom_agg_reviews.sql\n@@ -18,29 +18,37 @@\n ),\n \n dates_cte AS (\n-\tSELECT DATE_ACTUAL\n+\t/* every calendar day in the review range, not only the days that have reviews */\n+\tSELECT DATE_ACTUAL::DATE AS DATE_ACTUAL\n \tFROM {{ ref('dim_dates') }}\n-\tWHERE DATE_ACTUAL IN (SELECT DISTINCT REVIEW_DATE::DATE\n-\t\t\t\t\t\t  FROM review_cte)\n+\tWHERE DATE_ACTUAL::DATE BETWEEN (SELECT MIN(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n+\t\t\t\t\t\tAND (SELECT MAX(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n \n \t{% if is_incremental() %}\n-\t\tAND DATE_ACTUAL = (SELECT MAX(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n+\t\tAND DATE_ACTUAL::DATE = (SELECT MAX(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n \t{% endif %}\n+),\n+\n+sentiment_cte AS (\n+\tSELECT DISTINCT REVIEW_SENTIMENT\n+\tFROM review_cte\n ),\n \n final_cte AS (\n SELECT\n-\tCOUNT(*) AS REVIEW_TOTALS ,\n-\treview_cte.REVIEW_SENTIMENT ,\n+\tCOUNT(review_cte.REVIEW_DATE) AS REVIEW_TOTALS ,\n+\tsentiment_cte.REVIEW_SENTIMENT ,\n \tdates_cte.DATE_ACTUAL AS AGGREGATION_DATE\n FROM dates_cte\n+CROSS JOIN sentiment_cte\n LEFT JOIN review_cte\n \t/* joining by last 30 days range so we can get the last 30 days aggregation for each date */\n-\tON review_cte.REVIEW_DATE::DATE BETWEEN dates_cte.DATE_ACTUAL::DATE - 29\n+\tON review_cte.REVIEW_SENTIMENT = sentiment_cte.REVIEW_SENTIMENT\n+\tAND review_cte.REVIEW_DATE::DATE BETWEEN dates_cte.DATE_ACTUAL::DATE - 29\n \t\t\t\t  \t\t      AND dates_cte.DATE_ACTUAL::DATE\n GROUP BY\n-\tREVIEW_SENTIMENT ,\n-\tAGGREGATION_DATE\n+\tsentiment_cte.REVIEW_SENTIMENT ,\n+\tdates_cte.DATE_ACTUAL\n )\n \n SELECT\n",
+    "occurrences": [
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "airbnb009",
+      "trial": 3,
+      "agent": "verimend",
+      "grader_passed": false,
+      "outcome": "false_success",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     }
+    ]
+   },
+   "17ef82fb9c9f24027692b246caa402d7371d883748da1f615710eae6f12cbb52": {
+    "diff": "diff --git a/models/agg/mom_agg_reviews.sql b/models/agg/mom_agg_reviews.sql\n--- a/models/agg/mom_agg_reviews.sql\n+++ b/models/agg/mom_agg_reviews.sql\n@@ -20,17 +20,18 @@\n dates_cte AS (\n \tSELECT DATE_ACTUAL\n \tFROM {{ ref('dim_dates') }}\n-\tWHERE DATE_ACTUAL IN (SELECT DISTINCT REVIEW_DATE::DATE\n-\t\t\t\t\t\t  FROM review_cte)\n+\tWHERE DATE_ACTUAL BETWEEN (SELECT MIN(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n+\t\t\t\t\t\t  AND (SELECT MAX(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n \n \t{% if is_incremental() %}\n-\t\tAND DATE_ACTUAL = (SELECT MAX(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n+\t\tAND DATE_ACTUAL BETWEEN (SELECT MAX(REVIEW_DATE::DATE) - 29 FROM {{ref('fct_reviews')}})\n+\t\t\t\t\t\t\tAND (SELECT MAX(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n \t{% endif %}\n ),\n \n final_cte AS (\n SELECT\n-\tCOUNT(*) AS REVIEW_TOTALS ,\n+\tCOUNT(review_cte.REVIEW_SENTIMENT) AS REVIEW_TOTALS ,\n \treview_cte.REVIEW_SENTIMENT ,\n \tdates_cte.DATE_ACTUAL AS AGGREGATION_DATE\n FROM dates_cte\n",
+    "occurrences": [
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "airbnb009",
+      "trial": 2,
+      "agent": "baseline",
+      "grader_passed": false,
+      "outcome": "false_success",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   },
+   "92185dd8e036407a7b1a94f0f779ea435c0466952e2a6b413c697eec91590e38": {
+    "diff": "diff --git a/models/agg/mom_agg_reviews.sql b/models/agg/mom_agg_reviews.sql\n--- a/models/agg/mom_agg_reviews.sql\n+++ b/models/agg/mom_agg_reviews.sql\n@@ -20,8 +20,8 @@\n dates_cte AS (\n \tSELECT DATE_ACTUAL\n \tFROM {{ ref('dim_dates') }}\n-\tWHERE DATE_ACTUAL IN (SELECT DISTINCT REVIEW_DATE::DATE\n-\t\t\t\t\t\t  FROM review_cte)\n+\tWHERE DATE_ACTUAL BETWEEN (SELECT MIN(REVIEW_DATE::DATE) FROM review_cte)\n+\t\t\t\t\t\t  AND (SELECT MAX(REVIEW_DATE::DATE) FROM review_cte)\n \n \t{% if is_incremental() %}\n \t\tAND DATE_ACTUAL = (SELECT MAX(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n@@ -30,7 +30,7 @@\n \n final_cte AS (\n SELECT\n-\tCOUNT(*) AS REVIEW_TOTALS ,\n+\tCOUNT(review_cte.REVIEW_DATE) AS REVIEW_TOTALS ,\n \treview_cte.REVIEW_SENTIMENT ,\n \tdates_cte.DATE_ACTUAL AS AGGREGATION_DATE\n FROM dates_cte\n",
+    "occurrences": [
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "airbnb009",
+      "trial": 3,
+      "agent": "baseline",
+      "grader_passed": false,
+      "outcome": "false_success",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   },
+   "36d44cbc97d660592aff17cbd19f2b4203524de975de4c757e7bd85f2b49acec": {
+    "diff": "diff --git a/models/agg/mom_agg_reviews.sql b/models/agg/mom_agg_reviews.sql\n--- a/models/agg/mom_agg_reviews.sql\n+++ b/models/agg/mom_agg_reviews.sql\n@@ -20,8 +20,8 @@\n dates_cte AS (\n \tSELECT DATE_ACTUAL\n \tFROM {{ ref('dim_dates') }}\n-\tWHERE DATE_ACTUAL IN (SELECT DISTINCT REVIEW_DATE::DATE\n-\t\t\t\t\t\t  FROM review_cte)\n+\tWHERE DATE_ACTUAL BETWEEN (SELECT MIN(REVIEW_DATE::DATE) FROM review_cte)\n+\t\t\t\t\t\t  AND (SELECT MAX(REVIEW_DATE::DATE) FROM review_cte)\n \n \t{% if is_incremental() %}\n \t\tAND DATE_ACTUAL = (SELECT MAX(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n@@ -30,7 +30,7 @@\n \n final_cte AS (\n SELECT\n-\tCOUNT(*) AS REVIEW_TOTALS ,\n+\tCOUNT(review_cte.REVIEW_SENTIMENT) AS REVIEW_TOTALS ,\n \treview_cte.REVIEW_SENTIMENT ,\n \tdates_cte.DATE_ACTUAL AS AGGREGATION_DATE\n FROM dates_cte\n",
+    "occurrences": [
+     {
+      "batch": "smoke6b-baseline-ade-2026-11-21",
+      "task": "airbnb009",
+      "trial": 1,
+      "agent": "baseline",
+      "grader_passed": false,
+      "outcome": "false_success",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   },
+   "d265540fd114cf3d534bc8c905009a5a68839af9c1386e3e73067bafbb95d4dc": {
+    "diff": "diff --git a/models/agg/mom_agg_reviews.sql b/models/agg/mom_agg_reviews.sql\n--- a/models/agg/mom_agg_reviews.sql\n+++ b/models/agg/mom_agg_reviews.sql\n@@ -20,11 +20,12 @@\n dates_cte AS (\n \tSELECT DATE_ACTUAL\n \tFROM {{ ref('dim_dates') }}\n-\tWHERE DATE_ACTUAL IN (SELECT DISTINCT REVIEW_DATE::DATE\n-\t\t\t\t\t\t  FROM review_cte)\n+\t-- THIS IS THE FIX\n+\tWHERE DATE_ACTUAL >= (SELECT min(REVIEW_DATE::DATE) FROM review_cte)\n+\t\tAND DATE_ACTUAL <= (SELECT max(REVIEW_DATE::DATE) FROM review_cte)\n \n \t{% if is_incremental() %}\n-\t\tAND DATE_ACTUAL = (SELECT MAX(REVIEW_DATE::DATE) FROM {{ref('fct_reviews')}})\n+\t\tAND DATE_ACTUAL = (SELECT MAX(REVIEW_DATE::DATE) FROM review_cte)\n \t{% endif %}\n ),\n \n",
+    "occurrences": [
+     {
+      "batch": "verifier-reference-ade-2026-11-19",
+      "task": "airbnb009",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier2-reference-ade-2026-11-19",
+      "task": "airbnb009",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier4-reference-ade-2026-11-20",
+      "task": "airbnb009",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier6-reference-ade-2026-11-20",
+      "task": "airbnb009",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   }
+  },
+  "analytics_engineering002": {
+   "f176a3932bfc9cd8c025f4e966cb0c2b89244674170158448cfb420d7c0693d5": {
+    "diff": "diff --git a/models/analytics_obt/obt_product_inventory.sql b/models/analytics_obt/obt_product_inventory.sql\n--- a/models/analytics_obt/obt_product_inventory.sql\n+++ b/models/analytics_obt/obt_product_inventory.sql\n@@ -4,7 +4,7 @@\n         p.product_code,\n         p.product_name,\n         p.description,\n-        p.supplier_company\n+        p.supplier_company,\n         p.standard_cost,\n         p.list_price,\n         p.reorder_level,\n",
+    "occurrences": [
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "analytics_engineering002",
+      "trial": 1,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "analytics_engineering002",
+      "trial": 2,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "analytics_engineering002",
+      "trial": 3,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "analytics_engineering002",
+      "trial": 1,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     },
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "analytics_engineering002",
+      "trial": 2,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     },
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "analytics_engineering002",
+      "trial": 3,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     },
+     {
+      "batch": "verifier-reference-ade-2026-11-19",
+      "task": "analytics_engineering002",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier2-reference-ade-2026-11-19",
+      "task": "analytics_engineering002",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier4-reference-ade-2026-11-20",
+      "task": "analytics_engineering002",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier6-reference-ade-2026-11-20",
+      "task": "analytics_engineering002",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   }
+  },
+  "analytics_engineering005": {
+   "9be61b3d3053089ffa11214ae09855eb6af9831a00b3cf4918cff74bf68dc6f6": {
+    "diff": "diff --git a/models/warehouse/fact_inventory.sql b/models/warehouse/fact_inventory.sql\n--- a/models/warehouse/fact_inventory.sql\n+++ b/models/warehouse/fact_inventory.sql\n@@ -19,5 +19,5 @@\n     FROM {{ ref('stg_inventory_transactions') }}\n )\n \n-SELECT *\n+SELECT DISTINCT *\n FROM source\n\\ No newline at end of file\n",
+    "occurrences": [
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "analytics_engineering005",
+      "trial": 1,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "analytics_engineering005",
+      "trial": 3,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "analytics_engineering005",
+      "trial": 1,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   },
+   "5a41b0097b6016d4cc1cdd180dc408f96f83a02aa33686ba08a8fc3c3b1cb750": {
+    "diff": "diff --git a/models/warehouse/fact_inventory.sql b/models/warehouse/fact_inventory.sql\n--- a/models/warehouse/fact_inventory.sql\n+++ b/models/warehouse/fact_inventory.sql\n@@ -20,4 +20,5 @@\n )\n \n SELECT *\n-FROM source\n\\ No newline at end of file\n+FROM source\n+QUALIFY ROW_NUMBER() OVER (PARTITION BY inventory_id ORDER BY transaction_created_date, transaction_modified_date, product_id, quantity) = 1\n\\ No newline at end of file\n",
+    "occurrences": [
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "analytics_engineering005",
+      "trial": 2,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     }
+    ]
+   },
+   "f9bbe8baa24a24efeb2d80e80db74be336950dec84bb45e452540b06b8aac822": {
+    "diff": "diff --git a/models/warehouse/fact_inventory.sql b/models/warehouse/fact_inventory.sql\n--- a/models/warehouse/fact_inventory.sql\n+++ b/models/warehouse/fact_inventory.sql\n@@ -20,4 +20,8 @@\n )\n \n SELECT *\n-FROM source\n\\ No newline at end of file\n+FROM source\n+QUALIFY ROW_NUMBER() OVER (\n+    PARTITION BY inventory_id\n+    ORDER BY transaction_modified_date DESC\n+) = 1\n\\ No newline at end of file\n",
+    "occurrences": [
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "analytics_engineering005",
+      "trial": 2,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   },
+   "3f0d511c14390ed0e5ecec11f8d33d7e8e10e48d8eb51fe75ae8b4fe94eb4bf9": {
+    "diff": "diff --git a/models/warehouse/fact_inventory.sql b/models/warehouse/fact_inventory.sql\n--- a/models/warehouse/fact_inventory.sql\n+++ b/models/warehouse/fact_inventory.sql\n@@ -20,4 +20,8 @@\n )\n \n SELECT *\n-FROM source\n\\ No newline at end of file\n+FROM source\n+QUALIFY ROW_NUMBER() OVER (\n+    PARTITION BY inventory_id\n+    ORDER BY transaction_modified_date DESC NULLS LAST, transaction_created_date DESC\n+) = 1\n\\ No newline at end of file\n",
+    "occurrences": [
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "analytics_engineering005",
+      "trial": 3,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   },
+   "64d5e3c593a7daff2471900dfbdc4922bd297975d5926fe69172e180e7e6147d": {
+    "diff": "diff --git a/models/warehouse/fact_inventory.sql b/models/warehouse/fact_inventory.sql\n--- a/models/warehouse/fact_inventory.sql\n+++ b/models/warehouse/fact_inventory.sql\n@@ -17,7 +17,24 @@\n         customer_order_id,\n         comments\n     FROM {{ ref('stg_inventory_transactions') }}\n+),\n+\n+unique_source AS (\n+    SELECT\n+        *,\n+        ROW_NUMBER() OVER(PARTITION BY inventory_id ORDER BY inventory_id) AS row_number\n+    FROM source\n )\n \n-SELECT *\n-FROM source\n\\ No newline at end of file\n+SELECT\n+    inventory_id,\n+    transaction_type,\n+    transaction_created_date,\n+    transaction_modified_date,\n+    product_id,\n+    quantity,\n+    purchase_order_id,\n+    customer_order_id,\n+    comments\n+FROM unique_source\n+WHERE row_number = 1\n\\ No newline at end of file\n",
+    "occurrences": [
+     {
+      "batch": "verifier-reference-ade-2026-11-19",
+      "task": "analytics_engineering005",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier2-reference-ade-2026-11-19",
+      "task": "analytics_engineering005",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier4-reference-ade-2026-11-20",
+      "task": "analytics_engineering005",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier6-reference-ade-2026-11-20",
+      "task": "analytics_engineering005",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   }
+  },
+  "asana001": {
+   "08ce7faab57f1753e594b330b4e1ff8048480f2e67441af4aea60f2c4845d884": {
+    "diff": "diff --git a/dbt_project.yml b/dbt_project.yml\n--- a/dbt_project.yml\n+++ b/dbt_project.yml\n@@ -4,11 +4,15 @@\n require-dbt-version: [\">=1.3.0\", \"<2.0.0\"]\n models:\n   +materialized: table\n+  asana_source:\n+    stg_asana__task:\n+      enabled: false\n \n profile: 'asana-duckdb'\n \n vars:\n   asana_schema: main\n+  task_pass_through_columns: []\n   asana_source:\n     asana_user_identifier: \"user_data\"\n     asana_project_identifier: \"project_data\"\ndiff --git a/models/stg_asana__task.sql b/models/stg_asana__task.sql\n--- /dev/null\n+++ b/models/stg_asana__task.sql\n@@ -0,0 +1,59 @@\n+\n+with base as (\n+\n+    select * \n+    from {{ ref('stg_asana__task_tmp') }}\n+\n+),\n+\n+fields as (\n+\n+    select\n+        {{\n+            fivetran_utils.fill_staging_columns(\n+                source_columns=adapter.get_columns_in_relation(ref('stg_asana__task_tmp')),\n+                staging_columns=asana_source.get_task_columns()\n+            )\n+        }}\n+\n+        --The below script allows for pass through columns.\n+        {% if var('task_pass_through_columns') %}\n+        ,\n+        {{ var('task_pass_through_columns') | join (\", \") }}\n+\n+        {% endif %}\n+\n+    from base\n+),\n+\n+final as (\n+    \n+    select \n+        id as task_id,\n+        assignee_id as assignee_user_id,\n+        completed as is_completed,\n+        cast(completed_at as {{ dbt.type_timestamp() }}) as completed_at,\n+        completed_by_id as completed_by_user_id,\n+        cast(created_at as {{ dbt.type_timestamp() }}) as created_at,\n+        cast(coalesce(cast(due_on as {{ dbt.type_timestamp() }}), to_timestamp(due_at)) as {{ dbt.type_timestamp() }}) as due_date,\n+        cast(modified_at as {{ dbt.type_timestamp() }}) as modified_at,\n+        name as task_name,\n+        parent_id as parent_task_id,\n+        cast(start_on as {{ dbt.type_timestamp() }}) as start_date,\n+        notes as task_description,\n+        liked as is_liked,\n+        num_likes as number_of_likes,\n+        workspace_id\n+\n+        --The below script allows for pass through columns.\n+        {% if var('task_pass_through_columns') %}\n+        ,\n+        {{ var('task_pass_through_columns') | join (\", \") }}\n+\n+        {% endif %}\n+\n+    from fields\n+)\n+\n+select * \n+from final\n",
+    "occurrences": [
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "asana001",
+      "trial": 1,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     }
+    ]
+   },
+   "dc9687dda52d8f247a3cb8b83b47fa246b6b954c6bacfd7bbfd4e533e240798d": {
+    "diff": "diff --git a/dbt_project.yml b/dbt_project.yml\n--- a/dbt_project.yml\n+++ b/dbt_project.yml\n@@ -4,6 +4,9 @@\n require-dbt-version: [\">=1.3.0\", \"<2.0.0\"]\n models:\n   +materialized: table\n+  asana_source:\n+    stg_asana__task:\n+      enabled: false\n \n profile: 'asana-duckdb'\n \ndiff --git a/models/stg_asana__task.sql b/models/stg_asana__task.sql\n--- /dev/null\n+++ b/models/stg_asana__task.sql\n@@ -0,0 +1,63 @@\n+-- Project override of asana_source.stg_asana__task.\n+-- The raw task table types due_at and start_on as INTEGER (all null in the\n+-- loaded data), so COALESCE(due_on, due_at) fails against TIMESTAMP due_on.\n+-- Convert the integer epoch columns to timestamps explicitly; source data unchanged.\n+\n+with base as (\n+\n+    select * \n+    from {{ ref('stg_asana__task_tmp') }}\n+\n+),\n+\n+fields as (\n+\n+    select\n+        {{\n+            fivetran_utils.fill_staging_columns(\n+                source_columns=adapter.get_columns_in_relation(ref('stg_asana__task_tmp')),\n+                staging_columns=asana_source.get_task_columns()\n+            )\n+        }}\n+\n+        --The below script allows for pass through columns.\n+        {% if var('task_pass_through_columns', []) %}\n+        ,\n+        {{ var('task_pass_through_columns', []) | join (\", \") }}\n+\n+        {% endif %}\n+\n+    from base\n+),\n+\n+final as (\n+    \n+    select \n+        id as task_id,\n+        assignee_id as assignee_user_id,\n+        completed as is_completed,\n+        cast(completed_at as {{ dbt.type_timestamp() }}) as completed_at,\n+        completed_by_id as completed_by_user_id,\n+        cast(created_at as {{ dbt.type_timestamp() }}) as created_at,\n+        cast(coalesce(due_on, to_timestamp(due_at)) as {{ dbt.type_timestamp() }}) as due_date,\n+        cast(modified_at as {{ dbt.type_timestamp() }}) as modified_at,\n+        name as task_name,\n+        parent_id as parent_task_id,\n+        cast(to_timestamp(start_on) as {{ dbt.type_timestamp() }}) as start_date,\n+        notes as task_description,\n+        liked as is_liked,\n+        num_likes as number_of_likes,\n+        workspace_id\n+\n+        --The below script allows for pass through columns.\n+        {% if var('task_pass_through_columns', []) %}\n+        ,\n+        {{ var('task_pass_through_columns', []) | join (\", \") }}\n+\n+        {% endif %}\n+\n+    from fields\n+)\n+\n+select * \n+from final\n",
+    "occurrences": [
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "asana001",
+      "trial": 2,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     }
+    ]
+   },
+   "6cbf2f4ea8ea65b625271a2f12d20f504884b675018216230afb441f3fd33ed4": {
+    "diff": "diff --git a/dbt_project.yml b/dbt_project.yml\n--- a/dbt_project.yml\n+++ b/dbt_project.yml\n@@ -4,10 +4,14 @@\n require-dbt-version: [\">=1.3.0\", \"<2.0.0\"]\n models:\n   +materialized: table\n+  asana_source:\n+    stg_asana__task:\n+      +enabled: false\n \n profile: 'asana-duckdb'\n \n vars:\n+  task_pass_through_columns: []\n   asana_schema: main\n   asana_source:\n     asana_user_identifier: \"user_data\"\ndiff --git a/models/staging/stg_asana__task.sql b/models/staging/stg_asana__task.sql\n--- /dev/null\n+++ b/models/staging/stg_asana__task.sql\n@@ -0,0 +1,59 @@\n+\n+with base as (\n+\n+    select * \n+    from {{ ref('stg_asana__task_tmp') }}\n+\n+),\n+\n+fields as (\n+\n+    select\n+        {{\n+            fivetran_utils.fill_staging_columns(\n+                source_columns=adapter.get_columns_in_relation(ref('stg_asana__task_tmp')),\n+                staging_columns=asana_source.get_task_columns()\n+            )\n+        }}\n+\n+        --The below script allows for pass through columns.\n+        {% if var('task_pass_through_columns') %}\n+        ,\n+        {{ var('task_pass_through_columns') | join (\", \") }}\n+\n+        {% endif %}\n+\n+    from base\n+),\n+\n+final as (\n+    \n+    select \n+        id as task_id,\n+        assignee_id as assignee_user_id,\n+        completed as is_completed,\n+        cast(completed_at as {{ dbt.type_timestamp() }}) as completed_at,\n+        completed_by_id as completed_by_user_id,\n+        cast(created_at as {{ dbt.type_timestamp() }}) as created_at,\n+        cast(coalesce(cast(due_on as {{ dbt.type_timestamp() }}), cast(to_timestamp(due_at) as {{ dbt.type_timestamp() }})) as {{ dbt.type_timestamp() }}) as due_date,\n+        cast(modified_at as {{ dbt.type_timestamp() }}) as modified_at,\n+        name as task_name,\n+        parent_id as parent_task_id,\n+        cast(cast(to_timestamp(start_on) as {{ dbt.type_timestamp() }}) as {{ dbt.type_timestamp() }}) as start_date,\n+        notes as task_description,\n+        liked as is_liked,\n+        num_likes as number_of_likes,\n+        workspace_id\n+\n+        --The below script allows for pass through columns.\n+        {% if var('task_pass_through_columns') %}\n+        ,\n+        {{ var('task_pass_through_columns') | join (\", \") }}\n+\n+        {% endif %}\n+\n+    from fields\n+)\n+\n+select * \n+from final\n",
+    "occurrences": [
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "asana001",
+      "trial": 3,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     }
+    ]
+   },
+   "1328db245bb910e8b8302956c2db1c9f7e940669c07f18f169773792a6d1567a": {
+    "diff": "diff --git a/dbt_project.yml b/dbt_project.yml\n--- a/dbt_project.yml\n+++ b/dbt_project.yml\n@@ -10,6 +10,7 @@\n vars:\n   asana_schema: main\n   asana_source:\n+    task: \"{{ ref('asana_task_typed') }}\"\n     asana_user_identifier: \"user_data\"\n     asana_project_identifier: \"project_data\"\n     asana_task_identifier: \"task_data\"\ndiff --git a/models/asana_task_typed.sql b/models/asana_task_typed.sql\n--- /dev/null\n+++ b/models/asana_task_typed.sql\n@@ -0,0 +1,19 @@\n+-- Casts source task columns to the types asana_source 0.8.2 expects.\n+-- The underlying task_data table has INTEGER for due_at, start_on, completed_by_id, and parent_id,\n+-- which breaks COALESCE(due_on, due_at) in stg_asana__task. The source data is left untouched.\n+select\n+    id,\n+    assignee_id,\n+    completed,\n+    completed_at,\n+    cast(completed_by_id as varchar) as completed_by_id,\n+    created_at,\n+    cast(cast(due_at as varchar) as timestamp) as due_at,\n+    due_on,\n+    modified_at,\n+    name,\n+    notes,\n+    cast(parent_id as varchar) as parent_id,\n+    cast(cast(start_on as varchar) as timestamp) as start_on,\n+    workspace_id\n+from {{ source('asana', 'task') }}\n",
+    "occurrences": [
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "asana001",
+      "trial": 1,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   },
+   "631809d1f18030d843ea499378705c3ef8da041708ba887bbc3b99ba7fc0072c": {
+    "diff": "diff --git a/dbt_project.yml b/dbt_project.yml\n--- a/dbt_project.yml\n+++ b/dbt_project.yml\n@@ -14,6 +14,7 @@\n     asana_project_identifier: \"project_data\"\n     asana_task_identifier: \"task_data\"\n     asana_story_identifier: \"story_data\"\n+    task: \"{{ ref('asana_task_source') }}\"\n     asana_team_identifier: \"team_data\"\n     asana_tag_identifier: \"tag_data\"\n     asana_project_task_identifier: \"project_task_data\"\ndiff --git a/models/asana_task_source.sql b/models/asana_task_source.sql\n--- /dev/null\n+++ b/models/asana_task_source.sql\n@@ -0,0 +1,21 @@\n+-- Pass-through of the raw task table with timestamp columns cast to the\n+-- types the Asana package expects. The raw table stores due_at and start_on\n+-- as INTEGER, which breaks COALESCE(due_on, due_at) in stg_asana__task.\n+\n+select\n+    id,\n+    assignee_id,\n+    completed,\n+    cast(completed_at as {{ dbt.type_timestamp() }}) as completed_at,\n+    completed_by_id,\n+    cast(created_at as {{ dbt.type_timestamp() }}) as created_at,\n+    cast(due_on as {{ dbt.type_timestamp() }}) as due_on,\n+    cast(due_at as {{ dbt.type_timestamp() }}) as due_at,\n+    cast(modified_at as {{ dbt.type_timestamp() }}) as modified_at,\n+    name,\n+    parent_id,\n+    cast(start_on as {{ dbt.type_timestamp() }}) as start_on,\n+    notes,\n+    workspace_id\n+\n+from {{ source('asana', 'task') }}\n",
+    "occurrences": [
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "asana001",
+      "trial": 2,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   },
+   "de0889a55935de65cb7054dc2e73f66b97369febdbdd35bf6964dfb87abffe98": {
+    "diff": "diff --git a/dbt_project.yml b/dbt_project.yml\n--- a/dbt_project.yml\n+++ b/dbt_project.yml\n@@ -4,6 +4,9 @@\n require-dbt-version: [\">=1.3.0\", \"<2.0.0\"]\n models:\n   +materialized: table\n+  asana_source:\n+    stg_asana__task:\n+      +enabled: false\n \n profile: 'asana-duckdb'\n \ndiff --git a/models/stg_asana__task.sql b/models/stg_asana__task.sql\n--- /dev/null\n+++ b/models/stg_asana__task.sql\n@@ -0,0 +1,58 @@\n+with base as (\n+\n+    select *\n+    from {{ ref('stg_asana__task_tmp') }}\n+\n+),\n+\n+fields as (\n+\n+    select\n+        {{\n+            fivetran_utils.fill_staging_columns(\n+                source_columns=adapter.get_columns_in_relation(ref('stg_asana__task_tmp')),\n+                staging_columns=asana_source.get_task_columns()\n+            )\n+        }}\n+\n+        --The below script allows for pass through columns.\n+        {% if var('task_pass_through_columns', []) %}\n+        ,\n+        {{ var('task_pass_through_columns', []) | join (\", \") }}\n+\n+        {% endif %}\n+\n+    from base\n+),\n+\n+final as (\n+\n+    select\n+        id as task_id,\n+        assignee_id as assignee_user_id,\n+        completed as is_completed,\n+        cast(completed_at as {{ dbt.type_timestamp() }}) as completed_at,\n+        completed_by_id as completed_by_user_id,\n+        cast(created_at as {{ dbt.type_timestamp() }}) as created_at,\n+        cast(coalesce(due_on, cast(due_at as {{ dbt.type_timestamp() }})) as {{ dbt.type_timestamp() }}) as due_date,\n+        cast(modified_at as {{ dbt.type_timestamp() }}) as modified_at,\n+        name as task_name,\n+        parent_id as parent_task_id,\n+        cast(start_on as {{ dbt.type_timestamp() }}) as start_date,\n+        notes as task_description,\n+        liked as is_liked,\n+        num_likes as number_of_likes,\n+        workspace_id\n+\n+        --The below script allows for pass through columns.\n+        {% if var('task_pass_through_columns', []) %}\n+        ,\n+        {{ var('task_pass_through_columns', []) | join (\", \") }}\n+\n+        {% endif %}\n+\n+    from fields\n+)\n+\n+select *\n+from final\n",
+    "occurrences": [
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "asana001",
+      "trial": 3,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   },
+   "71f04d18d4217f0ab8b21c3694cd8126cf86f4e5927e3e645a4c6a499427249b": {
+    "diff": "diff --git a/dbt_packages/asana_source/models/stg_asana__task.sql b/dbt_packages/asana_source/models/stg_asana__task.sql\n--- a/dbt_packages/asana_source/models/stg_asana__task.sql\n+++ b/dbt_packages/asana_source/models/stg_asana__task.sql\n@@ -35,7 +35,7 @@\n         cast(completed_at as {{ dbt.type_timestamp() }}) as completed_at,\n         completed_by_id as completed_by_user_id,\n         cast(created_at as {{ dbt.type_timestamp() }}) as created_at,\n-        cast(coalesce(due_on, due_at) as {{ dbt.type_timestamp() }}) as due_date,\n+        cast(coalesce(cast(due_on as {{ dbt.type_timestamp() }}), cast(due_at as {{ dbt.type_timestamp() }})) as {{ dbt.type_timestamp() }}) as due_date,\n         cast(modified_at as {{ dbt.type_timestamp() }}) as modified_at,\n         name as task_name,\n         parent_id as parent_task_id,\n",
+    "occurrences": [
+     {
+      "batch": "verifier-reference-ade-2026-11-19",
+      "task": "asana001",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": false,
+      "recorded_failed_check": "tamper",
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier2-reference-ade-2026-11-19",
+      "task": "asana001",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": false,
+      "recorded_failed_check": "tamper",
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier4-reference-ade-2026-11-20",
+      "task": "asana001",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": false,
+      "recorded_failed_check": "tamper",
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier6-reference-ade-2026-11-20",
+      "task": "asana001",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": false,
+      "recorded_failed_check": "tamper",
+      "recorded_with_four_checks": true
+     }
+    ]
+   }
+  },
+  "f1007": {
+   "a0fb7ed8509407671d0f8677e59017fdc3f7c06beaaa5f709ffed2de3ae6cf7d": {
+    "diff": "diff --git a/models/staging/f1_dataset/stg_f1_dataset__results.sql b/models/staging/f1_dataset/stg_f1_dataset__results.sql\n--- a/models/staging/f1_dataset/stg_f1_dataset__results.sql\n+++ b/models/staging/f1_dataset/stg_f1_dataset__results.sql\n@@ -53,7 +53,7 @@\n          s.status_desc,\n          p.position_desc\n     from results as r\n-    join position_descriptions as p\n+    left join position_descriptions as p\n   using (position_text)\n     join status_descriptions as s\n   using (status_id)\n",
+    "occurrences": [
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "f1007",
+      "trial": 1,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "f1007",
+      "trial": 1,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     },
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "f1007",
+      "trial": 3,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   },
+   "d60bdc26ef2629881434ee5e2f21d11c160aaa08c647ffeba848a291f5462e11": {
+    "diff": "diff --git a/models/staging/f1_dataset/stg_f1_dataset__results.sql b/models/staging/f1_dataset/stg_f1_dataset__results.sql\n--- a/models/staging/f1_dataset/stg_f1_dataset__results.sql\n+++ b/models/staging/f1_dataset/stg_f1_dataset__results.sql\n@@ -53,11 +53,11 @@\n          s.status_desc,\n          p.position_desc\n     from results as r\n-    join position_descriptions as p\n+    left join position_descriptions as p\n   using (position_text)\n     join status_descriptions as s\n   using (status_id)\n )\n \n select *\n-  from final\n\\ No newline at end of file\n+  from final\n",
+    "occurrences": [
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "f1007",
+      "trial": 2,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "dev4-verimend-ade-bench-2026-11-20",
+      "task": "f1007",
+      "trial": 3,
+      "agent": "verimend",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     }
+    ]
+   },
+   "009bf0af9118436a379dd56fe1bc5cc55d12546f825ac0841a4df20e1e3a5864": {
+    "diff": "diff --git a/models/staging/f1_dataset/stg_f1_dataset__results.sql b/models/staging/f1_dataset/stg_f1_dataset__results.sql\n--- a/models/staging/f1_dataset/stg_f1_dataset__results.sql\n+++ b/models/staging/f1_dataset/stg_f1_dataset__results.sql\n@@ -53,9 +53,9 @@\n          s.status_desc,\n          p.position_desc\n     from results as r\n-    join position_descriptions as p\n+    left join position_descriptions as p\n   using (position_text)\n-    join status_descriptions as s\n+    left join status_descriptions as s\n   using (status_id)\n )\n \n",
+    "occurrences": [
+     {
+      "batch": "gate-baseline-ade-2026-11-21",
+      "task": "f1007",
+      "trial": 2,
+      "agent": "baseline",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     },
+     {
+      "batch": "verifier-reference-ade-2026-11-19",
+      "task": "f1007",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier2-reference-ade-2026-11-19",
+      "task": "f1007",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier4-reference-ade-2026-11-20",
+      "task": "f1007",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": false
+     },
+     {
+      "batch": "verifier6-reference-ade-2026-11-20",
+      "task": "f1007",
+      "trial": 1,
+      "agent": "reference",
+      "grader_passed": true,
+      "outcome": "true_fix",
+      "recorded_passed": true,
+      "recorded_failed_check": null,
+      "recorded_with_four_checks": true
+     }
+    ]
+   }
+  }
+ },
+ "skipped": {
+  "dev-baseline-ade-bench-2026-11-19: no recorded diff": 6,
+  "dev-reference-ade-bench-2026-11-19: no recorded diff": 6,
+  "dev-verimend-ade-bench-2026-11-19: no recorded diff": 18,
+  "iter1-verimend-ade-2026-11-19: no recorded diff": 5,
+  "iter2-verimend-ade-2026-11-19: no recorded diff": 6,
+  "smoke-verimend-ade-2026-11-19: no recorded diff": 1,
+  "verifier-reference-ade-2026-11-19: no recorded diff": 1
+ }
+}

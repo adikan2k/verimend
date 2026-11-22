@@ -30,6 +30,7 @@ from bench.agents import BASELINE_TOOLS, AgentSpec, baseline_cli_flags, get_agen
 from bench.assemble import AgentRecord, write_batch
 from bench.claude_stream import parse_stream
 from bench.grade import grades_from_ade_results
+from bench.replay_task import load_replay_diffs, replay_task
 from bench.sealed import SealedVerifier, mentions_verifier
 from verimend.agent.run import run_agent_sync
 from verimend.config import load_settings
@@ -122,6 +123,31 @@ class VerimendAgent(BaseAgent):
             model_name=self._model,
             failure_mode=FailureMode.NONE,
         )
+
+
+class ReplayAgent(BaseAgent):
+    """Changes nothing. Snapshots the task's project, then re-verifies each recorded diff
+    of the task against that snapshot (bench/replay.py). No model calls."""
+
+    NAME = AgentName.NONE
+
+    def __init__(self, batch: dict[str, Any]) -> None:
+        super().__init__()
+        self._batch = batch
+
+    def perform_task(
+        self,
+        task_prompt: str,
+        session: Any,
+        logging_dir: Path | None = None,
+        task_name: str | None = None,
+    ) -> AgentResult:
+        task = (task_name or "unknown").split(".")[0]
+        verifier = container_verifier(AdeWorkspace.open(session.container))
+        diffs = load_replay_diffs(self._batch).get(task, [])
+        out = Path(self._batch["results_dir"]) / "replay.jsonl"
+        asyncio.run(replay_task(verifier, task, diffs, out))
+        return AgentResult(input_tokens=0, output_tokens=0, failure_mode=FailureMode.NONE)
 
 
 class Recorder:
@@ -241,6 +267,8 @@ class RecordingFactory(AgentFactory):
         return AgentName.CLAUDE_CODE if self._spec.name == "baseline" else AgentName.NONE
 
     def get_agent(self, **kwargs: Any) -> BaseAgent:
+        if self._spec.name == "replay":
+            return RecordingAgent(ReplayAgent(self._batch), self._recorder, None)
         if self._named is not None:
             check = bool(self._batch.get("with_verifier"))
             return RecordingAgent(self._named.get_agent(**kwargs), self._recorder, None, check)

@@ -105,6 +105,14 @@ class WorkspaceVerifier:
         )
         return await self._run(argv, CHECK_TIMEOUT)
 
+    async def check_diff(self, diff_text: str, name: str) -> dict[str, Any]:
+        """Re-verify a recorded diff against the snapshot (bench/replay.py), never in a
+        real run: `--replay` leaves the snapshot as it was and measures every check."""
+        path = f"{self.work_dir}-replay/{name}.diff"
+        await self.workspace.put_file(path, diff_text.encode("utf-8"))
+        argv = self._argv("verify", "--work", self.work_dir, "--diff", path, "--replay")
+        return await self._run(argv, CHECK_TIMEOUT)
+
 
 def feedback_text(result: dict[str, Any], attempt: int, max_attempts: int, detail: bool) -> str:
     """What the agent hears after a rejection: which check failed and its message."""

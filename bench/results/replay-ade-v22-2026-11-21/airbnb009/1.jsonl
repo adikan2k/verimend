@@ -1,0 +1,4 @@
+{"event": "run_start", "t": 1795301593.073, "agent": "replay", "model": null, "git_sha": "305e273", "source": "ade-bench", "source_commit": "c305600ebf17e7e7c4550bd401b6ddb530beb7c8", "task": "airbnb009", "trial": 1, "caps": {"max_usd": null, "max_steps": 40, "max_attempts": 1}, "tools_offered": null, "verifier_snapshot": null}
+{"event": "report", "t": 1795301593.073, "claim": "none", "text": null, "verdict": null}
+{"event": "grade", "t": 1795301593.073, "grader": "ade-bench", "passed": false, "failure_mode": "none", "tests": {"dbt_compile": "passed", "mom_agg_review_date_range": "failed"}, "expected_test_count": 1}
+{"event": "run_end", "t": 1795301640.173, "claim": "none", "grader_passed": false, "outcome": "no_claim", "dollars": 0.0, "cost_source": "no_model_calls", "seconds": 47.1, "steps": null, "tool_calls": null, "hook_blocks": 0, "largest_prompt_tokens": null, "stopped": null, "verifier_error": null, "agent_mentioned_verifier": null, "model_usage": null}

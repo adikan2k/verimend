@@ -1,0 +1,1533 @@
+{
+ "source": "data-eng-bench",
+ "batches": [
+  "dev-baseline-data-eng-bench-2026-11-19",
+  "dev-reference-data-eng-bench-2026-11-19",
+  "dev-verimend-data-eng-bench-2026-11-19",
+  "dev5-verimend-data-eng-bench-2026-11-20",
+  "dev6-verimend-data-eng-bench-2026-11-20",
+  "gate-baseline-deb-2026-11-21",
+  "iter1-verimend-deb-2026-11-19",
+  "iter2-verimend-deb-2026-11-19",
+  "smoke-baseline-deb-2026-11-19",
+  "smoke-verimend-deb-2026-11-19",
+  "smoke4-verimend-deb-2026-11-20",
+  "smoke6b-baseline-deb-2026-11-21",
+  "verifier-reference-deb-2026-11-19",
+  "verifier2-reference-deb-2026-11-19",
+  "verifier3-reference-deb-2026-11-20",
+  "verifier4-reference-deb-2026-11-20",
+  "verifier5-reference-deb-2026-11-20"
+ ],
+ "skipped": {
+  "dev-baseline-data-eng-bench-2026-11-19: no recorded diff": 7,
+  "dev-reference-data-eng-bench-2026-11-19: no recorded diff": 7,
+  "dev-verimend-data-eng-bench-2026-11-19: no recorded diff": 18,
+  "iter1-verimend-deb-2026-11-19: no recorded diff": 7,
+  "iter2-verimend-deb-2026-11-19: no recorded diff": 4,
+  "smoke-baseline-deb-2026-11-19: no recorded diff": 1,
+  "smoke-verimend-deb-2026-11-19: no recorded diff": 1
+ },
+ "unique_diffs": 60,
+ "occurrences": 85,
+ "not_replayed": 0,
+ "snapshot_errors": {},
+ "reproduced": {
+  "same": 22,
+  "different": 0,
+  "share_different": 0.0,
+  "note": "only runs recorded with the four checks as they are now",
+  "not_reproduced": []
+ },
+ "diffs_with_something_not_analysed": 3,
+ "gate_four_checks": {
+  "right_let_through": 34,
+  "right_blocked": 23,
+  "wrong_let_through": 25,
+  "wrong_stopped": 3
+ },
+ "gate_with_row_accounting": {
+  "right_let_through": 34,
+  "right_blocked": 23,
+  "wrong_let_through": 25,
+  "wrong_stopped": 3
+ },
+ "newly_stopped_by_row_accounting": [],
+ "diffs": [
+  {
+   "task": "dbt-customer-ltv-fix",
+   "hash": "3e99b377d68a63348004e65e52a72f8631e3affcb71cba64f578fa38c550f97e",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 1 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-customer-ltv-fix",
+     "trial": 1,
+     "agent": "baseline",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-customer-ltv-fix",
+   "hash": "494dd4cfb5b826b2066187e947d2563d4d93bbb9d9c930df188378b3607a4cd9",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 1 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "dev5-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-customer-ltv-fix",
+     "trial": 3,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-customer-ltv-fix",
+   "hash": "4a441f2cebc339008e3be06431d86ed4d646410abdef0ed337134539135e2ecd",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 1 LEFT join(s) counted, no rows grouped under a NULL key; reported, not failing (rule A is report-only, decision 0008): model.retail_dw_master.customer_ltv: 16 row(s) of a summed input (lifetime_value 4,677.38) match no row of the left side and are dropped by `left join customer_metrics AS cm` in the final select",
+   "occurrences": [
+    {
+     "batch": "verifier2-reference-deb-2026-11-19",
+     "task": "dbt-customer-ltv-fix",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "clean_rebuild",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier3-reference-deb-2026-11-20",
+     "task": "dbt-customer-ltv-fix",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "collateral",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier4-reference-deb-2026-11-20",
+     "task": "dbt-customer-ltv-fix",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier5-reference-deb-2026-11-20",
+     "task": "dbt-customer-ltv-fix",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-customer-ltv-fix",
+   "hash": "4bc91fd8f0ad2ac56ef5dabbc448e7c8dd076f2704f3f0cddddc3fc99f1dbcd3",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-customer-ltv-fix",
+     "trial": 3,
+     "agent": "baseline",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-customer-ltv-fix",
+   "hash": "9ca34c38b64cb55dc8eed33c6c5dfd949eaaecc36d294cb53b3225d35f8360dd",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 1 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "dev6-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-customer-ltv-fix",
+     "trial": 3,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-customer-ltv-fix",
+   "hash": "a212054eb7b48452ea437616cde476bde0d831f12ee550c9fabb1a89f3e39f85",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 1 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; not analysed: model.retail_dw_master.customer_ltv: final: a spine built from a set operation",
+   "occurrences": [
+    {
+     "batch": "dev6-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-customer-ltv-fix",
+     "trial": 1,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-customer-ltv-fix",
+   "hash": "abde83acb3c393c80b15ea31963fd23f224bcf16e995372c165c3f972c040eb8",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 1 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; not analysed: model.retail_dw_master.customer_ltv: final: a spine built from a set operation",
+   "occurrences": [
+    {
+     "batch": "dev6-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-customer-ltv-fix",
+     "trial": 2,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-customer-ltv-fix",
+   "hash": "ac802fe83ccbda937e9eb495f85d8016a61c9db59138b984efa7bd465a9a326c",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 1 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "dev5-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-customer-ltv-fix",
+     "trial": 1,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-customer-ltv-fix",
+   "hash": "d6c414288d7b127c6551b7a8ed48db90accd4481b71110f5c1b7dc8877c76eb0",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 1 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; not analysed: model.retail_dw_master.customer_ltv: final: a spine built from a set operation",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-customer-ltv-fix",
+     "trial": 2,
+     "agent": "baseline",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-customer-ltv-fix",
+   "hash": "d7209dc43b2185716dbf2b6a42330278be602f1c3ecd66f73eec5f34445e48f9",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 1 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "dev5-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-customer-ltv-fix",
+     "trial": 2,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-customer-ltv-fix",
+   "hash": "eb83e20d8e3297215e46efdc23f3c85736538645e952d04dd665b01d1f9079ae",
+   "first_failure": "tamper",
+   "row_accounting": null,
+   "detail": null,
+   "occurrences": [
+    {
+     "batch": "verifier-reference-deb-2026-11-19",
+     "task": "dbt-customer-ltv-fix",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "tamper",
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-cac-payback-waterfall",
+   "hash": "12f5e159bb0b9f9997a4ba9e6ef3c7d26abda13357b0954a9de3e85c8c436847",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 0 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "dev5-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-cac-payback-waterfall",
+     "trial": 2,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-cac-payback-waterfall",
+   "hash": "52b9add5d4fd5fa91017cd590c4f3d17da5fae243a885f0446d3ccc3f7b6c462",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 0 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "dev5-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-cac-payback-waterfall",
+     "trial": 3,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-cac-payback-waterfall",
+   "hash": "9dabfb4792c67c9628a67cb19030b300cf71abf6828242f6d7a4af6cab83acc0",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 0 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "dev6-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-cac-payback-waterfall",
+     "trial": 1,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-cac-payback-waterfall",
+   "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "first_failure": "empty_diff",
+   "row_accounting": null,
+   "detail": null,
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-cac-payback-waterfall",
+     "trial": 1,
+     "agent": "baseline",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "empty_diff",
+     "recorded_with_four_checks": true
+    },
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-cac-payback-waterfall",
+     "trial": 2,
+     "agent": "baseline",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "empty_diff",
+     "recorded_with_four_checks": true
+    },
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-cac-payback-waterfall",
+     "trial": 3,
+     "agent": "baseline",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "empty_diff",
+     "recorded_with_four_checks": true
+    },
+    {
+     "batch": "verifier-reference-deb-2026-11-19",
+     "task": "dbt-fix-cac-payback-waterfall",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "empty_diff",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier2-reference-deb-2026-11-19",
+     "task": "dbt-fix-cac-payback-waterfall",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "empty_diff",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier3-reference-deb-2026-11-20",
+     "task": "dbt-fix-cac-payback-waterfall",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "empty_diff",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier4-reference-deb-2026-11-20",
+     "task": "dbt-fix-cac-payback-waterfall",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "empty_diff",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier5-reference-deb-2026-11-20",
+     "task": "dbt-fix-cac-payback-waterfall",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "empty_diff",
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-cac-payback-waterfall",
+   "hash": "f95bee0896190a3e08dd823347a683d0d5508f58bb73374d10b1068e1f03c3bb",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 0 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "dev6-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-cac-payback-waterfall",
+     "trial": 3,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-category-revenue",
+   "hash": "1028c3f59922d51b0fa0b0c095a95f4eca4672c42c507adeeb43e72511cd4d62",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "dev6-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-category-revenue",
+     "trial": 1,
+     "agent": "verimend",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-category-revenue",
+   "hash": "1a1c993ce25e9876475521ecbd6562fcf4c62d69f04e620744796c5813f03870",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 0 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-category-revenue",
+     "trial": 3,
+     "agent": "baseline",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-category-revenue",
+   "hash": "1e8cf079c8df64b11a370e3894b249716dc5d50b77b334b9bc65519a8a7b6fb5",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 1 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; noted: final: 18 row(s) found no partner in `left join orders AS o`, but sales_month is never NULL in the built model",
+   "occurrences": [
+    {
+     "batch": "dev6-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-category-revenue",
+     "trial": 3,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-category-revenue",
+   "hash": "1f2a19b8100a4d44ca968ad7b82ce96af99fefd2e495938c3d23112587c18bbe",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-category-revenue",
+     "trial": 2,
+     "agent": "baseline",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-category-revenue",
+   "hash": "25f4785207bb12e27e9f3e9d4bb454c339f26334052490d43dd617ab3a4caf5a",
+   "first_failure": "tamper",
+   "row_accounting": null,
+   "detail": null,
+   "occurrences": [
+    {
+     "batch": "verifier-reference-deb-2026-11-19",
+     "task": "dbt-fix-category-revenue",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "tamper",
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-category-revenue",
+   "hash": "5fc01b1339e0655099053c5e46c972bd80b9aefd0b516977bf0b98cef5083e1e",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 1 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; noted: final: 18 row(s) found no partner in `left join orders AS o`, but sales_month is never NULL in the built model",
+   "occurrences": [
+    {
+     "batch": "dev5-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-category-revenue",
+     "trial": 2,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-category-revenue",
+   "hash": "a4cc756babd03082e1c824ac209bf6f64657a365981cccba706d204800eeca4f",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 0 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-category-revenue",
+     "trial": 1,
+     "agent": "baseline",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-category-revenue",
+   "hash": "b0924686e2609ec5afbe726b6750d43e9e837dea44a3bd8b45ca659f3f71fb16",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; noted: final: 165 row(s) found no partner in `left join order_lines AS ol`, but sales_month is never NULL in the built model; final: 18 row(s) found no partner in `left join orders AS o`, but sales_month is never NULL in the built model",
+   "occurrences": [
+    {
+     "batch": "smoke4-verimend-deb-2026-11-20",
+     "task": "dbt-fix-category-revenue",
+     "trial": 1,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-category-revenue",
+   "hash": "c4a0a05d37db6401335bdfd145893f1a6541519c8eab672f4046fb6ab6892024",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; noted: final: 18 row(s) found no partner in `left join orders AS o`, but sales_month is never NULL in the built model",
+   "occurrences": [
+    {
+     "batch": "dev5-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-category-revenue",
+     "trial": 3,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-category-revenue",
+   "hash": "d4fd95bd6b5d41d5332c14374d53ecd488a4d3cb57d23c66f19c2e225a8f0999",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "dev5-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-category-revenue",
+     "trial": 1,
+     "agent": "verimend",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-category-revenue",
+   "hash": "f8602f663b2b010f7f1113a333d380ad40df3098723ee3438270c97fafef6e4e",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "verifier2-reference-deb-2026-11-19",
+     "task": "dbt-fix-category-revenue",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "clean_rebuild",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier3-reference-deb-2026-11-20",
+     "task": "dbt-fix-category-revenue",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "collateral",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier4-reference-deb-2026-11-20",
+     "task": "dbt-fix-category-revenue",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier5-reference-deb-2026-11-20",
+     "task": "dbt-fix-category-revenue",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-customer-ltv",
+   "hash": "77f6301efd89ea35a480295debc864db70dda99b0aa36861371061d0bc426959",
+   "first_failure": "clean_rebuild",
+   "row_accounting": null,
+   "detail": null,
+   "occurrences": [
+    {
+     "batch": "verifier2-reference-deb-2026-11-19",
+     "task": "dbt-fix-customer-ltv",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "clean_rebuild",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier3-reference-deb-2026-11-20",
+     "task": "dbt-fix-customer-ltv",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "clean_rebuild",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier4-reference-deb-2026-11-20",
+     "task": "dbt-fix-customer-ltv",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "clean_rebuild",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier5-reference-deb-2026-11-20",
+     "task": "dbt-fix-customer-ltv",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "clean_rebuild",
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-customer-ltv",
+   "hash": "9507a9b0171fc46d07e8545a19ab46a24095e5203a43ee9c4851d90d6e6e2f35",
+   "first_failure": "clean_rebuild",
+   "row_accounting": null,
+   "detail": null,
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-customer-ltv",
+     "trial": 2,
+     "agent": "baseline",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": false,
+     "recorded_failed_check": "clean_rebuild",
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-customer-ltv",
+   "hash": "db295feb46ac7eac353a5f55f9592d27c7a3fcf4868d1f4e48d7c8b770f61262",
+   "first_failure": "tamper",
+   "row_accounting": null,
+   "detail": null,
+   "occurrences": [
+    {
+     "batch": "verifier-reference-deb-2026-11-19",
+     "task": "dbt-fix-customer-ltv",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "tamper",
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-customer-ltv",
+   "hash": "dc2a9d851700d075fa9636cee15a8c9c7c960e30ea09586db2f848a030f2b227",
+   "first_failure": "clean_rebuild",
+   "row_accounting": null,
+   "detail": null,
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-customer-ltv",
+     "trial": 1,
+     "agent": "baseline",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": false,
+     "recorded_failed_check": "clean_rebuild",
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-customer-ltv",
+   "hash": "ed0649994759f03e3d8d5851ae8202113a1b4badf0f7b14a162e0569bdb16f4f",
+   "first_failure": "clean_rebuild",
+   "row_accounting": null,
+   "detail": null,
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-customer-ltv",
+     "trial": 3,
+     "agent": "baseline",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": false,
+     "recorded_failed_check": "clean_rebuild",
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-inventory-model",
+   "hash": "07223e00e962afbf5f2a3ec236b62a1ed653ccb8cf7ee5671c1f71beb234b3a6",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "dev6-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-inventory-model",
+     "trial": 1,
+     "agent": "verimend",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-inventory-model",
+   "hash": "28cfd2614af1b3b9bac7e66ff10b5f84a4a38da77651dc364069f5b6202e21bb",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-inventory-model",
+     "trial": 3,
+     "agent": "baseline",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-inventory-model",
+   "hash": "4423e03606d5948a3587503ba8d385abfec8b5a1f15dc51c963b8758d09a0efd",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-inventory-model",
+     "trial": 1,
+     "agent": "baseline",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-inventory-model",
+   "hash": "86578227e0e6a259022164ff878476fae2b6669bc6db965c801f1552a909ed2b",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "verifier2-reference-deb-2026-11-19",
+     "task": "dbt-fix-inventory-model",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "clean_rebuild",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier3-reference-deb-2026-11-20",
+     "task": "dbt-fix-inventory-model",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "collateral",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier4-reference-deb-2026-11-20",
+     "task": "dbt-fix-inventory-model",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier5-reference-deb-2026-11-20",
+     "task": "dbt-fix-inventory-model",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-inventory-model",
+   "hash": "899f2d76fc2bf73d29101ced77a154c58f6447dbf781f4b8cdda4bc1a55a43b2",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "dev5-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-inventory-model",
+     "trial": 1,
+     "agent": "verimend",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-inventory-model",
+   "hash": "b47822ed2e50738391913a02638d49476f96c201e5f66ec892a5d3c8cf33ca21",
+   "first_failure": "tamper",
+   "row_accounting": null,
+   "detail": null,
+   "occurrences": [
+    {
+     "batch": "verifier-reference-deb-2026-11-19",
+     "task": "dbt-fix-inventory-model",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "tamper",
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-inventory-model",
+   "hash": "c303e55eb6e626463bfbccfce4ceb3bbbf4a320baebafdbd3531da27b90f0012",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; 2 join(s) left alone because they were in the base: product_metrics: `left join product_cogs AS pc` was in the base; product_metrics: `left join daily_demand AS dd` was in the base",
+   "occurrences": [
+    {
+     "batch": "dev6-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-inventory-model",
+     "trial": 3,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-inventory-model",
+   "hash": "d56f0205f541ca9a4100c77338d5d74ef42557ba76f33e3cf53b09b031f2bb92",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "dev6-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-inventory-model",
+     "trial": 2,
+     "agent": "verimend",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-inventory-model",
+   "hash": "f10aaf65ee57eb68c46c4004b5edc772739b0eddbdfc7fcc03fdb94fc1f8b0d7",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "dev5-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-inventory-model",
+     "trial": 2,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-inventory-model",
+   "hash": "f30de08fba3cfa1140cfbdfffa7b8fbbdd8e370ef609a0e4a1379c2e7561fb3a",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-inventory-model",
+     "trial": 2,
+     "agent": "baseline",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-product-metrics",
+   "hash": "297318bcebacdd23cfe51a2fc000ad786a03b668fba2e2080d0d0791af47014c",
+   "first_failure": "tamper",
+   "row_accounting": null,
+   "detail": null,
+   "occurrences": [
+    {
+     "batch": "verifier-reference-deb-2026-11-19",
+     "task": "dbt-fix-product-metrics",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "tamper",
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-product-metrics",
+   "hash": "671ac73d6f77eb579ba7408b3144b1c709474ea4010113aee1c824935483304c",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key; reported, not failing (rule A is report-only, decision 0008): model.retail_dw_master.fct_product_metrics: 12 row(s) of a summed input (units_sold 20.00, product_revenue 2,720.87) match no row of the left side and are dropped by `left join order_line_agg AS la` in the final select",
+   "occurrences": [
+    {
+     "batch": "dev6-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-product-metrics",
+     "trial": 3,
+     "agent": "verimend",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-product-metrics",
+   "hash": "8678375480b7a32dae0572c1ebbb1db2329e59c134a9231cf4ebaeddf1641368",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key; reported, not failing (rule A is report-only, decision 0008): model.retail_dw_master.fct_product_metrics: 12 row(s) of a summed input (units_sold 20.00, product_revenue 2,482.90) match no row of the left side and are dropped by `left join product_sales AS s` in the final select",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-product-metrics",
+     "trial": 3,
+     "agent": "baseline",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-product-metrics",
+   "hash": "becfa9453cb515f5248cece37a4193b899862d4c3d5653beed6fe4ba17820979",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key; reported, not failing (rule A is report-only, decision 0008): model.retail_dw_master.fct_product_metrics: 12 row(s) of a summed input (units_sold 20.00, product_revenue 2,482.90) match no row of the left side and are dropped by `left join product_sales AS s` in the final select",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-product-metrics",
+     "trial": 1,
+     "agent": "baseline",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-product-metrics",
+   "hash": "ccab315c885eafa52d2471909227357e2f243ee0991e446cac1fbd2c0a07b91a",
+   "first_failure": "collateral",
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 4 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost",
+   "occurrences": [
+    {
+     "batch": "verifier2-reference-deb-2026-11-19",
+     "task": "dbt-fix-product-metrics",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "clean_rebuild",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier3-reference-deb-2026-11-20",
+     "task": "dbt-fix-product-metrics",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "collateral",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier4-reference-deb-2026-11-20",
+     "task": "dbt-fix-product-metrics",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "collateral",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier5-reference-deb-2026-11-20",
+     "task": "dbt-fix-product-metrics",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-product-metrics",
+   "hash": "d708d39cf67d31d6af4385dd72e178b6dfdef1e33c3c7d9483c23b313970b85e",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 3 LEFT join(s) counted, no rows grouped under a NULL key; reported, not failing (rule A is report-only, decision 0008): model.retail_dw_master.fct_product_metrics: 12 row(s) of a summed input (units_sold 20.00, product_revenue 2,720.87) match no row of the left side and are dropped by `left join sales_by_product AS s` in the final select",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-product-metrics",
+     "trial": 2,
+     "agent": "baseline",
+     "grader_passed": false,
+     "outcome": "false_success",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-refund-reconciliation",
+   "hash": "04b83b75d6b2dab3537ede0fb1c55a572fdf09838be69eb55e51e3dabfd44f84",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; 1 join(s) left alone because they were in the base: returns_base: `left join return_lines_agg AS rla` was in the base",
+   "occurrences": [
+    {
+     "batch": "dev5-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 1,
+     "agent": "verimend",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-refund-reconciliation",
+   "hash": "0e76b77e900c0570f5aae1bf6e811fcaf74fa6202cdfa6ba3061d097a78e73f8",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; 1 join(s) left alone because they were in the base: returns_base: `left join return_lines_agg AS rla` was in the base",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 2,
+     "agent": "baseline",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-refund-reconciliation",
+   "hash": "222fe2cd76515a80dd7ea33af2a8ecd5f71928c8fdb5324499919c816340b075",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; 1 join(s) left alone because they were in the base: returns_base: `left join return_lines_agg AS rla` was in the base",
+   "occurrences": [
+    {
+     "batch": "dev6-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 2,
+     "agent": "verimend",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-refund-reconciliation",
+   "hash": "4bbc2e5ccbdffd995cc0003c0394113f15af033218587a6616491b8241e9d9a4",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; 1 join(s) left alone because they were in the base: returns_base: `left join return_lines_agg AS rla` was in the base",
+   "occurrences": [
+    {
+     "batch": "dev6-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 3,
+     "agent": "verimend",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-refund-reconciliation",
+   "hash": "5d210e6892897650356ec545da0a996065fcb4876e96366241e78f4e507f1ae4",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; 1 join(s) left alone because they were in the base: returns_base: `left join return_lines_agg AS rla` was in the base",
+   "occurrences": [
+    {
+     "batch": "smoke6b-baseline-deb-2026-11-21",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 1,
+     "agent": "baseline",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-refund-reconciliation",
+   "hash": "61c4aced9aa9883eb897f42f69f8995144c208afd2ada0db0c9a13d289645642",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; 1 join(s) left alone because they were in the base: returns_base: `left join return_lines_agg AS rla` was in the base",
+   "occurrences": [
+    {
+     "batch": "dev5-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 3,
+     "agent": "verimend",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-refund-reconciliation",
+   "hash": "a0be0a9c7f9301576a5e8ce88924d9233a96f6270df9547297d4a72f5985568a",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; 1 join(s) left alone because they were in the base: returns_base: `left join return_lines_agg AS rla` was in the base",
+   "occurrences": [
+    {
+     "batch": "verifier2-reference-deb-2026-11-19",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "clean_rebuild",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier3-reference-deb-2026-11-20",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "collateral",
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier4-reference-deb-2026-11-20",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    },
+    {
+     "batch": "verifier5-reference-deb-2026-11-20",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-refund-reconciliation",
+   "hash": "d03f95db2e71a2ad89dacbb9cfa468714c542eff6385ad1be216311a0aeb7984",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; 1 join(s) left alone because they were in the base: returns_base: `left join return_lines_agg AS rla` was in the base",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 1,
+     "agent": "baseline",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-refund-reconciliation",
+   "hash": "d37fed319cbbdf828ee5b5865439dbe90349984990c1d617e953e026438b178e",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; 1 join(s) left alone because they were in the base: returns_base: `left join return_lines_agg AS rla` was in the base",
+   "occurrences": [
+    {
+     "batch": "gate-baseline-deb-2026-11-21",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 3,
+     "agent": "baseline",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": true
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-refund-reconciliation",
+   "hash": "d4b98fd289979b566f8bf6e79097a235bb052ddbde6f7819c243672f6e1667f8",
+   "first_failure": "collateral",
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; 1 join(s) left alone because they were in the base: returns_base: `left join return_lines_agg AS rla` was in the base",
+   "occurrences": [
+    {
+     "batch": "dev5-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 2,
+     "agent": "verimend",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-refund-reconciliation",
+   "hash": "dec3fcf856e8795498de090af75307e3564b65169b6ffb4a53969f1c268f6b07",
+   "first_failure": null,
+   "row_accounting": true,
+   "detail": "1 changed model(s) analysed, 2 LEFT join(s) counted, no rows grouped under a NULL key and no rows lost; 1 join(s) left alone because they were in the base: returns_base: `left join return_lines_agg AS rla` was in the base",
+   "occurrences": [
+    {
+     "batch": "dev6-verimend-data-eng-bench-2026-11-20",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 1,
+     "agent": "verimend",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": true,
+     "recorded_failed_check": null,
+     "recorded_with_four_checks": false
+    }
+   ]
+  },
+  {
+   "task": "dbt-fix-refund-reconciliation",
+   "hash": "fc208957881a5539a77475910ccb1b5ae60ad4be27a166ab1ebebde1b7d0373b",
+   "first_failure": "tamper",
+   "row_accounting": null,
+   "detail": null,
+   "occurrences": [
+    {
+     "batch": "verifier-reference-deb-2026-11-19",
+     "task": "dbt-fix-refund-reconciliation",
+     "trial": 1,
+     "agent": "reference",
+     "grader_passed": true,
+     "outcome": "true_fix",
+     "recorded_passed": false,
+     "recorded_failed_check": "tamper",
+     "recorded_with_four_checks": false
+    }
+   ]
+  }
+ ]
+}

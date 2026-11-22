@@ -1,4 +1,4 @@
-"""The four checks of SPEC section 5, as plain functions over manifests, diffs and build
+"""The five checks of SPEC section 5, as plain functions over manifests, diffs and build
 results. Each returns a Check; the first failure stops the run (see verify.py)."""
 
 from __future__ import annotations
@@ -12,6 +12,7 @@ from typing import Any
 
 import yaml
 
+from verifier.accounting import REPORT_ONLY_RULES, ModelResult
 from verifier.patch import FilePatch
 from verifier.project import BUILT_TYPES, FAILED_STATUSES
 
@@ -552,3 +553,43 @@ def masking_from_source(
     if problems:
         return Check("masking", False, "The fix hides the failure: " + _listed(problems))
     return Check("masking", True, "no model disabled, no rows filtered away")
+
+
+# ---- Check 5: row accounting ---------------------------------------------------------
+
+
+def row_accounting(results: list[ModelResult]) -> Check:
+    """Rows a changed model's LEFT joins group under a NULL key fail; rows they drop are
+    reported only (verifier/accounting.py, decision 0008). What could not be analysed
+    passes, and the detail says so."""
+    findings = [f for r in results for f in r.findings]
+    failing = [f.describe() for f in findings if f.rule not in REPORT_ONLY_RULES]
+    reported = [f.describe() for f in findings if f.rule in REPORT_ONLY_RULES]
+    if failing:
+        detail = "Rows are turned into NULL keys: " + _listed(failing)
+        if reported:
+            detail += "; also reported: " + _listed(reported)
+        return Check("row_accounting", False, detail[:1500])
+    analysed = [r for r in results if r.skipped is None]
+    if not results:
+        return Check("row_accounting", True, "no changed SQL model to analyse")
+    parts = [
+        f"{len(analysed)} changed model(s) analysed, {sum(r.joins for r in analysed)} LEFT "
+        "join(s) counted, no rows grouped under a NULL key"
+        + ("" if reported else " and no rows lost")
+    ]
+    if reported:
+        parts.append("reported, not failing (rule A is report-only, decision 0008): "
+                     + _listed(reported))  # fmt: skip
+    exempt = [e for r in results for e in r.exempt]
+    if exempt:
+        parts.append(f"{len(exempt)} join(s) left alone because they were in the base: "
+                     + _listed(exempt))  # fmt: skip
+    notes = [n for r in results for n in r.notes]
+    if notes:
+        parts.append(f"noted: {_listed(notes)}")
+    unknown = [f"{r.model}: {u}" for r in results for u in r.unknown]
+    unknown += [f"{r.model} ({r.skipped})" for r in results if r.skipped is not None]
+    if unknown:
+        parts.append(f"not analysed: {_listed(unknown)}")
+    return Check("row_accounting", True, "; ".join(parts)[:1500])
