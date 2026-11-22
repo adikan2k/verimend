@@ -1,0 +1,116 @@
+{
+ "amazon_selling_partner-19/1": {
+  "key_models": 31,
+  "unstable": []
+ },
+ "facebook_ads-72/1": {
+  "key_models": 24,
+  "unstable": []
+ },
+ "fivetran_log-203/1": {
+  "key_models": 16,
+  "unstable": [
+   "fivetran_platform__audit_table",
+   "fivetran_platform__connection_daily_events",
+   "fivetran_platform__connection_status",
+   "fivetran_platform__schema_changelog"
+  ]
+ },
+ "google_play-36/1": {
+  "key_models": 41,
+  "unstable": []
+ },
+ "greenhouse-47/1": {
+  "key_models": 67,
+  "unstable": [
+   "greenhouse__application_history"
+  ]
+ },
+ "hubspot-211/1": {
+  "key_models": 161,
+  "unstable": [
+   "hubspot__daily_company_history",
+   "hubspot__daily_contact_history",
+   "hubspot__daily_deal_history",
+   "int_hubspot__company_calendar_spine",
+   "int_hubspot__contact_calendar_spine",
+   "int_hubspot__deal_calendar_spine"
+  ]
+ },
+ "iterable-83/1": {
+  "key_models": 45,
+  "unstable": []
+ },
+ "jira-195/1": {
+  "key_models": 39,
+  "unstable": [
+   "int_jira__issue_calendar_spine",
+   "int_jira__issue_join",
+   "int_jira__project_metrics",
+   "int_jira__user_metrics",
+   "jira__daily_issue_field_history",
+   "jira__daily_sprint_issue_history",
+   "jira__issue_enhanced",
+   "jira__issue_status_transitions",
+   "jira__project_enhanced",
+   "jira__sprint_enhanced",
+   "jira__timestamp_issue_field_history",
+   "jira__user_enhanced"
+  ]
+ },
+ "linkedin-65/1": {
+  "key_models": 25,
+  "unstable": []
+ },
+ "marketo-59/1": {
+  "key_models": 34,
+  "unstable": [
+   "marketo__calendar_spine",
+   "marketo__change_data_details",
+   "marketo__change_data_pivot",
+   "marketo__change_data_scd",
+   "marketo__lead_calendar_spine",
+   "marketo__lead_history"
+  ]
+ },
+ "netsuite-208/1": {
+  "key_models": 89,
+  "unstable": [
+   "int_netsuite2__tran_and_reporting_periods",
+   "int_netsuite2__tran_with_converted_amounts",
+   "int_netsuite__transaction_and_reporting_periods",
+   "int_netsuite__transactions_with_converted_amounts",
+   "netsuite2__balance_sheet",
+   "netsuite2__income_statement",
+   "netsuite2__transaction_details",
+   "netsuite__balance_sheet",
+   "netsuite__income_statement",
+   "netsuite__transaction_details"
+  ]
+ },
+ "recurly-49/1": {
+  "key_models": 40,
+  "unstable": [
+   "int_recurly__account_cumulatives",
+   "int_recurly__account_partitions",
+   "int_recurly__account_rolling_totals",
+   "int_recurly__account_running_totals",
+   "int_recurly__transactions_date_spine",
+   "recurly__account_daily_overview",
+   "recurly__account_overview",
+   "recurly__churn_analysis",
+   "recurly__subscription_overview"
+  ]
+ },
+ "stripe-157/1": {
+  "key_models": 30,
+  "unstable": [
+   "int_stripe__account_daily",
+   "int_stripe__account_partitions",
+   "int_stripe__account_rolling_totals",
+   "int_stripe__date_spine",
+   "stripe__customer_overview",
+   "stripe__daily_overview"
+  ]
+ }
+}

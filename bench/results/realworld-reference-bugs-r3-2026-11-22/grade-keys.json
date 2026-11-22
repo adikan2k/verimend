@@ -1,0 +1,78 @@
+{
+ "hubspot-215/1": {
+  "key_models": 161,
+  "unstable": [
+   "hubspot__daily_company_history",
+   "hubspot__daily_contact_history",
+   "hubspot__daily_deal_history",
+   "int_hubspot__company_calendar_spine",
+   "int_hubspot__contact_calendar_spine",
+   "int_hubspot__deal_calendar_spine"
+  ]
+ },
+ "quickbooks-225/1": {
+  "key_models": 91,
+  "unstable": [
+   "int_quickbooks__cash_flow_classifications",
+   "int_quickbooks__general_ledger_balances",
+   "int_quickbooks__general_ledger_date_spine",
+   "int_quickbooks__retained_earnings",
+   "quickbooks__ap_ar_enhanced",
+   "quickbooks__balance_sheet",
+   "quickbooks__cash_flow_statement",
+   "quickbooks__general_ledger_by_period",
+   "quickbooks__profit_and_loss"
+  ]
+ },
+ "shopify-167/1": {
+  "key_models": 200,
+  "unstable": [
+   "int_shopify__customer_email_rollup",
+   "int_shopify_gql__customer_email_rollup",
+   "shopify__calendar",
+   "shopify__customer_cohorts",
+   "shopify__customer_email_cohorts",
+   "shopify__customer_emails",
+   "shopify__daily_shop",
+   "shopify_gql__customer_cohorts",
+   "shopify_gql__customer_email_cohorts",
+   "shopify_gql__customer_emails",
+   "shopify_gql__daily_shop"
+  ]
+ },
+ "zendesk-290/1": {
+  "key_models": 52,
+  "unstable": [
+   "int_zendesk__agent_work_time_business_hours",
+   "int_zendesk__agent_work_time_calendar_hours",
+   "int_zendesk__agent_work_time_filtered_statuses",
+   "int_zendesk__calendar_spine",
+   "int_zendesk__field_calendar_spine",
+   "int_zendesk__field_history_enriched",
+   "int_zendesk__field_history_pivot",
+   "int_zendesk__field_history_scd",
+   "int_zendesk__reply_time_business_hours",
+   "int_zendesk__reply_time_calendar_hours",
+   "int_zendesk__reply_time_combined",
+   "int_zendesk__requester_wait_time_business_hours",
+   "int_zendesk__requester_wait_time_calendar_hours",
+   "int_zendesk__requester_wait_time_filtered_statuses",
+   "int_zendesk__schedule_spine",
+   "int_zendesk__schedule_timezones",
+   "int_zendesk__sla_policy_applied",
+   "int_zendesk__ticket_first_reply_time_business",
+   "int_zendesk__ticket_historical_status",
+   "int_zendesk__ticket_resolution_time_business_combined",
+   "int_zendesk__ticket_resolution_times_calendar",
+   "int_zendesk__ticket_schedules",
+   "int_zendesk__ticket_work_time_business",
+   "int_zendesk__ticket_work_time_calendar",
+   "int_zendesk__timezone_daylight",
+   "zendesk__sla_policies",
+   "zendesk__ticket_backlog",
+   "zendesk__ticket_field_history",
+   "zendesk__ticket_metrics",
+   "zendesk__ticket_summary"
+  ]
+ }
+}
