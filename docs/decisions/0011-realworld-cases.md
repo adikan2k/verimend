@@ -72,9 +72,12 @@ Caveats for the scored runs:
 - **The parent's own harness**: most bug-fix PRs add the seed rows that show the bug, so the parent passes on its own data.
 - **Comparing against the reference limited to the case's files**: the reference would pass by construction.
 
+## Decided after the check (with Aditya, 2026-11-22)
+
+**Go, with the two kinds reported apart.** 17 cases pass the bar of 8, but only 4 are bug fixes. Every real-world result is reported as two rows, never pooled: the 4 bug fixes (a regression in shipped code, fixed by a human) and the 13 DuckDB ports (shipped code that never ran on DuckDB until a human adapted it). The pre-registration states its predictions per kind. With bug fixes alone it would have been a no-go, so their row is labelled as below the bar of 8.
+
 ## Open, for Aditya
 
-- **Go or no-go.** 17 cases pass the bar of 8, but only 4 are bug fixes. If only regressions count, it is a no-go. With the ports it is a go, provided they are reported as their own row.
 - **History**: a case has one commit, so `inspect_history` finds nothing. The fault suite has a baseline and a fault commit.
 - **Runner wiring**: `bench.run --source realworld` is not built. A case's dbt project is the git root (`<dest>/project`), its profile is `<dest>/profiles/profiles.yml` (profile `integration_tests`, target `dev`), and the grader needs `broken/`, `pristine/` and `key/`. `grade_case` returns rules in the fault suite's shape.
 - **Contamination**: the fixes merged between 2026-08-18 and 2026-11-04, which lowers the risk that a model has seen them. The packages themselves are public and older.
