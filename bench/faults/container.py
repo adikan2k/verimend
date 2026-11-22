@@ -77,11 +77,17 @@ def ensure_image() -> None:
         raise ContainerError(f"docker build failed: {done.stderr.decode(errors='replace')[-800:]}")
 
 
-def write_container_profile(out_dir: Path) -> Path:
+def write_container_profile(
+    out_dir: Path, profile: str = PROFILE, schema: str | None = None
+) -> Path:
+    """The container's profile: the fault suite's by default, or a real-world case's own
+    profile name and schema (bench/realworld/run.py)."""
     out_dir.mkdir(parents=True, exist_ok=True)
     text = (
-        f"{PROFILE}:\n  target: {TARGET}\n  outputs:\n    {TARGET}:\n"
-        f"      type: duckdb\n      path: '/work/project/{DB_NAME}'\n      threads: 4\n"
+        f"{profile}:\n  target: {TARGET}\n  outputs:\n    {TARGET}:\n"
+        f"      type: duckdb\n      path: '/work/project/{DB_NAME}'\n"
+        + (f"      schema: {schema}\n" if schema else "")
+        + "      threads: 4\n"
     )
     (out_dir / "profiles.yml").write_text(text, "utf-8", newline="\n")
     return out_dir
@@ -134,8 +140,14 @@ def run_baseline(
     run_cap_usd: float,
     max_turns: int,
     api_key: str,
+    profile: str = PROFILE,
+    schema: str | None = None,
+    category: bool = True,
 ) -> tuple[str, float]:
-    """The baseline on one built fault: its stream-json output and its seconds."""
-    profiles = write_container_profile(work / "container-profiles")
-    command = baseline_command(fault_prompt(task), model, run_cap_usd, max_turns)
+    """The baseline on one built fault: its stream-json output and its seconds. A
+    real-world case passes its own profile and `category=False`: the task VeriMend gets,
+    with no category line, since those cases have no categories."""
+    profiles = write_container_profile(work / "container-profiles", profile, schema)
+    prompt = fault_prompt(task) if category else task
+    command = baseline_command(prompt, model, run_cap_usd, max_turns)
     return run_container(project, profiles, command, api_key)
