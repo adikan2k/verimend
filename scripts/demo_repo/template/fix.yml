@@ -1,0 +1,38 @@
+# Opt-in: VeriMend tries to fix a failed build on main, but only in a copy whose owner has
+# added an ANTHROPIC_API_KEY secret. Without one this workflow builds and stops there, so
+# it can never spend anyone's key. It never runs on pull requests.
+name: dbt
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dbt
+        run: pip install --quiet "dbt-core==DBT_VERSION" "dbt-duckdb==DBT_DUCKDB_VERSION"
+      - name: Load the raw data
+        run: python scripts/load_raw.py
+      - name: Build
+        run: dbt build --profiles-dir .
+      - name: VeriMend
+        if: failure() && env.HAS_KEY == 'true'
+        uses: adikan2k/verimend/action@FIX_REF
+        with:
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          max-usd: "0.25"

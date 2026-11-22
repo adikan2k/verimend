@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: monthly_revenue
+    description: Revenue (AUD) per month, without returned orders
+
+    columns:
+      - name: order_month
+        data_tests:
+          - unique
+          - not_null

@@ -4,6 +4,8 @@ A GitHub Action that checks every pull request to a dbt project on DuckDB, whoev
 
 It costs nothing to run: no API key, no model call. It is the verifier VeriMend's own fixes have to pass, run on its own.
 
+**Try it:** [verimend-inspector-demo](https://github.com/adikan2k/verimend-inspector-demo) has three pull requests open with the inspector's stamp on each, a weakened test, a NULL month and a good change. "Use this template" to open your own.
+
 ## What it checks
 
 | Check | Fails when |
