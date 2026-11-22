@@ -301,6 +301,8 @@ Exit codes for `fix`: 0 fixed and verified, 2 escalated, 3 not fixed, 4 stopped 
 
 As built in phase 6 ([decision 0006](decisions/0006-github-action.md)): a composite action in `action/` that installs VeriMend from its own `uv.lock` and runs `verimend fix --open-pr`. The diagnosis goes on the failing pull request, or else on the failing commit. Only `verimend/fix-*` branches are ever pushed, from a separate worktree. A project at the root of its repository keeps its git history in the sandbox, so the agent can see the commit that broke the build. End to end in a demo repository: [bench/results/action-demo-2026-11-21](../bench/results/action-demo-2026-11-21/README.md).
 
+**The inspector** (phase 6d, [decision 0009](decisions/0009-inspector-action.md)): `action/verify/`, a second composite Action that runs the verifier alone on every pull request to a dbt project on DuckDB, whoever wrote it. It needs no API key and calls no model. The base is where the pull request started, and the verifier runs under its `pr` policy: files outside the project are listed, not refused; a changed or removed test fails unless the pull request carries the label `verimend:tests-changed`; a removed model fails only if it hid a failure. The result goes in the job summary and in one pull request comment, updated on each push, and a failed check fails the job.
+
 ---
 
 ## 11. Replay site
