@@ -82,3 +82,42 @@ def test_doing_nothing_fails_and_the_reference_passes_under_a_watching_verifier(
     assert record.verifier is not None and record.verifier["error"] is None
     (attempt,) = record.verifier["attempts"]
     assert "passed" in attempt  # its verdict is measured in step A, not assumed here
+
+
+def manifest(**models: tuple[str, list[str]]) -> dict[str, Any]:
+    """models: name -> (sql, children by name)."""
+    nodes = {f"model.p.{name}": {"resource_type": "model", "name": name, "raw_code": sql}
+             for name, (sql, _) in models.items()}  # fmt: skip
+    children = {f"model.p.{name}": [f"model.p.{c}" for c in kids]
+                for name, (_, kids) in models.items()}  # fmt: skip
+    return {"nodes": nodes, "child_map": children}
+
+
+def test_a_model_that_reads_the_clock_is_never_compared() -> None:
+    from bench.realworld.grade import clock_models
+
+    found = manifest(
+        status=("datediff(valid_from, coalesce(valid_to, {{ dbt.current_timestamp() }}))", []),
+        today=("select now() as at", []),
+        plain=("select current_dates_seen from t", []),
+    )
+    assert clock_models(found) == {"status", "today"}
+
+
+def test_the_grading_time_build_drops_what_moved_and_its_downstream(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    from bench.faults.dbt import Build
+    from bench.realworld import grade
+
+    graph = manifest(rollup=("select 1", ["emails"]), emails=("select 1", []),
+                     orders=("select 1", []))  # fmt: skip
+    key = grade.AnswerKey({"rollup": (("a",), (("x, y",),)), "emails": (("a",), ()),
+                           "orders": (("a",), ((1,),))}, (), graph)  # fmt: skip
+    now = {"rollup": (("a",), (("y, x",),)), "emails": (("a",), ()), "orders": (("a",), ((1,),))}
+    monkeypatch.setattr(grade, "build_copy",
+                        lambda *a: (Build(0, "", {}, graph), tmp_path / "db"))  # fmt: skip
+    monkeypatch.setattr(grade, "model_tables", lambda db, m: now)
+    checked = grade.recheck(key, tmp_path, tmp_path, "p", tmp_path / "w")
+    assert set(checked.tables) == {"orders"}
+    assert set(checked.unstable) == {"rollup", "emails"}

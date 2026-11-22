@@ -14,15 +14,22 @@ the case's pristine database:
     key:<model>       every model of the answer key is there and equals it, row for row
 
 The answer key is the human fix (the whole fix commit, not the reference limited to the
-case's files) built on the same data. It is built twice, and a model whose rows differ
-between the two builds (a timestamp, a spine up to today) is left out of the comparison
-and reported as unstable.
+case's files) built on the same data. A model is left out of the comparison, and reported
+as unstable, along with every model downstream of it, when:
+    - it reads the clock (current_timestamp, now(), current_date, ...): its rows change
+      with the time of the build, so a key built minutes before the grade cannot match;
+    - its rows differ between the key's two builds, or between them and a third build of
+      the human fix made at grading time (`recheck`), next to the agent's build: an
+      unordered string_agg can agree twice by luck and then flip.
+The clock rule and the third build came from the reference failing on zendesk-290 and
+shopify-167 in the first runner batch, before any paid run (decision 0011).
 """
 
 from __future__ import annotations
 
+import re
 import shutil
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -54,6 +61,24 @@ class CaseGrade:
 class AnswerKey:
     tables: dict[str, Table]
     unstable: tuple[str, ...]
+    manifest: dict[str, Any] = field(default_factory=dict, repr=False, compare=False)
+
+
+CLOCK = re.compile(
+    r"\b(current_timestamp|current_date|current_time|localtimestamp|getdate|sysdate|"
+    r"get_current_timestamp)\b|\b(now|today)\s*\(",
+    re.IGNORECASE,
+)
+
+
+def clock_models(manifest: dict[str, Any]) -> set[str]:
+    """Models whose SQL reads the clock, by name: their rows depend on when they built."""
+    found: set[str] = set()
+    for node in manifest.get("nodes", {}).values():
+        sql = f"{node.get('raw_code') or ''}\n{node.get('compiled_code') or ''}"
+        if node.get("resource_type") == "model" and CLOCK.search(sql):
+            found.add(node["name"])
+    return found
 
 
 def build_copy(project: Path, db: Path, profile: str, work: Path) -> tuple[Build, Path]:
@@ -82,9 +107,24 @@ def answer_key(key_project: Path, pristine: Path, profile: str, work: Path) -> A
         found.append(model_tables(built_db, build.manifest))
         manifest = build.manifest
     one, two = found
-    differ = {name for name in one if one[name] != two.get(name)}
+    differ = {name for name in one if one[name] != two.get(name)} | clock_models(manifest)
     unstable = tuple(sorted(downstream_models(manifest, differ)))
-    return AnswerKey({k: v for k, v in one.items() if k not in unstable}, unstable)
+    return AnswerKey({k: v for k, v in one.items() if k not in unstable}, unstable, manifest)
+
+
+def recheck(key: AnswerKey, key_project: Path, pristine: Path, profile: str,
+            work: Path) -> AnswerKey:  # fmt: skip
+    """The key without the models a third build of the human fix, made now, disagrees on."""
+    build, built_db = build_copy(key_project, pristine, profile, work)
+    if not build.passed or build.manifest is None:
+        raise CaseError(f"the human fix does not build at grading time: {build.failing}")
+    now = model_tables(built_db, build.manifest)
+    differ = {name for name, table in key.tables.items() if now.get(name) != table}
+    if not differ:
+        return key
+    dropped = downstream_models(key.manifest or build.manifest, differ)
+    tables = {k: v for k, v in key.tables.items() if k not in dropped}
+    return AnswerKey(tables, tuple(sorted(set(key.unstable) | dropped)), key.manifest)
 
 
 def downstream_models(manifest: dict[str, Any], names: set[str]) -> set[str]:

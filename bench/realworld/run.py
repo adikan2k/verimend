@@ -21,6 +21,7 @@ summary: the two are reported as separate rows and never pooled (decision 0011).
 from __future__ import annotations
 
 import asyncio
+import json
 import shutil
 import time
 import traceback
@@ -37,7 +38,7 @@ from bench.faults import container
 from bench.faults.dbt import run_dbt
 from bench.grade import Grade
 from bench.outcomes import Expected as OutcomeExpected
-from bench.realworld.grade import AnswerKey, answer_key, grade_case
+from bench.realworld.grade import AnswerKey, answer_key, grade_case, recheck
 from bench.realworld.lib import CASES_DIR, DB_NAME, Built, Case, materialize, write_profile
 from verimend.config import Settings
 from verimend.hooks.caps import BatchBudget, RunCaps
@@ -189,9 +190,11 @@ def run_trial(
     record.seconds = round(time.monotonic() - started, 1)
     if agent == "baseline":  # the agent's own time, without the watching verifier
         record.seconds = agent_seconds
+    # A third build of the human fix, next to the agent's, drops what still moves.
+    key = recheck(keys[case_id], built.key, built.pristine, profile, root / "grade-key")
     graded = grade_case(broken=built.broken, pristine=built.pristine, profile=profile,
-                        final_project=built.project, key=keys[case_id],
-                        work=root / "grade")  # fmt: skip
+                        final_project=built.project, key=key, work=root / "grade")  # fmt: skip
+    keys[f"{case_id}/{trial}"] = key  # what this trial was graded on (grade-keys.json)
     tests = {rule: "pass" if ok else "fail" for rule, ok in graded.rules.items()}
     grade = Grade(case_id, trial, graded.passed, "realworld", graded.failure_mode, tests,
                   len(graded.rules))  # fmt: skip
@@ -235,7 +238,7 @@ def run_batch(batch: dict[str, Any], settings: Settings) -> dict[str, Any]:
     meta = {key: batch[key] for key in META_KEYS}
     meta.update(grader="realworld", group=group, spent_usd=budget.spent_usd)
     expected: dict[str, OutcomeExpected] = {t: "fix" for t in batch["task_ids"]}
-    return write_batch(
+    summary = write_batch(
         Path(batch["results_dir"]),
         records,
         grades,
@@ -245,3 +248,8 @@ def run_batch(batch: dict[str, Any], settings: Settings) -> dict[str, Any]:
         include_tests=True,
         expected_outcomes=expected,
     )
+    graded_on = {name: {"key_models": len(k.tables), "unstable": list(k.unstable)}
+                 for name, k in sorted(keys.items()) if "/" in name}  # fmt: skip
+    out = Path(batch["results_dir"]) / "grade-keys.json"
+    out.write_text(json.dumps(graded_on, indent=1) + "\n", encoding="utf-8", newline="\n")
+    return summary
