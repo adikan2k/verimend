@@ -1,0 +1,1 @@
+{"passed": true, "failed_check": null, "checks": [{"name": "tamper", "passed": true, "detail": "1 changed file(s); 1 outside the dbt project, not checked: README.md"}], "duration_s": 0.0, "diff": "diff --git a/README.md b/README.md\nindex 310f398..688b2c7 100644\n--- a/README.md\n+++ b/README.md\n@@ -1 +1,2 @@\n # shop\n+More words.\n"}

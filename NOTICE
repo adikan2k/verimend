@@ -1,0 +1,15 @@
+VeriMend
+Copyright 2026 Aditya Kanbargi
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This repository also contains work by others, each under its own licence:
+
+- demo/jaffle_shop and demo/raw_data are adapted from dbt-labs/jaffle_shop_duckdb
+  (Apache License 2.0). See demo/LICENSE and demo/NOTICE for the source and the changes.
+- bench/dev/ade-bench holds tasks from dbt-labs/ade-bench (Apache License 2.0). See
+  bench/dev/ade-bench/LICENSE and SOURCE.json.
+- bench/dev/data-eng-bench holds tasks from data-eng-bench, Copyright 2026 Snowflake Inc.
+  (Apache License 2.0). See bench/dev/data-eng-bench/LICENSE, NOTICE and SOURCE.json.
+- bench/results holds traces of runs on those tasks, including the diffs agents wrote to
+  them.

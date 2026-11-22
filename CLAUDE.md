@@ -10,7 +10,7 @@ The name is "VeriMend" in prose and `verimend` in code, package names and comman
 
 ## Layout
 
-`verimend/` agent, tools, hooks, CLI · `verifier/` the independent verifier, its own package · `bench/` harness, `dev/` tasks, `heldout/` tasks (off-limits), `faults/` our fault suite, `results/` traces and scores · `action/` the GitHub Action · `site/` Next.js replay site · `demo/` sample dbt project · `scripts/` one-off tools · `docs/` spec, design, spikes, decisions
+`verimend/` agent, tools, hooks, CLI · `verifier/` the independent verifier, its own package · `bench/` harness, `dev/` tasks, `heldout/` tasks (off-limits), `faults/` our fault suite, `results/` traces and scores · `action/` the GitHub Actions (fix, and `verify/` the inspector) · `site/` Next.js replay site · `demo/` sample dbt project · `scripts/` one-off tools · `docs/` spec, design, spikes, decisions
 
 ## Commands
 
@@ -24,6 +24,7 @@ Phase 1 creates these. If one changes, update this list in the same commit.
 - Same, then hand the result to GitHub (a pull request from `verimend/fix-<sha>` for a verified fix, else a diagnosis comment; needs `GITHUB_TOKEN`): add `--open-pr`. The GitHub Action in `action/` runs exactly this.
 - Demo repository for the Action: `uv run python scripts/make_demo_repo.py build --dest ~/.verimend/demo-repo --action-ref main`, then `break logic` or `break bad-data --repo ~/.verimend/demo-repo` for its broken commits. Nothing in it pushes.
 - Verify any diff, no agent involved: `uv run verimend verify --project-dir demo/jaffle_shop --diff fix.diff`
+- Inspect a pull request's diff the way the inspector Action does (free, no model): `uv run python -m verifier snapshot --project-dir <base checkout> [--db <its duckdb>] --work <folder>`, then `uv run python -m verifier verify --work <folder> --diff pr.diff --policy pr` (`--allow-test-changes` for the label), and `uv run python -m verifier render --result result.json` for the comment. The Action is `action/verify/` (decision 0009).
 - Benchmark, development set only: `uv run python -m bench.run --agent verimend --set dev --limit 5 --max-usd 2`. Agents: `none`, `reference`, `baseline` (paid), `verimend` (paid). Add `--source data-eng-bench` for that benchmark, `--trials 3`, `--tasks a,b` or `--dry-run`. `--with-verifier` has the verifier watch `none`, `reference` or `baseline` (it tells them nothing; VeriMend always has its own). Runs in the Linux runner (Docker Desktop).
 - Fault suite (`bench/faults/`, 20 faults, not split): `uv run python -m bench.run --source faults --set all --agent reference --with-verifier --limit 20 --max-usd 0.01`. Agents `none`, `reference`, `baseline` (paid; in its own container, so Docker Desktop must be up) and `verimend` (paid, on this machine).
 - Fault suite checks, no model calls (determinism, expected failures, do-nothing fails, reference passes): `uv run python -m bench.faults check` writes `bench/results/faults-check-<date>/check.json`. One fault into a folder to look at: `uv run python -m bench.faults build sd01 --dest ~/.verimend/faults/sd01`.
