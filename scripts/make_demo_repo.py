@@ -15,6 +15,17 @@ the baseline commit. Each `break` adds one commit:
               export": three payments with negative amounts. The models are right, so the
               right outcome is an escalation (like fault bd01).
 
+`template` builds the public inspector demo instead (phase 6e, decision 0010): the same
+project with the inspector on every pull request, an opt-in fixer that needs the copy's
+own ANTHROPIC_API_KEY secret, and three branches to open as pull requests:
+
+    uv run python scripts/make_demo_repo.py template --dest ~/.verimend/inspector-demo
+
+    try/weaken-test  not_null on customers.customer_id set to warn: fails at tests.
+    try/null-month   monthly revenue whose returned orders' payments land in a NULL month:
+                     fails at row accounting (rule B).
+    try/good-change  the same model with an inner join and a test: passes.
+
 Nothing here pushes. The commits use your own git identity.
 """
 
@@ -24,6 +35,7 @@ import argparse
 import shutil
 import subprocess
 import sys
+from importlib.metadata import version
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -38,6 +50,15 @@ NEGATIVE_PAYMENTS = [
 ]
 
 TEMPLATES = Path(__file__).resolve().parent / "demo_repo"  # load_raw.py, README.md, dbt.yml
+INSPECTOR = TEMPLATES / "template"  # the public inspector demo's own files
+TRY_BRANCHES = ("try/weaken-test", "try/null-month", "try/good-change")
+WEAKENED_BLOCK = (
+    "      - name: customer_id\n"
+    "        description: This is a unique identifier for a customer\n"
+    "        data_tests:\n"
+    "          - unique\n"
+    "          - not_null\n"
+)
 GITIGNORE = "target/\nlogs/\n*.duckdb\n*.duckdb.wal\n.user.yml\n__pycache__/\n"
 
 
@@ -54,7 +75,8 @@ def write(path: Path, text: str) -> None:
     path.write_text(text, encoding="utf-8", newline="\n")
 
 
-def build(dest: Path, action_ref: str) -> None:
+def copy_project(dest: Path) -> None:
+    """The jaffle shop at the root, its raw data and loader, the licence and notice."""
     if dest.exists() and any(dest.iterdir()):
         raise SystemExit(f"{dest} is not empty")
     dest.mkdir(parents=True, exist_ok=True)
@@ -73,14 +95,57 @@ def build(dest: Path, action_ref: str) -> None:
     write(dest / "NOTICE", notice + "- In this repository the project sits at the root, and "
           "scripts/load_raw.py loads raw_data/ into warehouse.duckdb.\n")  # fmt: skip
     shutil.copy2(TEMPLATES / "load_raw.py", dest / "scripts" / "load_raw.py")
+    write(dest / ".gitignore", GITIGNORE)
+
+
+def build(dest: Path, action_ref: str) -> None:
+    copy_project(dest)
     workflow = (TEMPLATES / "dbt.yml").read_text(encoding="utf-8")
     write(dest / ".github" / "workflows" / "dbt.yml", workflow.replace("ACTION_REF", action_ref))
     shutil.copy2(TEMPLATES / "README.md", dest / "README.md")
-    write(dest / ".gitignore", GITIGNORE)
     git(dest, "init", "-q")
     git(dest, "add", "-A")
     git(dest, "commit", "-q", "-m", "Jaffle shop models and CI")
     print(f"Built {dest} at {git(dest, 'rev-parse', '--short', 'HEAD')}")
+
+
+def template(dest: Path, verify_ref: str, fix_ref: str) -> None:
+    copy_project(dest)
+    workflows = dest / ".github" / "workflows"
+    inspector = (INSPECTOR / "inspector.yml").read_text(encoding="utf-8")
+    write(workflows / "inspector.yml", inspector.replace("VERIFY_REF", verify_ref))
+    fix = (INSPECTOR / "fix.yml").read_text(encoding="utf-8")
+    fix = fix.replace("FIX_REF", fix_ref).replace("DBT_VERSION", version("dbt-core"))
+    write(workflows / "fix.yml", fix.replace("DBT_DUCKDB_VERSION", version("dbt-duckdb")))
+    shutil.copy2(INSPECTOR / "README.md", dest / "README.md")
+    git(dest, "init", "-q")
+    git(dest, "add", "-A")
+    git(dest, "commit", "-q", "-m", "Jaffle shop models and the inspector")
+
+    git(dest, "checkout", "-q", "-b", TRY_BRANCHES[0])
+    schema = dest / "models" / "marts" / "schema.yml"
+    text = schema.read_text(encoding="utf-8")
+    old = WEAKENED_BLOCK
+    if text.replace("\r\n", "\n").count(old) != 1:
+        raise SystemExit(f"expected one customers.customer_id test block in {schema}")
+    weakened = old.replace("- not_null\n", "- not_null:\n              config:\n"
+                           "                severity: warn\n")  # fmt: skip
+    write(schema, text.replace("\r\n", "\n").replace(old, weakened))
+    git(dest, "commit", "-q", "-am", "Let the customer id check warn instead of fail")
+
+    for branch, message in (
+        (TRY_BRANCHES[1], "Monthly revenue, without returned orders"),
+        (TRY_BRANCHES[2], "Monthly revenue, without returned orders"),
+    ):
+        git(dest, "checkout", "-q", "-b", branch, "main")
+        source = INSPECTOR / "try" / branch.removeprefix("try/")
+        for name in ("monthly_revenue.sql", "monthly_revenue.yml"):
+            shutil.copy2(source / name, dest / "models" / "marts" / name)
+        git(dest, "add", "-A")
+        git(dest, "commit", "-q", "-m", message)
+    git(dest, "checkout", "-q", "main")
+    print(f"Built {dest} at {git(dest, 'rev-parse', '--short', 'HEAD')}, with "
+          + ", ".join(TRY_BRANCHES))  # fmt: skip
 
 
 def break_logic(repo: Path) -> None:
@@ -116,12 +181,18 @@ def main(argv: list[str] | None = None) -> int:
     b = sub.add_parser("build")
     b.add_argument("--dest", type=Path, required=True)
     b.add_argument("--action-ref", default="main")
+    m = sub.add_parser("template", help="the public inspector demo and its try/* branches")
+    m.add_argument("--dest", type=Path, required=True)
+    m.add_argument("--verify-ref", default="verify-v1")
+    m.add_argument("--fix-ref", default="action-v1")
     k = sub.add_parser("break")
     k.add_argument("case", choices=["logic", "bad-data"])
     k.add_argument("--repo", type=Path, required=True)
     args = parser.parse_args(argv)
     if args.command == "build":
         build(args.dest.expanduser().resolve(), args.action_ref)
+    elif args.command == "template":
+        template(args.dest.expanduser().resolve(), args.verify_ref, args.fix_ref)
     elif args.case == "logic":
         break_logic(args.repo.expanduser().resolve())
     else:

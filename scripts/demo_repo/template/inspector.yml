@@ -1,0 +1,20 @@
+name: Inspector
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: write # for the comment; without it the result is in the job summary only
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: adikan2k/verimend/action/verify@VERIFY_REF
+        with:
+          project-dir: .
+          profiles-dir: .
+          setup-command: python scripts/load_raw.py
